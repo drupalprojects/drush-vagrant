@@ -93,7 +93,7 @@ function drush_vagrant_alias_config() {
     drush_log(dt("Could not render the remote alias entry."), "error");
   }
   else {
-    drush_log(dt("The remote alias entry is below. Please it into an aliases.drushrc.php file."), "ok");
+    drush_log(dt("The remote alias entry is below. Please paste it into an aliases.drushrc.php file."), "ok");
     drush_print();
     drush_print($output);
   }
