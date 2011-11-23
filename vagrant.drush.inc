@@ -61,6 +61,7 @@ function drush_vagrant_alias_config() {
         drush_print($line);
       }
     }
+    exit(1);
   }
   else {
     drush_log(dt("No errors found in the Vagrant SSH configuration."), "ok");
@@ -72,13 +73,12 @@ function drush_vagrant_alias_config() {
     $ssh_options[current($split_line)] = implode(" ", $split_line);
   }
 
-  // Set up variables to send to the template.
-  $variables = array();
-  $variables["user"] = $ssh_options["User"];
-
   // These do not need to go into $alias['ssh-options'].
   unset($ssh_options["User"]);
   unset($ssh_options["Host"]);
+
+  // Set up variables to send to the template.
+  $variables = array();
   $variables["ssh_options"] = array_reduce($ssh_options, "_drush_vagrant_join_ssh_commands");
 
   drush_print(dt("Please enter the information about the Drupal site inside the VM."));
