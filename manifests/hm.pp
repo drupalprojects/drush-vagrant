@@ -10,9 +10,10 @@ file { '/etc/motd':
               Developed and maintained by Ergon Logic Enterprises.\n"
 }
 
+import "common"
 include aegir
 
-include drush
+# include drush
 
 #class {'drush::status':
 #  site_alias => 'hostmaster',
