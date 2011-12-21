@@ -1,58 +1,37 @@
 class aegir {
+  include aegir::frontend
+}
 
-include aegir::dependencies
-include aegir::sources
+class aegir::frontend {
+  include aegir::backend
 
   package { 'aegir':
     ensure       => present,
     responsefile => 'files/aegir.preseed',
-    require      => Class['aegir::dependencies'],
+    require      => Apt::Sources_list['aegir-stable'], 
   }
-
 }
 
-class aegir::sources {
-
-  include apt
-
-  apt::sources {'aegir.list':
-    dir  => '/tmp/vagrant-puppet/modules-0/aegir/files',
-    name => 'aegir',
-  }
-
-  class {'apt::key':
-    dir     => 'files',
-    url     => 'http://debian.aegirproject.org',
-    require => Apt::Sources['aegir.list'],
-#    creates => 'files/key.asc',
-  }
-
-  class {'apt::update':
-    require => Class['apt::key'],
-  }
-
-}
-
-class aegir::dependencies {
-
+class aegir::backend {
   include drush
+  include aegir::apt
 
-  package {'drush-make':
+  package { 'aegir-provision':
     ensure  => present,
     require => [
+      Apt::Sources_list['aegir-stable'], 
       Package['drush'],
-      Class['aegir::sources'],
-    ],
+      ]
   }
+}
 
-  package {'mysql-server' :
-    ensure       => present,
-    responsefile => 'files/mysql-server.preseed',
+
+class aegir::apt {
+  include apt
+
+  apt::sources_list { "aegir-stable":
+    content => "deb http://debian.aegirproject.org stable main",
+    require => Apt::Keys::Key['aegir'],
   }
-
-  package {'postfix' :
-    ensure       => present,
-    responsefile => 'files/postfix.preseed',
-  }
-
+  apt::keys::key { "aegir": source => "puppet:///aegir/debian.aegirproject.org.key" }
 }
