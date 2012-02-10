@@ -1,17 +1,9 @@
 
-class aegir ($site = undef) {
-  Exec {
-    path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ],
-#  user  => 'aegir',
-#  group => 'aegir',
-  }
-
- class { 'aegir::frontend':
-    site => $site,
-  }
+class aegir {
+  class { 'aegir::frontend': }
 }
 
-class aegir::frontend ($site = undef) {
+class aegir::frontend {
   include aegir::backend
 
   if $site {
