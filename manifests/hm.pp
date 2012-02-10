@@ -10,10 +10,16 @@ file { '/etc/motd':
               Developed and maintained by Ergon Logic Enterprises.\n"
 }
 
+Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ],
+#  user  => 'aegir',
+#  group => 'aegir',
+}
+
 import "common"
 include aegir
 
-# include drush
+# Optional settings for Aegir front-end
+# $site = 'aegir.example.com'
 
 #class {'drush::status':
 #  site_alias => 'hostmaster',
