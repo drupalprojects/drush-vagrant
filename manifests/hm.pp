@@ -19,7 +19,7 @@ import "common"
 include aegir
 
 # Optional settings for Aegir front-end
-# $site = 'aegir.example.com'
+# $aegir_site = 'aegir.example.com'
 
 #class {'drush::status':
 #  site_alias => 'hostmaster',
