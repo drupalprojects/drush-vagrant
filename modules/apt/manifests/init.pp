@@ -39,7 +39,7 @@ class apt {
 	config_file {
 		# this just pins unstable and testing to very low values
 		"/etc/apt/preferences":
-			source => "puppet://$servername/apt/preferences",
+			source => "puppet://$servername/modules/apt/preferences",
 			# use File[apt_config] to reference a completed configuration
 			# See "The Puppet Semaphor" 2007-06-25 on the puppet-users ML
 			alias => apt_config,
