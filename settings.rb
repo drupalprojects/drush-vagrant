@@ -6,7 +6,9 @@ class Vm                            # default virtual machine settings
   Manifests = "manifests"           # puppet manifests folder name
   Modules   = "modules"             # puppet modules folder name
   Subnet    = "32"                  # 192.168.###.0/24 subnet for this network
-#  Options   = "--debug --verbose"   # options to pass to Puppet
+  Verbose   = 0                     # make output verbose?
+  Debug     = 0                     # output debug info?
+  Options   = ""                    # options to pass to Puppet
 end
 
 class Hm                            # settings for our Aegir hostmaster machine

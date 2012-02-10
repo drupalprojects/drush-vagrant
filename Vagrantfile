@@ -29,6 +29,12 @@ Vagrant::Config.run do |config|
         if defined?(Vm::Options)
           puppet.options     = Vm::Options
         end
+        if Vm::Debug == 1
+          puppet.options     = puppet.options + " --debug"
+        end
+        if Vm::Verbose == 1
+          puppet.options     = puppet.options + " --verbose"
+        end
       end
     end
   end
