@@ -1,14 +1,13 @@
-
 class aegir {
-  class { 'aegir::frontend': }
+  include aegir::frontend
 }
 
 class aegir::frontend {
   include aegir::backend
 
-  if $site {
+  if $aegir_site {
     exec {'debconf aegir/site':
-      command => "echo debconf aegir/site string $site | debconf-set-selections",
+      command => "echo debconf aegir/site string $aegir_site | debconf-set-selections",
       before => Package['aegir'],
     }
   }
@@ -16,7 +15,7 @@ class aegir::frontend {
   package { 'aegir':
     ensure       => present,
     responsefile => 'files/aegir.preseed',
-    require      => Apt::Sources_list['aegir-stable'],
+    require      => Apt::Sources_list['aegir-stable'], 
   }
 }
 
