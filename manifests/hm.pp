@@ -16,10 +16,14 @@ Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ],
 }
 
 import "common"
-include aegir
 
 # Optional settings for Aegir front-end
 # $aegir_site = 'aegir.example.com'
+# $aegir_db_host = 'db.example.com'
+# $aegir_db_user = 'username'
+# $aegir_db_password = 'password'
+
+include aegir
 
 #class {'drush::status':
 #  site_alias => 'hostmaster',
