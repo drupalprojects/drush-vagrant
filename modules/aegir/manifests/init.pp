@@ -29,8 +29,14 @@ class aegir::frontend {
       before => Package['aegir'],
     }
   }
+  if $aegir_email {
+    exec {'debconf aegir/email':
+      command => "echo debconf aegir/email string $aegir_email | debconf-set-selections",
+      before => Package['aegir'],
+    }
+  }
 
-package { 'aegir':
+  package { 'aegir':
     ensure       => present,
     responsefile => 'files/aegir.preseed',
     require      => Apt::Sources_list['aegir-stable'], 

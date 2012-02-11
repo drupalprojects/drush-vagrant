@@ -22,6 +22,7 @@ import "common"
 # $aegir_db_host = 'db.example.com'
 # $aegir_db_user = 'username'
 # $aegir_db_password = 'password'
+# $aegir_email = 'name@example.com'
 
 include aegir
 
