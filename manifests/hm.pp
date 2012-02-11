@@ -23,6 +23,7 @@ import "common"
 # $aegir_db_user = 'username'
 # $aegir_db_password = 'password'
 # $aegir_email = 'name@example.com'
+# $aegir_makefile = 'example.make'
 
 include aegir
 
