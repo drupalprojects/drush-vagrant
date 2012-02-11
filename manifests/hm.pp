@@ -35,6 +35,6 @@ include aegir
 #class {'aegir::contrib': }
 #class {'aegir::queue_runner': }
 
-#aegir::platform {'Open_Atrium22':
-#  makefile => 'http://drupalcode.org/sandbox/ergonlogic/1237618.git/blob_plain/HEAD:/stub-openatrium.make',
-#}
+aegir::platform {'Open_Atria':
+  makefile => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatria.make',
+}
