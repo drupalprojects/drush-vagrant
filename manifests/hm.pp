@@ -2,7 +2,12 @@
 
 group { 'puppet': ensure => present, }
 
-File { owner => 0, group => 0, mode => 0644 }
+# Set some defaults, and make output less verbose
+Group { loglevel => 'info', }
+Package { loglevel => 'info', }
+Notify { loglevel => 'info', }
+Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], loglevel => 'info', }
+File { owner => 0, group => 0, mode => 0644, loglevel => 'info', }
 
 file { '/etc/motd':
   content => "Welcome to your Aegir Hostmaster virtual machine!
@@ -10,20 +15,19 @@ file { '/etc/motd':
               Developed and maintained by Ergon Logic Enterprises.\n"
 }
 
-Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], }
-
 import "common"
 
-# Build 'manually' or from packages (.debs, &c.)
-# $aegir_manual_build = TRUE
-
 # Optional settings for Aegir front-end
-#  $aegir_site = 'test.aegir.local' 
+#  $aegir_site = 'test.aegir.local' #req'd for manual builds
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
 #  $aegir_makefile = 'aegir.make'
+
+# Build 'manually' or from packages (.debs, &c.)
+# N.B. Manual installs require $aegir_site to be set
+#  $aegir_manual_build = TRUE
 
 # Additional optional settings available if $aegir_manual_build = TRUE
 #
@@ -37,6 +41,11 @@ import "common"
 #  $web_group = 'www-data'
 #  $aegir_version = '6.x-1.6'
 #  $aegir_root = '/var/aegir'
+
+notice("\nRunning Puppet manifests to install and/or update Aegir.\n
+        This may take awhile, so please be patient.
+        For more detail on the operations being run, edit settings.rb,
+        and set 'verbose = 1'.")
 
 include aegir
 
