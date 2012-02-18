@@ -6,6 +6,7 @@ group { 'puppet': ensure => present, }
 Group { loglevel => 'info', }
 Package { loglevel => 'info', }
 Notify { loglevel => 'info', }
+User { loglevel => 'info', }
 Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], loglevel => 'info', }
 File { owner => 0, group => 0, mode => 0644, loglevel => 'info', }
 
@@ -18,16 +19,16 @@ file { '/etc/motd':
 import "common"
 
 # Optional settings for Aegir front-end
-#  $aegir_site = 'test.aegir.local' #req'd for manual builds
+#  $aegir_site = 'test.aegir.local' 
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
 #  $aegir_makefile = 'aegir.make'
+#  $force_login_link = 'true'    # Print a login link each time the manifest is run
 
-# Build 'manually' or from packages (.debs, &c.)
-# N.B. Manual installs require $aegir_site to be set
-#  $aegir_manual_build = TRUE
+# Build 'manually' instead of from packages (.debs, &c.)
+#  $aegir_manual_build = true
 
 # Additional optional settings available if $aegir_manual_build = TRUE
 #
@@ -35,14 +36,18 @@ import "common"
 # then, think twice. Changing these can result in a broken and/or unusable
 # Aegir installation.
 #
-#  $http_service_type = 'apache' 
-#  $drush_make_version = '6.x-2.3'
-#  $script_user = 'aegir'
-#  $web_group = 'www-data'
-#  $aegir_version = '6.x-1.6'
+#  $aegir_user = 'aegir'
 #  $aegir_root = '/var/aegir'
+#  $aegir_version = '6.x-1.6'
+#  $drush_make_version = '6.x-2.3'
+#  $http_service_type = 'apache' 
+#  $web_group = 'www-data'
 
-notice("\nRunning Puppet manifests to install and/or update Aegir.\n
+# Build 'manually' using latest git repos
+#  $aegir_dev_build = true
+
+notice("\n
+        Running Puppet manifests to install and/or update Aegir.\n
         This may take awhile, so please be patient.
         For more detail on the operations being run, edit settings.rb,
         and set 'verbose = 1'.")
