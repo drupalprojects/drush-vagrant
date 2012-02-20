@@ -1,23 +1,5 @@
 # A Puppet manifest to provision an Aegir Hostmaster server
 
-group { 'puppet': ensure => present, }
-
-# Set some defaults, and make output less verbose
-Group { loglevel => 'info', }
-Package { loglevel => 'info', }
-Notify { loglevel => 'info', }
-User { loglevel => 'info', }
-Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], loglevel => 'info', }
-File { owner => 0, group => 0, mode => 0644, loglevel => 'info', }
-
-file { '/etc/motd':
-  content => "Welcome to your Aegir Hostmaster virtual machine!
-              Built by Vagrant. Managed by Puppet.\n
-              Developed and maintained by Ergon Logic Enterprises.\n"
-}
-
-import "common"
-
 # Optional settings for Aegir front-end
 #  $aegir_site = 'test.aegir.local' 
 #  $aegir_db_host = 'db.aegir.local'
@@ -52,16 +34,30 @@ notice("\n
         For more detail on the operations being run, edit settings.rb,
         and set 'verbose = 1'.")
 
+import "common"
 include aegir
 
-#class {'drush::status':
-#  site_alias => 'hostmaster',
-#  require => Class['aegir'],
-#}
+class {'aegir::queue_runner': }
 
-#class {'aegir::contrib': }
-#class {'aegir::queue_runner': }
+aegir::platform {'Open_Atria':
+  makefile       => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatrium.make',
+  force_complete => true,
+}
 
-#aegir::platform {'Open_Atria':
-#  makefile => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatria.make',
-#}
+group { 'puppet': ensure => present, }
+
+# Set some defaults, and make output less verbose
+Group { loglevel => 'info', }
+Package { loglevel => 'info', }
+Notify { loglevel => 'info', }
+User { loglevel => 'info', }
+Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], loglevel => 'info', }
+File { owner => 0, group => 0, mode => 0644, loglevel => 'info', }
+
+file { '/etc/motd':
+  content => "Welcome to your Aegir Hostmaster virtual machine!
+              Built by Vagrant. Managed by Puppet.\n
+              Developed and maintained by Ergon Logic Enterprises.\n"
+}
+
+
