@@ -1,13 +1,13 @@
 # A Puppet manifest to provision an Aegir Hostmaster server
 
 # Optional settings for Aegir front-end
-#  $aegir_site = 'test.aegir.local' 
+#  $aegir_hostmaster_url = 'test.aegir.local' 
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
 #  $aegir_makefile = 'aegir.make'
-#  $force_login_link = 'true'    # Print a login link each time the manifest is run
+#  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
 
 # Build 'manually' instead of from packages (.debs, &c.)
 #  $aegir_manual_build = true
@@ -21,9 +21,9 @@
 #  $aegir_user = 'aegir'
 #  $aegir_root = '/var/aegir'
 #  $aegir_version = '6.x-1.6'
-#  $drush_make_version = '6.x-2.3'
-#  $http_service_type = 'apache' 
-#  $web_group = 'www-data'
+#  $aegir_drush_make_version = '6.x-2.3'
+#  $aegir_http_service_type = 'apache' 
+#  $aegir_web_group = 'www-data'
 
 # Build 'manually' using latest git repos
 #  $aegir_dev_build = true
@@ -34,12 +34,17 @@ notice("\n
         For more detail on the operations being run, edit settings.rb,
         and set 'verbose = 1'.")
 
+notice('Importing "common" module')
 import "common"
+
+notice('Ensuring Aegir and dependant components are properly installed.')
 include aegir
 
+notice('Ensuring Hosting Queue Runner is properly installed and enabled.')
 class {'aegir::queue_runner': }
 
-aegir::platform {'Open_Atria':
+notice('Building Open Atrium Platform.')
+aegir::platform {'Open_Atrium':
   makefile       => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatrium.make',
   force_complete => true,
 }
@@ -59,5 +64,3 @@ file { '/etc/motd':
               Built by Vagrant. Managed by Puppet.\n
               Developed and maintained by Ergon Logic Enterprises.\n"
 }
-
-
