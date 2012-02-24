@@ -1,3 +1,6 @@
+# Remove the post-install scripts
+rm ./*.sh
+
 # Clean up apt
 apt-get -y autoremove
 
