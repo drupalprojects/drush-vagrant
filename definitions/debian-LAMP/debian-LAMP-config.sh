@@ -1,3 +1,6 @@
+# Install git
+apt-get install git-core -y
+
 # Download Aegir-up locally
 git clone http://git.drupal.org/project/aegir-up.git
 
