@@ -3,6 +3,8 @@
 notice("\n
         Running Puppet manifests to install Aegir.\n")
 
+Exec { path => '/usr/bin',  }
+
 import "common"
 
 include aegir
