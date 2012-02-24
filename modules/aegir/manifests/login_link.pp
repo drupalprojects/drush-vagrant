@@ -1,4 +1,4 @@
-class aegir::login_link {
+class aegir::login_link inherits aegir::defaults {
 
   if $aegir_force_login_link { $refreshonly = false }
   else { $refreshonly = true }
