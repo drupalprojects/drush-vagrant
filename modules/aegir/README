@@ -35,10 +35,15 @@ To use this module, follow these directions:
 
        import "common"
 
-3. To install Aegir, add the following line to your manifests (ideally in 
-   manifests/site.pp):
+3a. To install Aegir from packages (as opposed to manual install, see (3b)),
+    add the following line to your manifests (ideally in manifests/site.pp):
    
        include aegir
+
+3b. To install Aegir 'manually' (as opposed to from packages, see (3a)), add
+    the following line to your manifests (ideally in manifests/site.pp):
+
+       include aegir::manual_build
 
 4. To install Hosting Queue Runner, add the following line to your manifests
    (ideally in manifests/site.pp):
@@ -73,14 +78,8 @@ You can:
   * Specify and alternate makefile to build the front-end with:
       $aegir_makefile = 'alternate-aegir.make'
 
-Aegir can also be installed following the 'manual' instructions
-(http://community.aegirproject.org/installing/manual) instead of from packages
-by using the following class instead of the default 'aegir' class:
-
-    include aegir::manual_build
-
-In addition to the options listed above for package-based installations, you
-can:
+In addition to the options listed above for package-based installations, with
+manual builds ('include aegir::manual_build') you can:
 
   * Set an alternate name for the 'aegir' user:
       $aegir_user = 'aegir'
@@ -100,7 +99,7 @@ unusable Aegir installation.
 
 If you want to develop on Aegir, or try out the latest features, you can build
 'manually' from the latest git repos (N.B. setting this variable forces a
-manual build, and so makes '$aegir_manual_build = true' redundant):
+manual build, even if 'include aegir' is specified):
 
     $aegir_dev_build = true
 

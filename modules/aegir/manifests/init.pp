@@ -1,6 +1,6 @@
 class aegir {
 
-  if ! ($aegir_manual_build or $aegir_dev_build) {
+  if ! ($aegir_dev_build) {
     include aegir::frontend
   }
   else {
