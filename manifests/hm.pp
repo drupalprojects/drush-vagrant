@@ -34,20 +34,18 @@ notice("\n
         For more detail on the operations being run, edit settings.rb,
         and set 'verbose = 1'.")
 
-notice('Importing "common" module')
 import "common"
 
-notice('Ensuring Aegir and dependant components are properly installed.')
 include aegir
 
-notice('Ensuring Hosting Queue Runner is properly installed and enabled.')
-class {'aegir::queue_runner': }
+include aegir::queue_runner
 
-notice('Building Open Atrium Platform.')
+/*
 aegir::platform {'Open_Atrium':
   makefile       => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatrium.make',
   force_complete => true,
 }
+*/
 
 group { 'puppet': ensure => present, }
 
