@@ -55,16 +55,10 @@ Finally, you'll need to generate a new one-time login link:
     drush @hostmaster uli
 
 
-Building base.box
------------------
+Building base boxes
+-------------------
 
-TODO
-
-
-Building aegir.box
-------------------
-
-TODO
+See http://community.openatria.com/team/aegir-up/base-boxes
 
 
 Adding subtree remotes
