@@ -1,5 +1,5 @@
 class Vm                            # default virtual machine settings
-  Basebox   = "debian-LAMP-6.0.4"        # default basebox
+  Basebox   = "debian-LAMP-6.0.4"   # default basebox
   Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
   Gui       = false                 # start VM with GUI? Useful for loading CD/DVD ISOs
   Memory    = 512                   # default VM memory
@@ -12,8 +12,8 @@ class Vm                            # default virtual machine settings
 end
 
 class Hm                            # settings for our Aegir hostmaster machine
-#  Basebox   = "aegir-1.6"           # pre-built Aegir server base box
-#  Box_url   = "http://ergonlogic.com/files/boxes/aegir-current.box"
+  Basebox   = "aegir-1.6"           # pre-built Aegir server base box
+  Box_url   = "http://ergonlogic.com/files/boxes/aegir-current.box"
   Shortname = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
   Hostname  = "aegir.local"         # host FQDN
   Vmname    = "Aegir"               # VirtualBox name

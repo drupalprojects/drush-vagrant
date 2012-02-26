@@ -17,7 +17,7 @@ Vagrant::Config.run do |config|
   config.vm.define Hm::Shortname do |hm_config|
     if defined?(Hm::Basebox)
       hm_config.vm.box = Hm::Basebox
-      hm_config.vm.box = Hm::Box_url
+      hm_config.vm.box_url = Hm::Box_url
     end
     hm_config.vm.network :hostonly, "192.168.#{Vm::Subnet}.10"
     hm_config.vm.host_name = Hm::Hostname
