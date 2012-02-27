@@ -33,8 +33,8 @@ Usage
 See http://community.openatria.com/team/aegir-up/usage
 
 
-Building base boxes
--------------------
+Other Documentaion
+------------------
 
-See http://community.openatria.com/team/aegir-up/base-boxes
+See http://community.openatria.com/team/aegir-up
 
