@@ -1,4 +1,6 @@
-manifests/files/key.asc
-.vagrant
-*.box
-iso/
+projects/*
+!projects/default
+projects/default/manifests/files/key.asc
+projects/default/.vagrant
+lib/*.box
+lib/iso/
