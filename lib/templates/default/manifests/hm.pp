@@ -1,13 +1,15 @@
 # A Puppet manifest to provision an Aegir Hostmaster server
 
 # Optional settings for Aegir front-end
-#  $aegir_hostmaster_url = 'test.aegir.local' 
+  # For now it's best to specify the front-end URL here, though this should no
+  # longer be necessary once http://drupal.org/node/1459126 lands
+  $aegir_hostmaster_url = 'aegir.local'
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
 #  $aegir_makefile = 'aegir.make'
-#  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
+  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
 
 # Build 'manually' instead of from packages (.debs, &c.)
 #  $aegir_manual_build = true
