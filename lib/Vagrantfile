@@ -32,7 +32,7 @@ Vagrant::Config.run do |config|
         puppet.module_path   = Vm::Modules
         if defined?(Vm::Options)
           puppet.options     = Vm::Options
-          #puppet.facter      = "fqdn=#{Hm::Hostname}"   See: https://github.com/mitchellh/vagrant/pull/753
+          #puppet.facter = { "fqdn" => "#{Hm::Hostname}" }   See: https://github.com/mitchellh/vagrant/pull/753
         end
         if Vm::Debug == 1
           puppet.options     = puppet.options + " --debug"
