@@ -1,6 +1,4 @@
 projects/*
-!projects/default
-projects/default/manifests/files/key.asc
-projects/default/.vagrant
+!projects/README
 lib/*.box
 lib/iso/
