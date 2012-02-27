@@ -56,6 +56,9 @@ fi
 cp -r $AEGIR_UP_ROOT/lib/project_template $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 git init
+git add *
+git commit -m"Initial commit."
+
 
 msg "Project initialized."
 msg "You can alter Aegir-up's behaviour by editing $AEGIR_UP_ROOT/projects/$NEW_PROJECT/settings.rb."
