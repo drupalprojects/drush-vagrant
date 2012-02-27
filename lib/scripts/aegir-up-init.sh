@@ -90,6 +90,7 @@ fi
 
 cp -r $TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
+ln -s $AEGIR_UP_ROOT/lib/Vagrantfile .
 if [ "$GIT" = "on" ] ; then
   git init
   git add *
