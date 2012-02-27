@@ -62,12 +62,6 @@ shift `expr $OPTIND - 1`
 
 NEW_PROJECT=$@
 
-echo "git:" $GIT
-echo "yes:" $YES
-echo "template:" $TEMPLATE
-echo "project:" $NEW_PROJECT
-
-
 if ! [ -d $TEMPLATE ] ; then
   msg "ERROR: Could not find the $TEMPLATE directory."
   exit 1
