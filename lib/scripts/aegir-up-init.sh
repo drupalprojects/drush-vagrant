@@ -44,7 +44,7 @@ if [ -d $AEGIR_UP_ROOT/projects/$NEW_PROJECT ] ; then
   exit 1
 fi
 
-msg "This script will create a new project at projects/$NEW_PROJECT and initialize a git repo within it."
+msg "This script will create a new project at $AEGIR_UP_ROOT/projects/$NEW_PROJECT and initialize a git repo within it."
 
 if prompt_yes_no "Do you want to proceed with initializing the project?" ; then
   true
