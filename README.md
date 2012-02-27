@@ -1,71 +1,42 @@
 Aegir-up
 ========
 
-Aegir-up deploys a local instance of the Aegir Hosting System (aegirproject.org)
-atop Vagrant (vagrantup.com) and Virtualbox (virtualbox.org).
+Aegir-up deploys a local instance of the Aegir Hosting System atop Vagrant and
+Virtualbox, for development and testing purposes.
 
-**N.B.** aegir-up is *NOT* intended for production hosting.
+**N.B.** Aegir-up is *NOT* intended for production hosting. For a fully managed
+production-grade Aegir server check out Koumbit Networks' AegirVPS services
+(http://www.koumbit.org/en/services/AegirVPS), or other Aegir Service Providers
+(http://community.aegirproject.org/service-providers).
+
+
+Quick start
+-----------
+
+Assuming all the dependencies are installed, you can get started by:
+
+    $ ./aegir-up-init my_project
+    ...
+    $ cd projects/my_project
+    $ vagrant up
 
 
 Installation
 ------------
 
-First, ensure that you're running a relatively recent (>= 4.1.0) version of
-Virtualbox, as this is required by Vagrant. You can check the version you
-currently have installed by running:
-
-    virtualbox --help
-
-Alternatively, in the graphical front-end, you can click on the 'help' menu, and
-then on "About Virtualbox..."
-
-If these show an older version, or that Virtualbox isn't yet installed, check
-the packages available for your OS (e.g., Debian backports), or download the
-latest version directly from Virtualbox: https://www.virtualbox.org/wiki/Downloads
-
-Next, make sure Vagrant is properly installed on your system. This involves
-installing Ruby and RubyGems, which can be a bit tricky (especially on Windows).
-Be persistent, and follow the instructions linked to from the Vagrant site:
-http://vagrantup.com/docs/getting-started/index.html
-
-Then get a local copy of the project by cloning the git repo:
-
-    git clone http://git.drupal.org/project/aegir-up.git
-
-Enter the directory just created and launch the Vagrant box
-
-    cd aegir-up
-    vagrant up
+See http://community.openatria.com/team/aegir-up/installation
 
 
 Usage
 -----
 
-Once the Aegir-Up virtual machine is running, the Hostmaster front-end should
-be accessible via a web browser, though you'll probably have to help it resolve
-to the local VM. The easiest way to do this is to add the following to your
-`hosts` files (e.g., /etc/hosts on Linux machines):
-
-    192.168.32.10 aegir.local
-
-Finally, you'll need to generate a new one-time login link:
-
-    vagrant ssh
-    sudo su aegir
-    drush @hostmaster uli
+See http://community.openatria.com/team/aegir-up/usage
 
 
 Building base boxes
 -------------------
 
 See http://community.openatria.com/team/aegir-up/base-boxes
-
-
-Adding subtree remotes
-----------------------
-In aegir-up root directory run:
-
-    ./aegir-up-init
 
 
 Roadmap
