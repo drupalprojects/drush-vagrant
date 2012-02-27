@@ -1,4 +1,4 @@
-This is the directory where you're projects will be built.
+This is the directory where your projects will be built.
 
-Use '../aegir-up-init <project_name>' tpo initialize one.
+Use 'aegir-up-init <project_name>' to initialize one.
 
