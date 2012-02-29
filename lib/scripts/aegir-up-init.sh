@@ -92,7 +92,7 @@ INITIAL_SUBNET=10
 NEW_SUBNET=
 
 # Get a list of all the subnets already in use in ascending order
-ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/settings.rb |perl -nle '/(\d+)/ and print $&'|sort`
+ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/settings.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
 
 # If there aren't any projects yet, use the default
 if [ -z "$ALL_SUBNETS" ] ; then
