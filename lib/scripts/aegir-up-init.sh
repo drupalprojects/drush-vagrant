@@ -94,33 +94,38 @@ NEW_SUBNET=
 # Get a list of all the subnets already in use in ascending order
 ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/settings.rb |perl -nle '/(\d+)/ and print $&'|sort`
 
+# If there aren't any projects yet, use the default
+if [ -z "$ALL_SUBNETS" ] ; then
+  NEW_SUBNET=$INITIAL_SUBNET
+else
 # For each possible subnet...
-for a in `seq "$INITIAL_SUBNET" 254`
-do
-  # ... check against all the existing subnets
-  for b in $ALL_SUBNETS
+  for a in `seq "$INITIAL_SUBNET" 254`
   do
-    if [ "$a" -lt "$b" ] ; then
-      # We've found an available subnet, so let's go with it
-      NEW_SUBNET=`expr $a`
-      break 2 
-    fi
-    if [ "$a" -eq "$b" ] ; then
-      # We've matched an existing subnet, so remove it from the list
-      ALL_SUBNETS=`echo $ALL_SUBNETS | sed "s/$a//g"`
-      # We've gone through the entire list, so the next subnet will work
-      if [ -z "$ALL_SUBNETS" ] ; then
-        NEW_SUBNET=`expr $a + 1`
-        break 2
+    # ... check against all the existing subnets
+    for b in $ALL_SUBNETS
+    do
+      if [ "$a" -lt "$b" ] ; then
+        # We've found an available subnet, so let's go with it
+        NEW_SUBNET=`expr $a`
+        break 2 
       fi
-      break
+      if [ "$a" -eq "$b" ] ; then
+        # We've matched an existing subnet, so remove it from the list
+        ALL_SUBNETS=`echo $ALL_SUBNETS | sed "s/$a//g"`
+        # We've gone through the entire list, so the next subnet will work
+        if [ -z "$ALL_SUBNETS" ] ; then
+          NEW_SUBNET=`expr $a + 1`
+          break 2
+        fi
+        break
+      fi
+    done
+    if [ $a -gt 253 ] ; then
+      echo "We've run out of subnets!"
+      exit 1
     fi
-  done
-  if [ $a -gt 253 ] ; then
-    echo "We've run out of subnets!"
-    exit 1
-  fi
-done  
+  done  
+fi
 
 cp -r $TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
