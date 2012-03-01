@@ -127,12 +127,16 @@ else
   done  
 fi
 
-cp -r $TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
+cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 ln -s ../../lib/Vagrantfile .
 sed "s/\"$INITIAL_SUBNET\"/\"$NEW_SUBNET\"/g" -i settings.rb
 sed "s/\"Aegir\"/\"Aegir($NEW_PROJECT)\"/g" -i settings.rb
 sed "s/\"Cluster\"/\"Cluster($NEW_PROJECT)\"/g" -i settings.rb
+if ! [ "$TEMPLATE" = "default" ] ; then
+  sed "s/\"aegir.local\"/\"$NEW_PROJECT.aegir.local\"/g" -i settings.rb
+  sed "s/'aegir.local'/'$NEW_PROJECT.aegir.local'/g" -i manifests/hm.pp
+fi
 if [ "$GIT" = "on" ] ; then
   git init
   git add *
@@ -143,6 +147,12 @@ msg "Project successfully initialized."
 msg ""
 msg "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT"
 msg "The subnet for your project has been set to 192.168.$NEW_SUBNET.0"
+msg "You may want to add the following line to your /etc/hosts:"
+if [ "$TEMPLATE" = "default" ] ; then
+  msg "           192.168.$NEW_SUBNET.10    aegir.local"
+else
+  msg "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local"
+fi
 msg "You can now: * Alter Aegir-up's behaviour by editing $AEGIR_UP_ROOT/projects/$NEW_PROJECT/settings.rb."
 msg "             * Redefine the VMs by editing the Puppet manifests in $AEGIR_UP_ROOT/projects/$NEW_PROJECT/manifests."
 msg "             * Add additional Puppet modules by copying them to $AEGIR_UP_ROOT/projects/$NEW_PROJECT/modules."

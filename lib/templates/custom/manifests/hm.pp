@@ -28,7 +28,7 @@
 #  $aegir_web_group = 'www-data'
 
 # Build 'manually' using latest git repos
-  $aegir_dev_build = true
+#  $aegir_dev_build = true
 
 # Include blocks like the following to automatically build platforms
 /*
