@@ -61,6 +61,9 @@ done
 shift `expr $OPTIND - 1`
 
 NEW_PROJECT=$@
+if [ -z $NEW_PROJECT ] ; then
+  NEW_PROJECT="default"
+fi
 
 if ! [ -d $AEGIR_UP_ROOT/lib/templates/$TEMPLATE ] ; then
   msg "ERROR: Could not find the '$TEMPLATE' template."
