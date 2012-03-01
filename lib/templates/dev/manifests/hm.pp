@@ -11,15 +11,8 @@
 #  $aegir_makefile = 'aegir.make'
 #  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
 
-# Build 'manually' instead of from packages (.debs, &c.)
-#  $aegir_manual_build = true
+# Additional optional settings available since $aegir_dev_build = TRUE
 
-# Additional optional settings available if $aegir_manual_build = TRUE
-#
-# WARNING! Only change these if you really know what you are doing, and even
-# then, think twice. Changing these can result in a broken and/or unusable
-# Aegir installation.
-#
 #  $aegir_user = 'aegir'
 #  $aegir_root = '/var/aegir'
 #  $aegir_version = '6.x-1.6'
@@ -27,8 +20,10 @@
 #  $aegir_http_service_type = 'apache' 
 #  $aegir_web_group = 'www-data'
 
-# Build 'manually' using latest git repos
+# Build 'manually' using git repos
   $aegir_dev_build = true
+#  $aegir_provision_repo = 'http://git.drupal.org/project/provision.git'
+#  $aegir_provision_branch = '6.x-1.x'
 
 # Include blocks like the following to automatically build platforms
 /*
