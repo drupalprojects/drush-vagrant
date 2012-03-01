@@ -20,6 +20,10 @@ class Hm                            # settings for our Aegir hostmaster machine
 #  Memory    = 1024                  # override the default memory
 end
 
+###############################################################################
+# WARNING: We haven't tested Hostslaves for a LONG time. Use at your own risk.
+###############################################################################
+
 class Hs                            # settings for our Aegir hostslave machine(s)
 #  Basebox   = "debian-LAMP-6.0.4"   # basic LAMP server base box
 #  Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
