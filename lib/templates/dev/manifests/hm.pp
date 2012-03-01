@@ -8,7 +8,7 @@
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
-#  $aegir_makefile = 'aegir.make'
+  $aegir_makefile = '/vagrant/makefiles/custom-aegir.make'
 #  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
 
 # Additional optional settings available since $aegir_dev_build = TRUE
@@ -22,8 +22,8 @@
 
 # Build 'manually' using git repos
   $aegir_dev_build = true
-#  $aegir_provision_repo = 'http://git.drupal.org/project/provision.git'
-#  $aegir_provision_branch = '6.x-1.x'
+  $aegir_provision_repo = 'http://git.drupal.org/project/provision.git'
+  $aegir_provision_branch = '6.x-1.x'
 
 # Include blocks like the following to automatically build platforms
 /*
