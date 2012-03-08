@@ -19,11 +19,15 @@
 #  $aegir_drush_make_version = '6.x-2.3'
 #  $aegir_http_service_type = 'apache' 
 #  $aegir_web_group = 'www-data'
+#  $aegir_debug = true
 
 # Build 'manually' using git repos
   $aegir_dev_build = true
   $aegir_provision_repo = 'http://git.drupal.org/project/provision.git'
   $aegir_provision_branch = '6.x-1.x'
+
+  $aegir_profile = 'hostmaster'
+
 
 # Include blocks like the following to automatically build platforms
 /*

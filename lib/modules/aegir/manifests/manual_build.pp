@@ -123,7 +123,10 @@ class aegir::manual_build::frontend {
   if $aegir_makefile {          $l = " --makefile=${aegir_makefile}"}
   if $aegir_host  {             $m = " --aegir_host=${aegir_host}"}
   if $aegir_dev_build {         $n = " --working-copy"}
-  $install_options = "${a}${b}${c}${d}${e}${f}${g}${h}${i}${j}${k}${l}${m}${n}"
+  if $aegir_profile {           $o = " --profile=${aegir_profile}" } #ref.: http://drupal.org/node/1464220
+  if $aegir_debug {             $p = " --debug" }
+
+  $install_options = "${a}${b}${c}${d}${e}${f}${g}${h}${i}${j}${k}${l}${m}${n}${o}${p}"
 
   exec {'hostmaster-install':
     command     => "drush hostmaster-install ${aegir_hostmaster_url} $install_options -y > /var/aegir/install.log 2>&1",
