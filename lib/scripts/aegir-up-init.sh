@@ -66,7 +66,7 @@ if [ -z $NEW_PROJECT ] ; then
   NEW_PROJECT="default"
 fi
 
-echo $NEW_PROJECT | egrep "^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
+echo $NEW_PROJECT | egrep "^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$" >/dev/null
 if [ $? -ne 0 ] ; then
   msg "ERROR: the name of your project ($NEW_PROJECT) should only contains letters, numbers and hyphens."
   exit 1
@@ -137,8 +137,11 @@ else
   done  
 fi
 
+# Create the project directory
 cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
+
+# Make project-specific changes
 ln -s ../../lib/Vagrantfile .
 sed "s/\"$INITIAL_SUBNET\"/\"$NEW_SUBNET\"/g" -i settings.rb
 sed "s/\"Aegir\"/\"Aegir($NEW_PROJECT)\"/g" -i settings.rb
@@ -147,6 +150,25 @@ if ! [ "$TEMPLATE" = "default" ] ; then
   sed "s/\"aegir.local\"/\"$NEW_PROJECT.aegir.local\"/g" -i settings.rb
   sed "s/'aegir.local'/'$NEW_PROJECT.aegir.local'/g" -i manifests/hm.pp
 fi
+
+# Get user-specific files & make appropriate changes
+if [ -e ~/.aegir-up ] ; then
+  . ~/.aegir-up
+  USER_DOTFILES_DIR=manifests/files
+  mkdir $USER_DOTFILES_DIR
+  cp $BASHRC_PATH $USER_DOTFILES_DIR
+  cp $BASH_ALIASES_PATH $USER_DOTFILES_DIR
+  cp $VIMRC_PATH $USER_DOTFILES_DIR
+  cat "$SSH_KEY_PUBLIC_PATH" > "$USER_DOTFILES_DIR/authorized_keys"
+  #cp $SSH_KEY_PRIVATE_PATH $USER_DOTFILES_DIR
+  sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i manifests/hm.pp
+  sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i manifests/hm.pp
+  sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i manifests/hm.pp
+else 
+  msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
+fi
+
+# Set up git
 if [ "$GIT" = "on" ] ; then
   git init
   git add *
