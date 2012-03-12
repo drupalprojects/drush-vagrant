@@ -37,7 +37,7 @@ Initialize the PROJECT directory
 
   -t   Specify a template project to use
   -n   Don't initialize a git repo
-  -y   Assume answer to any prompts is 'yes'
+  -y   Assume answer to all prompts is 'yes'
   -h   This help message"
 
 GIT=on
@@ -61,8 +61,15 @@ done
 shift `expr $OPTIND - 1`
 
 NEW_PROJECT=$@
+
 if [ -z $NEW_PROJECT ] ; then
   NEW_PROJECT="default"
+fi
+
+echo $NEW_PROJECT | egrep "^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
+if [ $? -ne 0 ] ; then
+  msg "ERROR: the name of your project ($NEW_PROJECT) should only contains letters, numbers and hyphens."
+  exit 1
 fi
 
 if ! [ -d $AEGIR_UP_ROOT/lib/templates/$TEMPLATE ] ; then
