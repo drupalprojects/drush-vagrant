@@ -12,7 +12,7 @@ class Vm                            # default virtual machine settings
 end
 
 class Hm                            # settings for our Aegir hostmaster machine
-  Basebox   = "aegir-1.6"           # pre-built Aegir server base box
+  Basebox   = "aegir-1.7"           # pre-built Aegir server base box
   Box_url   = "http://ergonlogic.com/files/boxes/aegir-current.box"
   Shortname = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
   Hostname  = "aegir.local"         # host FQDN

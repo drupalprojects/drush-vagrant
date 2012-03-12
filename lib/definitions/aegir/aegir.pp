@@ -14,7 +14,8 @@ include aegir::queue_runner
 group { 'puppet': ensure => present, }
 
 file { '/etc/motd':
-  content => "Welcome to your Aegir Hostmaster virtual machine!
-              Built by Vagrant. Managed by Puppet.\n
+  content => "\n
+              Welcome to your Aegir Hostmaster virtual machine!\n
+              Built with Vagrant & Veewee. Managed with Puppet.\n
               Developed and maintained by Ergon Logic Enterprises.\n"
 }
