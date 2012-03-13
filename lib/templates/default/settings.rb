@@ -5,10 +5,11 @@ class Vm                            # default virtual machine settings
   Memory    = 512                   # default VM memory
   Manifests = "manifests"           # puppet manifests folder name
   Modules   = [ "modules", "../../lib/modules" ]             # puppet modules folder name
-  Subnet    = "10"                  # 192.168.###.0/24 subnet for this network
+  Subnet    = "14"                  # 192.168.###.0/24 subnet for this network
   Verbose   = false                 # make output verbose?
   Debug     = false                 # output debug info?
   Options   = ""                    # options to pass to Puppet
+#  Username  = "username"            # SSH login username
 end
 
 class Hm                            # settings for our Aegir hostmaster machine
@@ -16,7 +17,7 @@ class Hm                            # settings for our Aegir hostmaster machine
   Box_url   = "http://ergonlogic.com/files/boxes/aegir-current.box"
   Shortname = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
   Hostname  = "aegir.local"         # host FQDN
-  Vmname    = "Aegir"               # VirtualBox name
+  Vmname    = "Aegir(test2)"               # VirtualBox name
 #  Memory    = 1024                  # override the default memory
 end
 
@@ -30,6 +31,6 @@ class Hs                            # settings for our Aegir hostslave machine(s
   Count     = 0                     # number of hostslaves to create (will be used as a suffix to Shortname, Hostname & Vmname)
   Shortname = "hs"                  # Vagrant name (also used for manifest name, e.g., hs.pp)
   Hostname  = "cluster"             # host FQDN
-  Vmname    = "Cluster"             # VirtualBox name
+  Vmname    = "Cluster(test2)"             # VirtualBox name
 #  Memory    = 512                   # override the default memory
 end

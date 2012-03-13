@@ -17,10 +17,13 @@ class aegir-up::user {
   }
   file { "/home/${aegir_up_username}":
            ensure => directory,
-           before => [ File['.bashrc'], File['.bash_aliases'], File['.vimrc'], File["/home/${aegir_up_username}/.ssh"] ];
+           before => [ File['.profile'], File['.bashrc'], File['.bash_aliases'], File['.vimrc'], File["/home/${aegir_up_username}/.ssh"] ];
          "/home/${aegir_up_username}/.ssh":
-           ensure => directory,;
-#           before => File['.ssh/authorized_keys'];
+           ensure => directory,
+           before => File['.ssh/authorized_keys'];
+         ".profile":
+           source => "/vagrant/manifests/files/.profile",
+           path   => "/home/${aegir_up_username}/.profile";
          ".bashrc":
            source => "/vagrant/manifests/files/.bashrc",
            path   => "/home/${aegir_up_username}/.bashrc";
@@ -30,9 +33,9 @@ class aegir-up::user {
          ".vimrc":
            source => "/vagrant/manifests/files/.vimrc",
            path   => "/home/${aegir_up_username}/.vimrc";
-#         ".ssh/authorized_keys":
-#           source => "/vagrant/manifests/files/.ssh/authorized_keys",
-#           path   => "/home/${aegir_up_username}/.ssh/authorized_keys";
+         ".ssh/authorized_keys":
+           source => "/vagrant/manifests/files/authorized_keys",
+           path   => "/home/${aegir_up_username}/.ssh/authorized_keys";
   }
 
   #git username & email

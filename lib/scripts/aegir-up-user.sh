@@ -5,6 +5,7 @@
 # Set defaults
 USER=`whoami`
 GROUP=`id -gnr`
+PROFILE="$HOME/.profile"
 BASHRC="$HOME/.bashrc"
 BASH_ALIASES="$HOME/.bash_aliases"
 VIMRC="$HOME/.vimrc"
@@ -70,6 +71,7 @@ cat <<End-of-message
 Your .aegir-up file will be initialized with the following settings:
 Username:           $USER
 Group:              $GROUP
+.profile file       $PROFILE
 .bashrc file:       $BASHRC
 .bash_aliases file: $BASH_ALIASES
 .vimrc file:        $VIMRC
@@ -88,6 +90,7 @@ fi
 if [ "$YES" = "on" ] ; then  # use our defaults
   USER_NAME=$USER
   USER_GROUP=$GROUP
+  PROFILE_PATH=$PROFILE
   BASHRC_PATH=$BASHRC
   BASH_ALIASES_PATH=$BASH_ALIASES
   VIMRC_PATH=$VIMRC
@@ -116,6 +119,13 @@ if [ "$YES" = "off" ] ; then  #Prompt for everything
 
 
   # BASH
+  read -p "What .profile file would you like to use? ($PROFILE)" answer
+  if [ -z "$answer" ]; then
+    PROFILE_PATH=$PROFILE
+  else
+    PROFILE_PATH=$answer
+  fi
+
   read -p "What .bashrc file would you like to use? ($BASHRC)" answer
   if [ -z "$answer" ]; then
     BASHRC_PATH=$BASHRC
@@ -181,6 +191,7 @@ USER_NAME=$USER_NAME
 USER_GROUP=$USER_GROUP
 
 # BASH
+PROFILE_PATH=$PROFILE_PATH
 BASHRC_PATH=$BASHRC_PATH
 BASH_ALIASES_PATH=$BASH_ALIASES_PATH
 
