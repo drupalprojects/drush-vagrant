@@ -67,7 +67,7 @@ fi
 
 echo $NEW_PROJECT | egrep "^([a-z0-9][a-z0-9.-]*[a-z0-9])$" >/dev/null
 if [ $? -ne 0 ] ; then
-  msg "ERROR: the name of your project should only contains lower-case letters, numbers, hyphens and dots (but no leading dots or hyphens)."
+  msg "ERROR: the name of your project should only contains lower-case letters, numbers, hyphens and dots (but no leading or trailing dots or hyphens)."
   exit 1
 fi
 
