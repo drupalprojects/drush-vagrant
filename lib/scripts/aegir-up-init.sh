@@ -142,7 +142,8 @@ cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJEC
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 
 # Make project-specific changes
-ln -s ../../lib/Vagrantfile .
+ln -s ../../lib/templates/Vagrantfile .
+ln -s ../../lib/templates/gitignore ./.gitignore
 sed "s/\"$INITIAL_SUBNET\"/\"$NEW_SUBNET\"/g" -i settings.rb
 sed "s/\"Aegir\"/\"Aegir($NEW_PROJECT)\"/g" -i settings.rb
 sed "s/\"Cluster\"/\"Cluster($NEW_PROJECT)\"/g" -i settings.rb
@@ -173,7 +174,9 @@ fi
 # Set up git
 if [ "$GIT" = "on" ] ; then
   git init
-  git add *
+  git add modules/
+  git add manifests/
+  git add settings.rb
   git commit -m"Initial commit."
 fi
 

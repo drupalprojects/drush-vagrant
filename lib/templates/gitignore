@@ -1,0 +1,8 @@
+.gitignore
+Vagrantfile
+.vagrant
+manifests/files/.bashrc
+manifests/files/.profile
+manifests/files/.vimrc
+manifests/files/.bash_aliases
+manifests/files/authorized_keys
