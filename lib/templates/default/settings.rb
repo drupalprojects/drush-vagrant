@@ -17,7 +17,7 @@ class Hm                            # settings for our Aegir hostmaster machine
   Box_url   = "http://ergonlogic.com/files/boxes/aegir-current.box"
   Shortname = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
   Hostname  = "aegir.local"         # host FQDN
-  Vmname    = "Aegir(test2)"               # VirtualBox name
+  Vmname    = "Aegir"               # VirtualBox name
 #  Memory    = 1024                  # override the default memory
 end
 
@@ -31,6 +31,6 @@ class Hs                            # settings for our Aegir hostslave machine(s
   Count     = 0                     # number of hostslaves to create (will be used as a suffix to Shortname, Hostname & Vmname)
   Shortname = "hs"                  # Vagrant name (also used for manifest name, e.g., hs.pp)
   Hostname  = "cluster"             # host FQDN
-  Vmname    = "Cluster(test2)"             # VirtualBox name
+  Vmname    = "Cluster"             # VirtualBox name
 #  Memory    = 512                   # override the default memory
 end
