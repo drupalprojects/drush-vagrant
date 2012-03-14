@@ -31,23 +31,26 @@ prompt_yes_no() {
 
 ########################################################################
 
-HELP="Usage: aegir-up init [-n] [-y] [-t TEMPLATE] PROJECT
+HELP="Usage: aegir-up init [-n] [-y] [-x] [-t TEMPLATE] PROJECT
 Initialize the PROJECT directory
 
   -t   Specify a template project to use
   -n   Don't initialize a git repo
+  -x   Don't provision the VM(s)
   -y   Assume answer to all prompts is 'yes'
   -h   This help message"
 
 GIT=on
 YES=off
+UP=on
 TEMPLATE="default"
 NEW_PROJECT=
-while getopts nyht: opt
+while getopts nyxht: opt
 do
     case "$opt" in
       n)  GIT=off;;
       y)  YES=on;;
+      x)  UP=off;;
       h)  echo "$HELP"
           exit 0;;
       t)  TEMPLATE=$OPTARG;;
@@ -162,13 +165,26 @@ if [ -e ~/.aegir-up ] ; then
   cp $VIMRC_PATH $USER_DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$USER_DOTFILES_DIR/authorized_keys"
   #cp $SSH_KEY_PRIVATE_PATH $USER_DOTFILES_DIR
-  sed "s/#  Username  = \"username\"/#  Username  = \"$USER_NAME\"/g" -i settings.rb
   sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i manifests/hm.pp
   sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i manifests/hm.pp
   sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i manifests/hm.pp
 else 
   msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
 fi
+
+# Provision the VM(s)
+if [ "$UP" = "on" ]; then
+  vagrant up
+  # Set up SSH
+  vagrant ssh-config > .ssh.conf
+  sed "s/User vagrant/User $USER_NAME/g" -i .ssh.conf
+  if ! [ -z $SSH_KEY_PUBLIC_PATH ]; then
+    sed "s|IdentityFile $HOME/.vagrant.d/insecure_private_key|IdentityFile $HOME/.ssh/id_rsa|g" -i .ssh.conf
+  fi
+else
+  echo "Skipping automatic provisioning."
+fi
+
 
 # Set up git
 if [ "$GIT" = "on" ] ; then

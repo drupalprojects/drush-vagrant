@@ -10,12 +10,6 @@ Vagrant::Config.run do |config|
     config.vm.boot_mode = :gui
   end
 
-  # set ssh login username
-  if defined?(Vm::Username)
-    config.ssh.username = Vm::Username
-    config.ssh.private_key_path = "/home/#{Vm::Username}/.ssh/id_rsa"
-  end
-
   # set memory to 512MB
   config.vm.customize ["modifyvm", :id, "--memory", "#{Vm::Memory}"]
 

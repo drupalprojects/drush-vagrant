@@ -9,7 +9,6 @@ class Vm                            # default virtual machine settings
   Verbose   = false                 # make output verbose?
   Debug     = false                 # output debug info?
   Options   = ""                    # options to pass to Puppet
-#  Username  = "username"            # SSH login username
 end
 
 class Hm                            # settings for our Aegir hostmaster machine
