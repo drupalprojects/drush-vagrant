@@ -31,8 +31,7 @@ prompt_yes_no() {
 
 ########################################################################
 
-AEGIR_UP_ROOT=$(dirname $0)
-HELP="Usage: $0 [-n] [-y] [-t TEMPLATE] PROJECT
+HELP="Usage: aegir-up init [-n] [-y] [-t TEMPLATE] PROJECT
 Initialize the PROJECT directory
 
   -t   Specify a template project to use

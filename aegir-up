@@ -1,0 +1,38 @@
+#! /bin/bash
+
+# Script that provides the 'aegir-up' command
+
+HELP="Usage: $0 [-h] command [<args>]
+Control Aegir-up. See available subcommands below.
+
+    -h   This help message
+    
+Available subcommands:
+     init         Create a new project.
+     user         Initialize user settings.
+     delete       Delete a project and destroy its VM(s)."
+
+CWD=`dirname $0`
+AEGIR_UP_ROOT=`readlink -f $CWD`
+export AEGIR_UP_ROOT
+
+if [ $# -lt 1 ]; then
+  echo "The 'aegir-up' command expects at least one parameter."
+  echo "$HELP"
+  exit 1
+fi
+
+COMMAND=$1
+shift
+
+case "$COMMAND" in
+    -h|--help) echo "$HELP"
+               exit 0;;
+    init)   $AEGIR_UP_ROOT/lib/scripts/aegir-up-init.sh $@;; 
+    user)   $AEGIR_UP_ROOT/lib/scripts/aegir-up-user.sh $@;;
+    delete) $AEGIR_UP_ROOT/lib/scripts/aegir-up-delete.sh $@;;
+    * ) # unknown command
+        echo "ERROR: Unknown command." >&2
+        echo "$HELP"
+        exit 1;;
+esac
