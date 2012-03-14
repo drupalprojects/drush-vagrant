@@ -2,6 +2,7 @@ class aegir-up::user {
 
   user {"${aegir_up_username}":
     ensure => present,
+    groups => 'sudo',
     home   => "/home/${aegir_up_username}",
     shell  => '/bin/bash',
   }
