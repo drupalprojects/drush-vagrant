@@ -6,3 +6,4 @@ manifests/files/.profile
 manifests/files/.vimrc
 manifests/files/.bash_aliases
 manifests/files/authorized_keys
+modules/README
