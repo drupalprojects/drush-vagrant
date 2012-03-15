@@ -110,7 +110,7 @@ INITIAL_SUBNET=10
 NEW_SUBNET=
 
 # Get a list of all the subnets already in use in ascending order
-ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/.settings.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
+ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/$CONFIG_DIR/config.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
 
 # If there aren't any projects yet, use the default
 if [ -z "$ALL_SUBNETS" ] ; then
@@ -149,13 +149,11 @@ fi
 cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 
-CONFIG_DIR=.config
-
 # Make project-specific changes
 ln -s ../../lib/templates/Vagrantfile .
 ln -s ../../lib/templates/gitignore ./.gitignore
-sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/.settings.rb"
-sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/.settings.rb"
+sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/config.rb"
+sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/config.rb"
 
 # Get user-specific files & make appropriate changes
 if [ -e ~/.aegir-up ] ; then
@@ -167,7 +165,7 @@ if [ -e ~/.aegir-up ] ; then
   cp $BASH_ALIASES_PATH $DOTFILES_DIR
   cp $VIMRC_PATH $DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
-  #cp $SSH_KEY_PRIVATE_PATH $USER_DOTFILES_DIR
+  #cp $SSH_KEY_PRIVATE_PATH $DOTFILES_DIR
   sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
   sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
   sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/aegir-up.pp"
@@ -176,11 +174,11 @@ else
 fi
 
 if [ "$VERBOSE" = on ]; then
-  sed "s/  Verbose   = false/  Verbose   = true/g" -i "$CONFIG_DIR/.settings.rb"
+  sed "s/  Verbose   = false/  Verbose   = true/g" -i "$CONFIG_DIR/config.rb"
   LOG_LEVEL='INFO'
 fi
 if [ "$DEBUG" = on ]; then
-  sed "s/  Debug     = false/  Debug     = true/g" -i "$CONFIG_DIR/.settings.rb"
+  sed "s/  Debug     = false/  Debug     = true/g" -i "$CONFIG_DIR/config.rb"
   LOG_LEVEL='DEBUG'
 fi
 
@@ -190,10 +188,10 @@ if [ "$UP" = "on" ]; then
   export VAGRANT_LOG
   vagrant up
   # Set up SSH
-  vagrant ssh-config > .ssh.conf
-  sed "s/User vagrant/User $USER_NAME/g" -i .ssh.conf
+  vagrant ssh-config > $CONFIG_DIR/ssh.conf
+  sed "s/User vagrant/User $USER_NAME/g" -i $CONFIG_DIR/ssh.conf
   if ! [ -z $SSH_KEY_PUBLIC_PATH ]; then
-    sed "s|IdentityFile $HOME/.vagrant.d/insecure_private_key|IdentityFile $HOME/.ssh/id_rsa|g" -i .ssh.conf
+    sed "s|IdentityFile $HOME/.vagrant.d/insecure_private_key|IdentityFile $HOME/.ssh/id_rsa|g" -i ssh.conf
   fi
 else
   echo "Skipping automatic provisioning."

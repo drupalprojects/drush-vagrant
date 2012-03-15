@@ -28,7 +28,7 @@ if [ -d "$AEGIR_UP_ROOT/projects/$DIRECTORY" ] ; then
   exit 1
 fi
 
-if [ -z $DIRECTORY ]; then
+if [ -z $GIT_REPO ]; then
   echo "ERROR: You must specify a Git repository URL to clone."
   echo "$HELP"
   exit 1
@@ -50,7 +50,7 @@ INITIAL_SUBNET=10
 NEW_SUBNET=
 
 # Get a list of all the subnets already in use in ascending order
-ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/settings.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
+ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/$CONFIG_DIR/config.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
 
 # If there aren't any projects yet, use the default
 if [ -z "$ALL_SUBNETS" ] ; then

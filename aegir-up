@@ -18,6 +18,9 @@ CWD=`dirname $0`
 AEGIR_UP_ROOT=`readlink -f $CWD`
 export AEGIR_UP_ROOT
 
+CONFIG_DIR=.config
+export CONFIG_DIR
+
 if [ $# -lt 1 ]; then
   echo "The 'aegir-up' command expects at least one parameter."
   echo "$HELP"

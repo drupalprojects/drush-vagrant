@@ -29,8 +29,8 @@ if ! [ -d "$AEGIR_UP_ROOT/projects/$PROJECT" ] ; then
 fi
 
 if [ -z $VM ]; then
-  read -r FIRSTLINE < "$AEGIR_UP_ROOT/projects/$PROJECT/.ssh.conf"
+  read -r FIRSTLINE < "$AEGIR_UP_ROOT/projects/$PROJECT/$CONFIG_DIR/ssh.conf"
   VM=`echo $FIRSTLINE | awk ' {print $2} '`
 fi
 
-ssh -F "$AEGIR_UP_ROOT/projects/$PROJECT/.ssh.conf" $VM
+ssh -F "$AEGIR_UP_ROOT/projects/$PROJECT/$CONFIG_DIR/ssh.conf" $VM
