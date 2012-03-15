@@ -44,7 +44,16 @@ Initialize the PROJECT directory
 
 DEBUG=off
 GIT=on
-TEMPLATE="default"
+
+if [ -e ~/.aegir-up ] ; then
+  . ~/.aegir-up
+  if ! [ -z $DEFAULT_TEMPLATE ]; then
+    TEMPLATE=$DEFAULT_TEMPLATE
+  else
+    TEMPLATE="default"
+  fi
+fi
+
 VERBOSE=off
 UP=on
 YES=off
@@ -157,7 +166,6 @@ sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/co
 
 # Get user-specific files & make appropriate changes
 if [ -e ~/.aegir-up ] ; then
-  . ~/.aegir-up
   DOTFILES_DIR="$CONFIG_DIR/files"
   mkdir $DOTFILES_DIR
   cp $PROFILE_PATH $DOTFILES_DIR
@@ -165,7 +173,6 @@ if [ -e ~/.aegir-up ] ; then
   cp $BASH_ALIASES_PATH $DOTFILES_DIR
   cp $VIMRC_PATH $DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
-  #cp $SSH_KEY_PRIVATE_PATH $DOTFILES_DIR
   sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
   sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
   sed "s/  Git_email = 'username@example.com'/  Git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/config.rb"
