@@ -26,17 +26,21 @@ prompt_yes_no() {
 
 HELP="Usage: $0 [-y] [-h] PROJECT
 Delete a project and destroy its associated VMs
+
+  -d   Turn on debugging output
   -y   Assume answer to all prompts is 'yes'
   -h   This help message"
 
+DEBUG=off
 YES=off
 
-while getopts yh opt
+while getopts dhy opt
 do
   case "$opt" in
-    y)  YES=on;;
+    d)  DEBUG=on;;
     h)  echo "$HELP"
         exit 0;;
+    y)  YES=on;;
     \?)   # unknown flag
         echo "ERROR: Unknown flag.\n" >&2
         echo "$HELP"
