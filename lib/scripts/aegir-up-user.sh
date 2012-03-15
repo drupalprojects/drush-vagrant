@@ -4,15 +4,28 @@
 
 # Set defaults
 USER=`whoami`
-GROUP=`id -gnr`
-PROFILE="$HOME/.profile"
-BASHRC="$HOME/.bashrc"
-BASH_ALIASES="$HOME/.bash_aliases"
-VIMRC="$HOME/.vimrc"
-SSH_KEY_PUBLIC="$HOME/.ssh/id_rsa.pub"
-#SSH_KEY_PRIVATE=$HOME/.ssh/id_rsa
+if [ -f "$HOME/.profile" ]; then
+  PROFILE="$HOME/.profile"
+fi
+if [ -f "$HOME/.bashrc" ]; then
+  BASHRC="$HOME/.bashrc"
+fi
+if [ -f "$HOME/.bash_aliases" ]; then
+  BASH_ALIASES="$HOME/.bash_aliases"
+fi
+if [ -f "$HOME/.vimrc" ]; then
+  VIMRC="$HOME/.vimrc"
+fi
+if [ -f "$HOME/.ssh/id_rsa.pub" ]; then
+  SSH_KEY_PUBLIC="$HOME/.ssh/id_rsa.pub"
+fi
+
 NAME=`git config --global --get user.name`
 EMAIL=`git config --global --get user.email`
+
+if [ -f /etc/hosts ]; then
+  HOSTS_FILE=/etc/hosts
+fi
 
 # simple prompt 
 prompt_yes_no() { 
@@ -70,7 +83,6 @@ fi
 cat <<End-of-message
 Your .aegir-up file will be initialized with the following settings:
 Username:           $USER
-Group:              $GROUP
 .profile file       $PROFILE
 .bashrc file:       $BASHRC
 .bash_aliases file: $BASH_ALIASES
@@ -78,8 +90,8 @@ Group:              $GROUP
 Public SSH key:     $SSH_KEY_PUBLIC
 Git username:       $NAME
 Git email address:  $EMAIL
+Hosts file:         $HOSTS_FILE
 End-of-message
-#Private SSH key:   $SSH_KEY_PRIVATE
 
 if [ "$YES" = "off" ]; then
   if prompt_yes_no "Are these settings correct?" ; then
@@ -95,28 +107,19 @@ if [ "$YES" = "on" ] ; then  # use our defaults
   BASH_ALIASES_PATH=$BASH_ALIASES
   VIMRC_PATH=$VIMRC
   SSH_KEY_PUBLIC_PATH=$SSH_KEY_PUBLIC
-  #SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE
   GIT_NAME=$NAME
   GIT_EMAIL=$EMAIL
 fi
 
 if [ "$YES" = "off" ] ; then  #Prompt for everything
 
-  # User & group
+  # Username
   read -p "What username would you like to use? ($USER)" answer
   if [ -z "$answer" ]; then
     USER_NAME=$USER
   else
     USER_NAME=$answer
   fi
-
-  read -p "What group would you like to use? ($GROUP)" answer
-  if [ -z "$answer" ]; then
-    USER_GROUP=$GROUP
-  else
-    USER_GROUP=$answer
-  fi
-
 
   # BASH
   read -p "What .profile file would you like to use? ($PROFILE)" answer
@@ -157,12 +160,6 @@ if [ "$YES" = "off" ] ; then  #Prompt for everything
   else
     SSH_KEY_PUBLIC_PATH=$answer
   fi
-  #read -p "What private SSH key would you like to use? ($SSH_KEY_PRIVATE)" answer
-  #if [ -z "$answer" ]; then
-  #  SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE
-  #else
-  #  SSH_KEY_PRIVATE_PATH=$answer
-  #fi
 
   # Git
   read -p "What name would you like to use for Git commits? ($NAME)" answer
@@ -186,9 +183,8 @@ cat > $HOME/.aegir-up <<End-of-template
 #! /bin/sh
 # Default settings to use in Aegir-up VMs
 
-# User & group
+# Username
 USER_NAME=$USER_NAME
-USER_GROUP=$USER_GROUP
 
 # BASH
 PROFILE_PATH=$PROFILE_PATH
@@ -200,11 +196,16 @@ VIMRC_PATH=$VIMRC_PATH
 
 # SSH
 SSH_KEY_PUBLIC_PATH=$SSH_KEY_PUBLIC_PATH
-#SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE_PATH
 
 # Git
 GIT_NAME="$GIT_NAME"
 GIT_EMAIL=$GIT_EMAIL
+
+# Hosts
+HOSTS_FILE=$HOSTS_FILE
+
+# Aegir-up
+DEFAULT_TEMPLATE=$DEFAULT_TEMPLATE
 End-of-template
 
 if [ -e "$HOME/.aegir-up" ] ; then
