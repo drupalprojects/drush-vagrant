@@ -154,6 +154,16 @@ else
   done  
 fi
 
+# Add domain to hosts file
+if ! [ -z "$HOSTS_FILE" ]; then
+  echo "Enter your password to add an entry for '$NEW_PROJECT' to your hosts file, or press CTRL-c to leave it as is."
+  if [ "$TEMPLATE" = "default" ] ; then
+    echo "           192.168.$NEW_SUBNET.10    aegir.local" | sudo tee -a "$HOSTS_FILE"
+  else
+    echo "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local" | sudo tee -a "$HOSTS_FILE"
+  fi
+fi
+
 # Create the project directory
 cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
@@ -218,11 +228,14 @@ msg "Project successfully initialized."
 msg ""
 msg "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT"
 msg "The subnet for your project has been set to 192.168.$NEW_SUBNET.0"
-msg "You may want to add the following line to your /etc/hosts:"
-if [ "$TEMPLATE" = "default" ] ; then
-  msg "           192.168.$NEW_SUBNET.10    aegir.local"
-else
-  msg "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local"
+if [ -z $HOSTS_FILE ]; then
+  msg "You may want to add the following line to your /etc/hosts:"
+  if [ "$TEMPLATE" = "default" ] ; then
+    msg "           192.168.$NEW_SUBNET.10    aegir.local"
+  else
+    msg "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local"
+  fi
+  msg "you can have Aegir-up do this for you automatically by specifying your hosts file in ~/.aegir-up"
 fi
 msg "You can now: * Alter Aegir-up's behaviour by editing '$AEGIR_UP_ROOT/projects/$NEW_PROJECT/settings.rb.'"
 msg "             * Redefine the VMs by editing the Puppet manifests in '$AEGIR_UP_ROOT/projects/$NEW_PROJECT/manifests.'"

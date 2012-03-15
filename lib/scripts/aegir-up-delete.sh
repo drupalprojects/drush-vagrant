@@ -70,6 +70,18 @@ fi
 EXIT=0
 
 cd "$AEGIR_UP_ROOT/projects/$PROJECT"
+if [ -f ~/.aegir-up ]; then
+  . ~/.aegir-up
+  SUBNET=`grep -Eo 'Subnet    = "([0-9]*)"' .config/config.rb | grep -Eo '[0-9]*'`
+  REMOVE_LINE=`grep 192.168."$SUBNET".10 "$HOSTS_FILE"`
+  if [ "$DEBUG" = "on" ]; then
+    echo "\$SUBNET = $SUBNET"
+    echo "\$REMOVE_LINE = $REMOVE_LINE"
+  fi
+  echo "Enter your password to remove this projects entry from your hosts file, or press CTRL-c to leave it as is."
+  sudo sed "'s/$REMOVE_LINE//g'" -i "$HOSTS_FILE"
+fi
+
 if [ "$YES" = "on" ]; then
   vagrant destroy --force
 else
