@@ -63,13 +63,29 @@ else
   fi
 fi
 
+EXIT=0
+
 cd "$AEGIR_UP_ROOT/projects/$PROJECT"
 if [ "$YES" = "on" ]; then
-  vagrant destroy
-else
   vagrant destroy --force
+else
+  vagrant destroy
 fi
+if ! [ "$?" -eq 0 ]; then
+  echo "ERROR: Could not destroy the VM(s)."
+  EXIT=1
+  if ! [ "$YES" = "on" ]; then
+    echo "Exiting."
+    exit $EXIT
+  else
+    echo "You may need to delete the VM(s) manually in VirtualBox."
+  fi
+else
+  echo "VM(s) successfully destroyed."
+fi
+
 cd "$AEGIR_UP_ROOT"
 rm -rf "$AEGIR_UP_ROOT/projects/$PROJECT"
 
 echo "'$PROJECT' project deleted."
+exit $EXIT
