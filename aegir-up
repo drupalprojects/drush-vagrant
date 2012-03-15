@@ -11,7 +11,8 @@ Available subcommands:
      init         Create a new project.
      user         Initialize user settings.
      delete       Delete a project and destroy its VM(s).
-     ssh          Login to a VM via SSH."
+     ssh          Login to a VM via SSH.
+     clone        Clone a project from Git, and initialize it locally."
 
 CWD=`dirname $0`
 AEGIR_UP_ROOT=`readlink -f $CWD`
@@ -33,6 +34,7 @@ case "$COMMAND" in
     user)   $AEGIR_UP_ROOT/lib/scripts/aegir-up-user.sh $@;;
     delete) $AEGIR_UP_ROOT/lib/scripts/aegir-up-delete.sh $@;;
     ssh)    $AEGIR_UP_ROOT/lib/scripts/aegir-up-ssh.sh $@;;
+    clone)  $AEGIR_UP_ROOT/lib/scripts/aegir-up-clone.sh $@;;
     * ) # unknown command
         echo "ERROR: Unknown command." >&2
         echo "$HELP"

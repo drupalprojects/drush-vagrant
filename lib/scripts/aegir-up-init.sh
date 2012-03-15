@@ -104,7 +104,7 @@ INITIAL_SUBNET=10
 NEW_SUBNET=
 
 # Get a list of all the subnets already in use in ascending order
-ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/settings.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
+ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/.settings.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
 
 # If there aren't any projects yet, use the default
 if [ -z "$ALL_SUBNETS" ] ; then
@@ -143,31 +143,34 @@ fi
 cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 
+CONFIG_DIR=.config
+
 # Make project-specific changes
 ln -s ../../lib/templates/Vagrantfile .
 ln -s ../../lib/templates/gitignore ./.gitignore
-sed "s/\"$INITIAL_SUBNET\"/\"$NEW_SUBNET\"/g" -i settings.rb
-sed "s/\"Aegir\"/\"Aegir($NEW_PROJECT)\"/g" -i settings.rb
-sed "s/\"Cluster\"/\"Cluster($NEW_PROJECT)\"/g" -i settings.rb
-if ! [ "$TEMPLATE" = "default" ] ; then
-  sed "s/\"aegir.local\"/\"$NEW_PROJECT.aegir.local\"/g" -i settings.rb
-  sed "s/'aegir.local'/'$NEW_PROJECT.aegir.local'/g" -i manifests/hm.pp
-fi
+#mkdir $CONFIG_DIR
+sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/.settings.rb"
+sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/.settings.rb"
+#sed "s/\"Cluster\"/\"Cluster($NEW_PROJECT)\"/g" -i settings.rb
+#if ! [ "$TEMPLATE" = "default" ] ; then
+#  sed "s/\"aegir.local\"/\"$NEW_PROJECT.aegir.local\"/g" -i settings.rb
+#  sed "s/'aegir.local'/'$NEW_PROJECT.aegir.local'/g" -i manifests/hm.pp
+#fi
 
 # Get user-specific files & make appropriate changes
 if [ -e ~/.aegir-up ] ; then
   . ~/.aegir-up
-  USER_DOTFILES_DIR=manifests/files
-  mkdir $USER_DOTFILES_DIR
-  cp $PROFILE_PATH $USER_DOTFILES_DIR
-  cp $BASHRC_PATH $USER_DOTFILES_DIR
-  cp $BASH_ALIASES_PATH $USER_DOTFILES_DIR
-  cp $VIMRC_PATH $USER_DOTFILES_DIR
-  cp $SSH_KEY_PUBLIC_PATH "$USER_DOTFILES_DIR/authorized_keys"
+  DOTFILES_DIR="$CONFIG_DIR/files"
+  mkdir $DOTFILES_DIR
+  cp $PROFILE_PATH $DOTFILES_DIR
+  cp $BASHRC_PATH $DOTFILES_DIR
+  cp $BASH_ALIASES_PATH $DOTFILES_DIR
+  cp $VIMRC_PATH $DOTFILES_DIR
+  cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
   #cp $SSH_KEY_PRIVATE_PATH $USER_DOTFILES_DIR
-  sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i manifests/hm.pp
-  sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i manifests/hm.pp
-  sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i manifests/hm.pp
+  sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
+  sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
+  sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/aegir-up.pp"
 else 
   msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
 fi

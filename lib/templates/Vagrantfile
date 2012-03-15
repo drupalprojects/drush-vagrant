@@ -1,5 +1,5 @@
 Vagrant::Config.run do |config|
-  require "./settings"
+  require "./.config/.settings"
 
   # base box
   config.vm.box = Vm::Basebox
@@ -19,9 +19,9 @@ Vagrant::Config.run do |config|
       hm_config.vm.box = Hm::Basebox
       hm_config.vm.box_url = Hm::Box_url
     end
-    hm_config.vm.network :hostonly, "192.168.#{Vm::Subnet}.10"
-    hm_config.vm.host_name = Hm::Hostname
-    hm_config.vm.customize ["modifyvm", :id, "--name", "#{Hm::Vmname}"]
+    hm_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.10"
+    hm_config.vm.host_name = HmAuto::FQDN
+    hm_config.vm.customize ["modifyvm", :id, "--name", "#{HmAuto::Vmname}"]
     if defined?(Hm::Memory)
       hm_config.vm.customize ["modifyvm", :id, "--memory", "#{Hm::Memory}"]
     end
@@ -29,10 +29,10 @@ Vagrant::Config.run do |config|
     if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
       hm_config.vm.provision :puppet do |puppet|
         puppet.manifest_file = "#{Hm::Shortname}.pp"
-        puppet.module_path   = Vm::Modules
+        puppet.module_path   = [ "#{Vm::Modules}" , "#{VmAuto::Modules}" ]
         if defined?(Vm::Options)
           puppet.options     = Vm::Options
-          #puppet.facter = { "fqdn" => "#{Hm::Hostname}" }   See: https://github.com/mitchellh/vagrant/pull/753
+          #puppet.facter = { "fqdn" => "#{HmAuto::Hostname}" }   See: https://github.com/mitchellh/vagrant/pull/753
         end
         if Vm::Debug == 1
           puppet.options     = puppet.options + " --debug"
@@ -51,17 +51,17 @@ Vagrant::Config.run do |config|
         hm_config.vm.box = Hs::Basebox
         hm_config.vm.box = Hs::Box_url
       end
-      hs_config.vm.network :hostonly, "192.168.#{Vm::Subnet}.1#{index}"
-      hs_config.vm.host_name = "#{Hs::Hostname}#{index}"
-      hs_config.vm.customize ["modifyvm", :id, "--name", "#{Hs::Vmname} #{index}"]
+      hs_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.1#{index}"
+      hs_config.vm.host_name = "#{HsAuto::Hostname}#{index}.#{Vm::Domain}"
+      hs_config.vm.customize ["modifyvm", :id, "--name", "#{HsAuto::Vmname} #{index}"]
       if defined?(Hs::Memory)
         hs_config.vm.customize ["modifyvm", :id, "--memory", "#{Hs::Memory}"]
       end
     end
     if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
       hs_config.vm.provision :puppet do |puppet|
-        puppet.module_path    = Vm::Modules
         puppet.manifest_file  = "#{Hs::Shortname}.pp"
+        puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
         if defined?(Vm::Options)
           puppet.options      = Vm::Options
         end

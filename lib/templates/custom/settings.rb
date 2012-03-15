@@ -4,11 +4,12 @@ class Vm                            # default virtual machine settings
   Gui       = false                 # start VM with GUI? Useful for loading CD/DVD ISOs
   Memory    = 512                   # default VM memory
   Manifests = "manifests"           # puppet manifests folder name
-  Modules   = [ "modules", "../../lib/modules" ]             # puppet modules folder name
+  Modules   = "modules"             # puppet modules folder name
   Subnet    = "10"                  # 192.168.###.0/24 subnet for this network
   Verbose   = false                 # make output verbose?
   Debug     = false                 # output debug info?
   Options   = ""                    # options to pass to Puppet
+  Domain    = "aegir.local"
 end
 
 class Hm                            # settings for our Aegir hostmaster machine

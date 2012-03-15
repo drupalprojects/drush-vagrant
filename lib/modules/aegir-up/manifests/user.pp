@@ -7,10 +7,6 @@ class aegir-up::user {
     shell  => '/bin/bash',
   }
 
-#  group {"${aegir_up_username}":
-#    ensure => present,
-#  }
-
   # Various dotfiles
   File { ensure => present,
          owner  => "${aegir_up_username}",
@@ -23,19 +19,19 @@ class aegir-up::user {
            ensure => directory,
            before => File['.ssh/authorized_keys'];
          ".profile":
-           source => "/vagrant/manifests/files/.profile",
+           source => "/vagrant/.config/files/.profile",
            path   => "/home/${aegir_up_username}/.profile";
          ".bashrc":
-           source => "/vagrant/manifests/files/.bashrc",
+           source => "/vagrant/.config/files/.bashrc",
            path   => "/home/${aegir_up_username}/.bashrc";
          ".bash_aliases":
-           source => "/vagrant/manifests/files/.bash_aliases",
+           source => "/vagrant/.config/files/.bash_aliases",
            path   => "/home/${aegir_up_username}/.bash_aliases";
          ".vimrc":
-           source => "/vagrant/manifests/files/.vimrc",
+           source => "/vagrant/.config/files/.vimrc",
            path   => "/home/${aegir_up_username}/.vimrc";
          ".ssh/authorized_keys":
-           source => "/vagrant/manifests/files/authorized_keys",
+           source => "/vagrant/.config/files/authorized_keys",
            path   => "/home/${aegir_up_username}/.ssh/authorized_keys";
   }
 
