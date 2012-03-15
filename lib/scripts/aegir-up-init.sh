@@ -191,7 +191,7 @@ if [ "$UP" = "on" ]; then
   vagrant ssh-config > $CONFIG_DIR/ssh.conf
   sed "s/User vagrant/User $USER_NAME/g" -i $CONFIG_DIR/ssh.conf
   if ! [ -z $SSH_KEY_PUBLIC_PATH ]; then
-    sed "s|IdentityFile $HOME/.vagrant.d/insecure_private_key|IdentityFile $HOME/.ssh/id_rsa|g" -i ssh.conf
+    sed "s|IdentityFile $HOME/.vagrant.d/insecure_private_key|IdentityFile $HOME/.ssh/id_rsa|g" -i $CONFIG_DIR/ssh.conf
   fi
 else
   echo "Skipping automatic provisioning."

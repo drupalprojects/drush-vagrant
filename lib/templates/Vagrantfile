@@ -1,5 +1,5 @@
 Vagrant::Config.run do |config|
-  require "./.config/.settings"
+  require "./.config/config"
 
   # base box
   config.vm.box = Vm::Basebox
