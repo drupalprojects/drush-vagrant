@@ -34,26 +34,32 @@ prompt_yes_no() {
 HELP="Usage: aegir-up init [-n] [-y] [-x] [-t TEMPLATE] PROJECT
 Initialize the PROJECT directory
 
+  -d   Debugging output
+  -g   Skip git repo initializing
+  -h   This help message
   -t   Specify a template project to use
-  -n   Don't initialize a git repo
+  -v   Verbose output
   -x   Don't provision the VM(s)
-  -y   Assume answer to all prompts is 'yes'
-  -h   This help message"
+  -y   Assume answer to all prompts is 'yes'"
 
+DEBUG=off
 GIT=on
-YES=off
-UP=on
 TEMPLATE="default"
-NEW_PROJECT=
-while getopts nyxht: opt
+VERBOSE=off
+UP=on
+YES=off
+
+while getopts dght:vxy opt
 do
     case "$opt" in
-      n)  GIT=off;;
-      y)  YES=on;;
-      x)  UP=off;;
+      d)  DEBUG=on;;
+      g)  GIT=off;;
       h)  echo "$HELP"
           exit 0;;
       t)  TEMPLATE=$OPTARG;;
+      v)  VERBOSE=on;;
+      x)  UP=off;;
+      y)  YES=on;;
       \?)   # unknown flag
           msg "ERROR: Unknown flag.\n" >&2
           echo "$HELP"
@@ -148,14 +154,8 @@ CONFIG_DIR=.config
 # Make project-specific changes
 ln -s ../../lib/templates/Vagrantfile .
 ln -s ../../lib/templates/gitignore ./.gitignore
-#mkdir $CONFIG_DIR
 sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/.settings.rb"
 sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/.settings.rb"
-#sed "s/\"Cluster\"/\"Cluster($NEW_PROJECT)\"/g" -i settings.rb
-#if ! [ "$TEMPLATE" = "default" ] ; then
-#  sed "s/\"aegir.local\"/\"$NEW_PROJECT.aegir.local\"/g" -i settings.rb
-#  sed "s/'aegir.local'/'$NEW_PROJECT.aegir.local'/g" -i manifests/hm.pp
-#fi
 
 # Get user-specific files & make appropriate changes
 if [ -e ~/.aegir-up ] ; then
@@ -175,8 +175,19 @@ else
   msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
 fi
 
+if [ "$VERBOSE" = on ]; then
+  sed "s/  Verbose   = false/  Verbose   = true/g" -i "$CONFIG_DIR/.settings.rb"
+  LOG_LEVEL='INFO'
+fi
+if [ "$DEBUG" = on ]; then
+  sed "s/  Debug     = false/  Debug     = true/g" -i "$CONFIG_DIR/.settings.rb"
+  LOG_LEVEL='DEBUG'
+fi
+
 # Provision the VM(s)
 if [ "$UP" = "on" ]; then
+  VAGRANT_LOG=$LOG_LEVEL
+  export VAGRANT_LOG
   vagrant up
   # Set up SSH
   vagrant ssh-config > .ssh.conf
