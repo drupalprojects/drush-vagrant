@@ -71,8 +71,9 @@ if [ "$YES" = "on" ]; then
 else
   vagrant destroy
 fi
-if ! [ "$?" -eq 0 ]; then
-  echo "ERROR: Could not destroy the VM(s)."
+# See: https://github.com/mitchellh/vagrant/issues/811
+if ! [ "$?" -eq 0 ] || [ -f '.vagrant' ]; then
+  echo "ERROR: Could not destroy the VM(s), or action aborted."
   EXIT=1
   if ! [ "$YES" = "on" ]; then
     echo "Exiting."
