@@ -15,3 +15,10 @@ class HsAuto                        # settings for our Aegir hostslave machine(s
   Hostname  = "cluster"
   Vmname    = "#{Hs::Vmname}(#{HmAuto::Hostname})"             # VirtualBox name
 end
+
+class AegirUpUser
+  Username  = 'username'
+  Git_name  = 'Firstname Lastname'
+  Git_email = 'username@example.com'
+end
+

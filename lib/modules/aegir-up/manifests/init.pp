@@ -26,6 +26,8 @@ class aegir-up {
 
   import "common"
 
+  include aegir-up::user
+
   include aegir
 
   include aegir::queue_runner

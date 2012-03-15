@@ -166,9 +166,9 @@ if [ -e ~/.aegir-up ] ; then
   cp $VIMRC_PATH $DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
   #cp $SSH_KEY_PRIVATE_PATH $DOTFILES_DIR
-  sed "s/#  \$aegir_up_username = 'username'/  \$aegir_up_username = '$USER_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
-  sed "s/#  \$aegir_up_git_name = 'Firstname Lastname'/  \$aegir_up_git_name = '$GIT_NAME'/g" -i "$CONFIG_DIR/aegir-up.pp"
-  sed "s/#  \$aegir_up_git_email = 'username@example.com'/  \$aegir_up_git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/aegir-up.pp"
+  sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
+  sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
+  sed "s/  Git_email = 'username@example.com'/  Git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/config.rb"
 else 
   msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
 fi
