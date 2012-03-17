@@ -178,9 +178,15 @@ sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/co
 if [ -e ~/.aegir-up ] ; then
   DOTFILES_DIR="$CONFIG_DIR/files"
   mkdir $DOTFILES_DIR
-  cp $PROFILE_PATH $DOTFILES_DIR
-  cp $BASHRC_PATH $DOTFILES_DIR
-  cp $BASH_ALIASES_PATH $DOTFILES_DIR
+  if ! [ -z $PROFILE_PATH ]; then
+    cp $PROFILE_PATH $DOTFILES_DIR
+  fi
+  if ! [ -z $BASHRC_PATH ]; then
+    cp $BASHRC_PATH $DOTFILES_DIR
+  fi
+  if ! [ -z $BASH_ALIASES_PATH ]; then
+    cp $BASH_ALIASES_PATH $DOTFILES_DIR
+  fi
   cp $VIMRC_PATH $DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
   sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
