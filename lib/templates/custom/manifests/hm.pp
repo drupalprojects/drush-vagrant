@@ -3,7 +3,7 @@
 # Optional settings for Aegir front-end
   # For now it's best to specify the front-end URL here, though this should no
   # longer be necessary once http://drupal.org/node/1459126 lands
-  $aegir_hostmaster_url = 'aegir.local'
+#  $aegir_hostmaster_url = 'aegir.local'
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'

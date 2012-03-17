@@ -34,12 +34,12 @@ Vagrant::Config.run do |config|
           puppet.options     = Vm::Options
           puppet.facter = [
             # Add user variables to be processed in aegir-up::user
-            [ "aegir_up_username", "#{AegirUpUser::Username}" ],
-            [ "aegir_up_git_name", "#{AegirUpUser::Git_name}" ],
+            [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
+            [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
             [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
+            [ "fqdn",               "#{HmAuto::FQDN}" ],
           ] 
 
-          #puppet.facter = { "fqdn" => "#{HmAuto::Hostname}" }   See: https://github.com/mitchellh/vagrant/pull/753
         end
         if Vm::Debug == 1
           puppet.options     = puppet.options + " --debug"
