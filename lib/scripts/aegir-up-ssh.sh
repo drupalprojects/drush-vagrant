@@ -28,9 +28,10 @@ if ! [ -d "$AEGIR_UP_ROOT/projects/$PROJECT" ] ; then
   exit 1
 fi
 
-if [ -z $VM ]; then
-  read -r FIRSTLINE < "$AEGIR_UP_ROOT/projects/$PROJECT/$CONFIG_DIR/ssh.conf"
-  VM=`echo $FIRSTLINE | awk ' {print $2} '`
-fi
+. ~/.aegir-up
+cd "$AEGIR_UP_ROOT/projects/$PROJECT"
+vagrant up
 
-ssh -F "$AEGIR_UP_ROOT/projects/$PROJECT/$CONFIG_DIR/ssh.conf" $VM
+ssh "$(vagrant ssh-config $VM | grep -Eo 'HostName (([0-9]*[.]*)*)'| grep -Eo '(([0-9]*[.]*)*)')" -l $USER_NAME -i $SSH_KEY_PRIVATE_PATH -p "$(vagrant ssh-config $VM | grep -Eo 'Port ([0-9]*)'| grep -Eo '[0-9]*')"
+
+cd -

@@ -19,6 +19,9 @@ fi
 if [ -f "$HOME/.ssh/id_rsa.pub" ]; then
   SSH_KEY_PUBLIC="$HOME/.ssh/id_rsa.pub"
 fi
+if [ -f "$HOME/.ssh/id_rsa.pub" ]; then
+  SSH_KEY_PRIVATE="$HOME/.ssh/id_rsa"
+fi
 
 NAME=`git config --global --get user.name`
 EMAIL=`git config --global --get user.email`
@@ -26,6 +29,7 @@ EMAIL=`git config --global --get user.email`
 if [ -f /etc/hosts ]; then
   HOSTS_FILE=/etc/hosts
 fi
+
 
 # simple prompt 
 prompt_yes_no() { 
@@ -88,6 +92,7 @@ Username:           $USER
 .bash_aliases file: $BASH_ALIASES
 .vimrc file:        $VIMRC
 Public SSH key:     $SSH_KEY_PUBLIC
+Private SSH key:    $SSH_KEY_PRIVATE
 Git username:       $NAME
 Git email address:  $EMAIL
 Hosts file:         $HOSTS_FILE
@@ -107,6 +112,7 @@ if [ "$YES" = "on" ] ; then  # use our defaults
   BASH_ALIASES_PATH=$BASH_ALIASES
   VIMRC_PATH=$VIMRC
   SSH_KEY_PUBLIC_PATH=$SSH_KEY_PUBLIC
+  SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE
   GIT_NAME=$NAME
   GIT_EMAIL=$EMAIL
 fi
@@ -160,6 +166,12 @@ if [ "$YES" = "off" ] ; then  #Prompt for everything
   else
     SSH_KEY_PUBLIC_PATH=$answer
   fi
+  read -p "What private SSH key would you like to use? ($SSH_KEY_PRIVATE)" answer
+  if [ -z "$answer" ]; then
+    SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE
+  else
+    SSH_KEY_PRIVATE_PATH=$answer
+  fi
 
   # Git
   read -p "What name would you like to use for Git commits? ($NAME)" answer
@@ -196,6 +208,7 @@ VIMRC_PATH=$VIMRC_PATH
 
 # SSH
 SSH_KEY_PUBLIC_PATH=$SSH_KEY_PUBLIC_PATH
+SSH_KEY_PRIVATE_PATH=$SSH_KEY_PRIVATE_PATH
 
 # Git
 GIT_NAME="$GIT_NAME"
