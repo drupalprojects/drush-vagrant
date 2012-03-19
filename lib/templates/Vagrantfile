@@ -64,13 +64,13 @@ Vagrant::Config.run do |config|
       if defined?(Hs::Memory)
         hs_config.vm.customize ["modifyvm", :id, "--memory", "#{Hs::Memory}"]
       end
-    end
-    if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
-      hs_config.vm.provision :puppet do |puppet|
-        puppet.manifest_file  = "#{Hs::Shortname}.pp"
-        puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
-        if defined?(Vm::Options)
-          puppet.options      = Vm::Options
+      if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
+        hs_config.vm.provision :puppet do |puppet|
+          puppet.manifest_file  = "#{Hs::Shortname}.pp"
+          puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
+          if defined?(Vm::Options)
+            puppet.options      = Vm::Options
+          end
         end
       end
     end
