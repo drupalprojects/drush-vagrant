@@ -186,6 +186,7 @@ if [ -e ~/.aegir-up ] ; then
   fi
   if ! [ -z $BASH_ALIASES_PATH ]; then
     cp $BASH_ALIASES_PATH $DOTFILES_DIR
+    echo "alias aegir-up='sudo su aegir -l'" >> $DOTFILES_DIR/.bash_aliases
   fi
   cp $VIMRC_PATH $DOTFILES_DIR
   cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
