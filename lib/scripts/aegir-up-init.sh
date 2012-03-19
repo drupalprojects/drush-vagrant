@@ -210,6 +210,7 @@ if [ "$UP" = "on" ]; then
   VAGRANT_LOG=$LOG_LEVEL
   export VAGRANT_LOG
   vagrant up
+  vagrant halt
 else
   echo "Skipping automatic provisioning."
 fi
