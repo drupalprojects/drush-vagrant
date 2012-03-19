@@ -225,6 +225,9 @@ if [ "$GIT" = "on" ] ; then
   git commit -m"Initial commit."
 fi
 
+# Save the install log within the project
+mv ../"$NEW_PROJECT_install.log" $CONFIG_DIR/install.log
+
 msg "Project successfully initialized."
 msg ""
 msg "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT"

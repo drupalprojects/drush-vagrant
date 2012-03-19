@@ -33,7 +33,8 @@ shift
 case "$COMMAND" in
     -h|--help) echo "$HELP"
                exit 0;;
-    init)   $AEGIR_UP_ROOT/lib/scripts/aegir-up-init.sh $@;; 
+    init)   NEW_PROJECT="${!#}"
+            $AEGIR_UP_ROOT/lib/scripts/aegir-up-init.sh $@ | tee "$AEGIR_UP_ROOT/projects/$NEW_PROJECT_install.log";;
     user)   $AEGIR_UP_ROOT/lib/scripts/aegir-up-user.sh $@;;
     delete) $AEGIR_UP_ROOT/lib/scripts/aegir-up-delete.sh $@;;
     ssh)    $AEGIR_UP_ROOT/lib/scripts/aegir-up-ssh.sh $@;;
