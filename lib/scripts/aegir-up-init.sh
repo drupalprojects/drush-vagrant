@@ -108,6 +108,8 @@ mv ../"$NEW_PROJECT_install.log" $CONFIG_DIR/install.log
 
 msg "Project successfully initialized."
 msg ""
+
+further_instructions
 msg "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT"
 msg "The subnet for your project has been set to 192.168.$NEW_SUBNET.0"
 if [ -z $HOSTS_FILE ]; then

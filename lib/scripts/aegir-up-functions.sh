@@ -139,3 +139,24 @@ setup_new_project() {
 
 }
 
+# Provide some next steps for the new project
+further_instructions() {
+
+  msg "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT"
+  msg "The subnet for your project has been set to 192.168.$NEW_SUBNET.0"
+  if [ -z $HOSTS_FILE ]; then
+    msg "You may want to add the following line to your /etc/hosts:"
+    if [ "$TEMPLATE" = "default" ] ; then
+      msg "           192.168.$NEW_SUBNET.10    aegir.local"
+    else
+      msg "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local"
+    fi
+    msg "you can have Aegir-up do this for you automatically by specifying your hosts file in ~/.aegir-up"
+  fi
+  msg "You can now: * Alter Aegir-up's behaviour by editing '$AEGIR_UP_ROOT/projects/$NEW_PROJECT/settings.rb.'"
+  msg "             * Redefine the VMs by editing the Puppet manifests in '$AEGIR_UP_ROOT/projects/$NEW_PROJECT/manifests.'"
+  msg "             * Add additional Puppet modules by copying them to '$AEGIR_UP_ROOT/projects/$NEW_PROJECT/modules.'"
+  #msg "             * Build platforms in the front-end based on makefiles added to $AEGIR_UP_ROOT/projects/$NEW_PROJECT/makefiles."
+  #msg "             * Have platforms built outside the VM by mounting $AEGIR_UP_ROOT/projects/$NEW_PROJECT/platforms under NFS."
+
+}
