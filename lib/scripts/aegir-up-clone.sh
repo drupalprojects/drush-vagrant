@@ -60,11 +60,4 @@ fi
 
 echo "Project successfully cloned." 
 echo "" 
-echo "Your project's root is $AEGIR_UP_ROOT/projects/$NEW_PROJECT" 
-echo "The subnet for your project has been set to 192.168.$NEW_SUBNET.0" 
-echo "You may want to add the following line to your /etc/hosts:" 
-if [ "$TEMPLATE" = "default" ] ; then 
-  echo "           192.168.$NEW_SUBNET.10    aegir.local" 
-else 
-  echo "           192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local" 
-fi 
+further_instructions
