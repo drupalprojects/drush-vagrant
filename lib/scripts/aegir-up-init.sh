@@ -61,9 +61,6 @@ fi
 
 # Ensure new project name is unique and well-formed (see: lib/scripts/aegir-up-functions.sh)
 validate_new_project
-if [ "$?" -eq "1" ]; then
-  exit 1
-fi
 
 msg "This script will create a new project at $AEGIR_UP_ROOT/projects/$NEW_PROJECT."
 msg "It will use the '$TEMPLATE' template."
@@ -82,9 +79,6 @@ fi
 
 # Find the next available subnet (see: lib/scripts/aegir-up-functions.sh)
 NEW_SUBNET=`new_subnet`
-if [ "$?" -eq "1" ]; then
-  exit 1
-fi
 
 # Create the project directory
 cp -r $AEGIR_UP_ROOT/lib/templates/$TEMPLATE $AEGIR_UP_ROOT/projects/$NEW_PROJECT
@@ -92,9 +86,6 @@ cd $AEGIR_UP_ROOT/projects/$NEW_PROJECT
 
 # Set up the new project (see: lib/scripts/aegir-up-functions.sh)
 setup_new_project
-if [ "$?" -eq "1" ]; then
-  exit 1
-fi
 
 # Initial Git setup
 if [ "$GIT" = "on" ] ; then
