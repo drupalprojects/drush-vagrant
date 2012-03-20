@@ -49,6 +49,8 @@ git clone $GIT_REPO $DIRECTORY
 cd "$AEGIR_UP_ROOT/projects/$DIRECTORY"
 
 # Set up the new project (see: lib/scripts/aegir-up-functions.sh)
+NEW_PROJECT=$DIRECTORY
+UP=on
 setup_new_project
 
 echo "Project successfully cloned." 
