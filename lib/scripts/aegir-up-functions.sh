@@ -158,6 +158,15 @@ setup_new_project() {
     sed "s/  Debug     = false/  Debug     = true/g" -i "$CONFIG_DIR/config.rb"
   fi
 
+  # Provision the VM(s)
+  if [ "$UP" = "on" ]; then
+    VAGRANT_LOG=$LOG_LEVEL
+    export VAGRANT_LOG
+    vagrant up
+  else
+    echo "Skipping automatic provisioning. You can now make changes to your project in projects/$NEW_PROJECT, and then run 'vagrant up' to provision your VM(s)."
+  fi
+
 }
 
 
