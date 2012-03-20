@@ -8,7 +8,7 @@ _aegirup()
   #
   #  The basic options we'll complete.
   #
-  opts="ssh user init delete"
+  opts="ssh user init delete clone"
 
 
   #
