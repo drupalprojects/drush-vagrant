@@ -25,11 +25,6 @@ shift `expr $OPTIND - 1`
 GIT_REPO=$1
 DIRECTORY=$2
 
-if [ -d "$AEGIR_UP_ROOT/projects/$DIRECTORY" ] ; then
-  echo "There is already a project called '$DIRECTORY'. Exiting."
-  exit 1
-fi
-
 if [ -z $GIT_REPO ]; then
   echo "ERROR: You must specify a Git repository URL to clone."
   echo "$HELP"
@@ -40,12 +35,11 @@ if [ -z $DIRECTORY ]; then
   echo "ERROR: You must specify a directory to clone the project into."
   echo "$HELP"
   exit 1
-else
-  echo $DIRECTORY | egrep "^([a-z0-9][a-z0-9.-]*[a-z0-9])$" >/dev/null
-  if [ $? -ne 0 ] ; then
-    echo "ERROR: the name of your project should only contains lower-case letters, numbers, hyphens and dots (but no leading or trailing dots or hyphens)."
-    exit 1
-  fi
+fi
+
+validate_project_name
+if [ "$?" -eq "1" ]; then
+  exit 1
 fi
 
 NEW_SUBNET=`new_subnet`
