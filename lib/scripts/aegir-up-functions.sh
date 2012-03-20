@@ -1,3 +1,9 @@
+# Load user-specific settings, if they exist
+if [ -e ~/.aegir-up ] ; then
+  . ~/.aegir-up
+fi
+
+
 # Return the next available subnet
 new_subnet() {
 
