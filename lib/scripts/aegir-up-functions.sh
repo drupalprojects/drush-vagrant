@@ -103,6 +103,7 @@ setup_new_project() {
   # Make project-specific changes
   ln -s ../../lib/templates/Vagrantfile .
   ln -s ../../lib/templates/gitignore ./.gitignore
+  cp -r ../../lib/templates/.config .
   sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/config.rb"
   sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/config.rb"
 
