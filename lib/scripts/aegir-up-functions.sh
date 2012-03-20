@@ -60,11 +60,12 @@ validate_new_project() {
 
 }
 
+# Format messages
 msg() {
   echo "==> $*"
 }
 
-# simple prompt
+# Simple 'yes/no' prompt
 prompt_yes_no() {
   while true ; do
     printf "$* [Y/n] "
