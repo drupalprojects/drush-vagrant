@@ -140,11 +140,7 @@ setup_new_project() {
     # Add domain to hosts file
     if ! [ -z "$HOSTS_FILE" ]; then
       echo "Enter your password to add an entry for '$NEW_PROJECT' to your hosts file, or press CTRL-c to leave it as is."
-      if [ "$TEMPLATE" = "default" ] ; then
-        echo "192.168.$NEW_SUBNET.10    aegir.local" | sudo tee -a "$HOSTS_FILE"
-      else
-        echo "192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local" | sudo tee -a "$HOSTS_FILE"
-      fi
+      echo "192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local" | sudo tee -a "$HOSTS_FILE"
     fi
   else 
     msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
