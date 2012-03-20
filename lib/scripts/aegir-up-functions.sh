@@ -87,3 +87,55 @@ prompt_yes_no() {
  done 
 }
 
+# Create a new project
+setup_new_project() {
+
+  # Make project-specific changes
+  ln -s ../../lib/templates/Vagrantfile .
+  ln -s ../../lib/templates/gitignore ./.gitignore
+  sed "s/  Subnet    = \"10\"/  Subnet    = \"$NEW_SUBNET\"/g" -i "$CONFIG_DIR/config.rb"
+  sed "s/  Hostname  = \"hm\"/  Hostname  = \"$NEW_PROJECT\"/g" -i "$CONFIG_DIR/config.rb"
+
+  # Get user-specific files & make appropriate changes
+  if [ -e ~/.aegir-up ] ; then
+    DOTFILES_DIR="$CONFIG_DIR/files"
+    mkdir $DOTFILES_DIR
+    if ! [ -z $PROFILE_PATH ]; then
+      cp $PROFILE_PATH $DOTFILES_DIR
+    fi
+    if ! [ -z $BASHRC_PATH ]; then
+      cp $BASHRC_PATH $DOTFILES_DIR
+    fi
+    if ! [ -z $BASH_ALIASES_PATH ]; then
+      cp $BASH_ALIASES_PATH $DOTFILES_DIR
+      echo "alias aegir-up='sudo su aegir -l'" >> $DOTFILES_DIR/.bash_aliases
+    fi
+    cp $VIMRC_PATH $DOTFILES_DIR
+    cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
+    sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
+    sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
+    sed "s/  Git_email = 'username@example.com'/  Git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/config.rb"
+    
+    # Add domain to hosts file
+    if ! [ -z "$HOSTS_FILE" ]; then
+      echo "Enter your password to add an entry for '$NEW_PROJECT' to your hosts file, or press CTRL-c to leave it as is."
+      if [ "$TEMPLATE" = "default" ] ; then
+        echo "192.168.$NEW_SUBNET.10    aegir.local" | sudo tee -a "$HOSTS_FILE"
+      else
+        echo "192.168.$NEW_SUBNET.10    $NEW_PROJECT.aegir.local" | sudo tee -a "$HOSTS_FILE"
+      fi
+    fi
+  else 
+    msg "Skipping user-specific settings. Run lib/scripts/aegir-up-user.sh to initialize a .aegir-up file."
+  fi
+
+  if [ "$VERBOSE" = on ]; then
+    sed "s/  Verbose   = false/  Verbose   = true/g" -i "$CONFIG_DIR/config.rb"
+    LOG_LEVEL='INFO'
+  fi
+  if [ "$DEBUG" = on ]; then
+    sed "s/  Debug     = false/  Debug     = true/g" -i "$CONFIG_DIR/config.rb"
+  fi
+
+}
+
