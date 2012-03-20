@@ -3,13 +3,13 @@
 # Optional settings for Aegir front-end
   # For now it's best to specify the front-end URL here, though this should no
   # longer be necessary once http://drupal.org/node/1459126 lands
-  $aegir_hostmaster_url = 'aegir.local'
+#  $aegir_hostmaster_url = 'aegir.local'
 #  $aegir_db_host = 'db.aegir.local'
 #  $aegir_db_user = 'root'
 #  $aegir_db_password = 'password'
 #  $aegir_email = 'test@ergonlogic.com'
 #  $aegir_makefile = 'aegir.make'
-  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
+#  $aegir_force_login_link = 'true'    # Print a login link each time the manifest is run
 
 # Build 'manually' instead of from packages (.debs, &c.)
 #  $aegir_manual_build = true
@@ -38,14 +38,4 @@ aegir::platform {'Open_Atrium':
 }
 */
 
-# User-specific settings. Run aegir-up-user.sh to initalize these settings
-# globally.
-#  $aegir_up_username = 'username'
-#  $aegir_up_git_name = 'Firstname Lastname'
-#  $aegir_up_git_email = 'username@example.com'
-
 include aegir-up
-
-if $aegir_up_username {
-  include aegir-up::user
-}
