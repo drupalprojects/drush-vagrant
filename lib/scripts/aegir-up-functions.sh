@@ -50,6 +50,7 @@ new_subnet() {
 
 }
 
+
 # Ensure project name is unique and well-formed
 validate_new_project() {
 
@@ -66,10 +67,12 @@ validate_new_project() {
 
 }
 
+
 # Format messages
 msg() {
   echo "==> $*"
 }
+
 
 # Simple 'yes/no' prompt
 prompt_yes_no() {
@@ -92,6 +95,7 @@ prompt_yes_no() {
     esac
  done 
 }
+
 
 # Create a new project
 setup_new_project() {
@@ -144,6 +148,7 @@ setup_new_project() {
   fi
 
 }
+
 
 # Provide some next steps for the new project
 further_instructions() {
