@@ -44,6 +44,22 @@ new_subnet() {
 
 }
 
+# Ensure project name is unique and well-formed
+validate_new_project() {
+
+  if [ -d $AEGIR_UP_ROOT/projects/$NEW_PROJECT ] ; then
+    msg "ERROR: There is already a project called $NEW_PROJECT."
+    exit 1
+  fi
+
+  echo $NEW_PROJECT | egrep "^([a-z0-9][a-z0-9.-]*[a-z0-9])$" >/dev/null
+  if [ $? -ne 0 ] ; then
+    msg "ERROR: the name of your project should only contains lower-case letters, numbers, hyphens and dots (but no leading or trailing dots or hyphens)."
+    exit 1
+  fi
+
+}
+
 msg() {
   echo "==> $*"
 }
