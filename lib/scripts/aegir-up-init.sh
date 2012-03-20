@@ -19,13 +19,10 @@ Initialize the PROJECT directory
 DEBUG=off
 GIT=on
 
-if [ -e ~/.aegir-up ] ; then
-  . ~/.aegir-up
-  if ! [ -z $DEFAULT_TEMPLATE ]; then
-    TEMPLATE=$DEFAULT_TEMPLATE
-  else
-    TEMPLATE="default"
-  fi
+if ! [ -z $DEFAULT_TEMPLATE ]; then
+  TEMPLATE=$DEFAULT_TEMPLATE
+else
+  TEMPLATE="default"
 fi
 
 VERBOSE=off
