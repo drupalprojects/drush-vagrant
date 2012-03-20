@@ -130,7 +130,7 @@ setup_new_project() {
     if ! [ -z $USER_NAME ]; then
       sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
     fi
-    if ! [ -z $GIT_NAME ]; then
+    if ! [ -z "$GIT_NAME" ]; then
       sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
     fi
     if ! [ -z $GIT_EMAIL ]; then
