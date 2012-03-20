@@ -120,11 +120,21 @@ setup_new_project() {
       cp $BASH_ALIASES_PATH $DOTFILES_DIR
       echo "alias aegir-up='sudo su aegir -l'" >> $DOTFILES_DIR/.bash_aliases
     fi
-    cp $VIMRC_PATH $DOTFILES_DIR
-    cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
-    sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
-    sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
-    sed "s/  Git_email = 'username@example.com'/  Git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/config.rb"
+    if ! [ -z $VIMRC_PATH ]; then
+      cp $VIMRC_PATH $DOTFILES_DIR
+    fi
+    if ! [ -z $SSH_KEY_PUBLIC_PATH ]; then
+      cp $SSH_KEY_PUBLIC_PATH "$DOTFILES_DIR/authorized_keys"
+    fi
+    if ! [ -z $USER_NAME ]; then
+      sed "s/  Username  = 'username'/  Username  = '$USER_NAME'/g" -i "$CONFIG_DIR/config.rb"
+    fi
+    if ! [ -z $GIT_NAME ]; then
+      sed "s/  Git_name  = 'Firstname Lastname'/  Git_name  = '$GIT_NAME'/g" -i "$CONFIG_DIR/config.rb"
+    fi
+    if ! [ -z $GIT_EMAIL ]; then
+      sed "s/  Git_email = 'username@example.com'/  Git_email = '$GIT_EMAIL'/g" -i "$CONFIG_DIR/config.rb"
+    fi
     
     # Add domain to hosts file
     if ! [ -z "$HOSTS_FILE" ]; then
