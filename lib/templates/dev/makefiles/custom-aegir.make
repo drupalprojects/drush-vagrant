@@ -8,7 +8,7 @@ projects[drupal][type] = "core"
 projects[hostmaster][type] = "profile"
 projects[hostmaster][download][type] = "git"
 projects[hostmaster][download][url] = "http://git.drupal.org/project/hostmaster.git"
-projects[hostmaster][download][branch] = "6.x-1.x"
+projects[hostmaster][download][branch] = "6.x-2.x"
 
 
 ;Devel tools
@@ -19,14 +19,20 @@ projects[] = devel
 ;; To have new Aegir contrib modules added here, please file an issue under the
 ;; 'Makefiles' component here: http://drupal.org/project/issues/aegir-up, using
 
-projects[] = "hosting_notifications"
+;; Production-ready
 projects[] = "hosting_backup_queue"
 projects[] = "hosting_backup_gc"
+
+;; Testing
+
+projects[] = "hosting_notifications"
+projects[] = "hosting_server_titles"
+
+;; Queued for testing
 ;;projects[] = "hosting_remote_import"
 ;;projects[] = "remote_import"
 ;hosting Drupal Gardens import: http://dirupal.org/sandbox/darthsteven/1178192
 ;http://drupal.org/project/aegir_feeds
-projects[] = "hosting_server_titles"
 ;;projects[] = "hosting_platform_pathauto"
 ;hosting drush make sources: http://drupal.org/sandbox/darthsteven/1141164
 ;hosting site admin name: http://drupal.org/sandbox/darthsteven/1201092
