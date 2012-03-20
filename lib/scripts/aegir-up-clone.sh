@@ -2,7 +2,9 @@
 
 # Script to clone a project from Git and initialize it locally.
 
-HELP="Usage: aegir-up clone [-h] <git-repo-url> [<directory>]
+. "$AEGIR_UP_ROOT/lib/scripts/aegir-up-functions.sh"
+
+HELP="Usage: aegir-up clone [-h] <git-repo-url> <project-directory>
 Clone a project from a Git repo, and initialize it locally.
 
   -h   This help message"
@@ -46,43 +48,9 @@ else
   fi
 fi
 
-INITIAL_SUBNET=10
-NEW_SUBNET=
-
-# Get a list of all the subnets already in use in ascending order
-ALL_SUBNETS=`grep -h 'Subnet' "$AEGIR_UP_ROOT"/projects/*/$CONFIG_DIR/config.rb 2>/dev/null |perl -nle '/(\d+)/ and print $&'|sort`
-
-# If there aren't any projects yet, use the default
-if [ -z "$ALL_SUBNETS" ] ; then
-  NEW_SUBNET=$INITIAL_SUBNET
-else
-# For each possible subnet...
-  for a in `seq "$INITIAL_SUBNET" 254`
-  do
-    # ... check against all the existing subnets
-    for b in $ALL_SUBNETS
-    do
-      if [ "$a" -lt "$b" ] ; then
-        # We've found an available subnet, so let's go with it
-        NEW_SUBNET=`expr $a`
-        break 2
-      fi
-      if [ "$a" -eq "$b" ] ; then
-        # We've matched an existing subnet, so remove it from the list
-        ALL_SUBNETS=`echo $ALL_SUBNETS | sed "s/$a//g"`
-        # We've gone through the entire list, so the next subnet will work
-        if [ -z "$ALL_SUBNETS" ] ; then
-          NEW_SUBNET=`expr $a + 1`
-          break 2
-        fi
-        break
-      fi
-    done
-    if [ $a -gt 253 ] ; then
-      echo "We've run out of subnets!"
-      exit 1
-    fi
-  done
+NEW_SUBNET=`new_subnet`
+if [ "$?" -eq "1" ]; then
+  exit 1
 fi
 
 # Clone the directory
