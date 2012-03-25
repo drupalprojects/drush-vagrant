@@ -13,6 +13,9 @@ Vagrant::Config.run do |config|
   # set memory to 512MB
   config.vm.customize ["modifyvm", :id, "--memory", "#{Vm::Memory}"]
 
+  # mount /var/aegir on the host using NFS
+  config.vm.share_folder("aegir_root", "/var/aegir", "./aegir_root", { :nfs => true, :create => true, :remount => true })
+
   # add a hostmaster Aegir server on a shared host-only network
   config.vm.define Hm::Shortname do |hm_config|
     if defined?(Hm::Basebox)

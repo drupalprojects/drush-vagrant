@@ -9,6 +9,11 @@ class aegir-up {
 
   group { 'puppet': ensure => present, }
 
+  group { 'aegir group': ensure => present, name => 'aegir', gid => 1000 }
+
+  user { 'aegir user': ensure => present, name => 'aegir', uid => 1000, gid => 'aegir', home => '/var/aegir', }
+  $aegir_user_exists = true
+
   # Set some defaults, and make output less verbose
   Group { loglevel => 'info', }
   Package { loglevel => 'info', }
