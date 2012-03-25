@@ -18,27 +18,34 @@ class aegir::manual_build::backend {
   if ! $aegir_provision_branch { $aegir_provision_branch = $aegir_version }
 
   # Ref.: http://community.aegirproject.org/installing/manual#Create_the_Aegir_user
-  group {$aegir_user:
-    ensure => present,
-    system => true,
+  if ! $aegir_user_exists {
+    group {$aegir_user:
+      ensure => present,
+      system => true,
+    }
+
+    user {$aegir_user:
+      system  => 'true',
+      gid     => $aegir_user,
+      home    => $aegir_root,
+      groups  => $aegir_web_group,
+      ensure  => present,
+      require => [ Package['apache2'],
+                   Group["${aegir_user}"],
+                 ],
+    }
   }
 
-  user {$aegir_user:
-    system  => 'true',
-    gid     => $aegir_user,
-    home    => $aegir_root,
-    groups  => $aegir_web_group,
-    ensure  => present,
-    require => [ Package['apache2'],
-                 Group["${aegir_user}"],
-               ],
+  file { "$aegir_root":
+    ensure => directory,
   }
 
-  file { [ $aegir_root, "${aegir_root}/.drush" ]:
+  file { "${aegir_root}/.drush":
     owner   => $aegir_user,
     group   => $aegir_user,
     ensure  => directory,
-    require => User["${aegir_user}"],
+    require => [ User["${aegir_user}"],
+                 File["$aegir_root"] ]
   }
 
   # Ref.: http://community.aegirproject.org/installing/manual#Install_provision
