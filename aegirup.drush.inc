@@ -5,6 +5,9 @@
  *   Aegir-up family of drush commands for managing Vagrant-based VMs.
  */
 
+define("AEGIR_UP_ROOT", dirname(__FILE__).'/');
+define("WORKSPACE_ROOT", "");
+
 
 /**
  * Implementation of hook_drush_help().
@@ -107,7 +110,7 @@ function aegirup_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(dirname(__FILE__) . '/aegir-up-topic.txt'),
+    'callback arguments' => array(AEGIR_UP_ROOT . '/aegir-up-topic.txt'),
   );
 
   return $items;
@@ -136,7 +139,7 @@ function drush_aegirup_aegir_up_initialize() {
     $template = '-t ' . $template;
   }
   drush_print($template);
-  drush_shell_exec_interactive("./aegir-up init %s %s", $template, $workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up init %s %s", $template, $workspace);
 }
 
 /**
@@ -144,7 +147,7 @@ function drush_aegirup_aegir_up_initialize() {
  */
 function drush_aegirup_aegir_up_delete($workspace) {
   drush_print($workspace);
-  drush_shell_exec_interactive("./aegir-up delete %s", $workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up delete %s", $workspace);
 }
 
 /**
@@ -156,7 +159,7 @@ function drush_aegirup_aegir_up_ssh() {
   $vm = $args[1];
   drush_print($workspace);
   drush_print($vm);
-  drush_shell_exec_interactive("./aegir-up ssh %s %s", $workspace, $vm);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up ssh %s %s", $workspace, $vm);
 }
 
 /**
@@ -168,13 +171,13 @@ function drush_aegirup_aegir_up_clone() {
   $workspace = $args[1];
   drush_print($git_repo);
   drush_print($workspace);
-  drush_shell_exec_interactive("./aegir-up clone %s %s", $git_repo, $workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up clone %s %s", $git_repo, $workspace);
 }
 
 /**
  * Create or update user-specific settings.
  */
 function drush_aegirup_aegir_up_user() {
-  drush_shell_exec_interactive("./aegir-up user");
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up user");
 }
 
