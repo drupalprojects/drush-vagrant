@@ -2,8 +2,21 @@
 
 /**
  * @file
- *   Aegir-up Example drush command.
+ *   Aegir-up family of drush commands for managing Vagrant-based VMs.
  */
+
+
+/**
+ * Implementation of hook_drush_help().
+ */
+function aegirup_drush_help($section) {
+  switch ($section) {
+    case 'meta:aegirup:title':
+      return dt('Aegir-up commands');
+    case 'meta:aegirup:summary':
+      return dt('Manage Vagrant-based networks of VMs.');
+  }
+}
 
 /**
  * Implementation of hook_drush_command().
