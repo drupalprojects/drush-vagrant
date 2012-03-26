@@ -30,12 +30,6 @@ function aegirup_drush_command() {
       'workspace' => 'An (optional) workspace to present status information for.',
       'vm' => 'An (optional) VM to present status information for.',
     ),
-//    'options' => array(
-//      'spreads' => array(
-//        'description' => 'Comma delimited list of spreads.',
-//        'example-value' => 'mayonnaise,mustard',
-//      ),
-//    ),
     'examples' => array(
       'drush au Workspace1 hm' => "Print the status of the hm VM in the Workspace1 workspace.",
     ),
