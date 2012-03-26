@@ -1,0 +1,4 @@
+Aegir-up
+========
+
+Initial doc for drush command.
