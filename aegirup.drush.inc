@@ -147,11 +147,31 @@ function drush_aegirup_aegir_up() {
 }
 
 /**
+ * Implementation of drush_hook_commandhook_validate().
+ */
+function drush_aegirup_aegir_up_initialize_validate($workspace) {
+
+  // Check that we're using a valid blueprint
+  if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
+    if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
+      drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
+        array('!blueprint'       => $blueprint,
+              '!blueprint_label' => BLUEPRINT_LABEL,
+        ))
+      );
+    }
+  }
+
+  // Check that the workspace name is unique and well-formed
+  _aegir_up_validate_workspace($workspace);
+
+}
+
+/**
  * Initialize a new workspace.
  */
-function drush_aegirup_aegir_up_initialize() {
-  $args = func_get_args();
-  $workspace = $args[0];
+function drush_aegirup_aegir_up_initialize($workspace) {
+
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
     $blueprint = 'default';
   }
