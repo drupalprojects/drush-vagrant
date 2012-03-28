@@ -52,9 +52,13 @@ function aegirup_drush_command() {
     'callback' => 'drush_aegirup_aegir_up_initialize',
     'options' => array(
       BLUEPRINT_LABEL => array(
-        'description' => dt('Specify a !blueprint to use. Defaults to \'aegir\'.', array('!blueprint' => BLUEPRINT_LABEL)),
-        'example-value' => 'aegir-dev',
-      ),
+        'description' => dt('Specify a !blueprint to use. Defaults to \'aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
+//      'no-browser' => array(
+//        'description' => dt('Don\'t launch a browser')),
+      'no-hosts' => array(
+        'description' => dt('Don\'t edit /etc/hosts')),
+      'init-only' => array(
+        'description' => dt('Don\'t start the !VM (implies \'--no-browser\')', array('!VM' => VM_LABEL))),
     ),
     'examples' => array(
       'drush aui Workspace1 --' . BLUEPRINT_LABEL .'=dev' => dt('Initialize a new Aegir-up !workspace using the \'aegir-dev\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!workspace'=> WORKSPACE_LABEL)),
