@@ -114,7 +114,7 @@ function aegirup_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . '/aegir-up-topic.txt'),
+    'callback arguments' => array(AEGIR_UP_ROOT . 'aegir-up-topic.txt'),
   );
 
   return $items;
