@@ -12,6 +12,9 @@ define("AEGIR_UP_ROOT", dirname(__FILE__).'/');
 define("WORKSPACE_ROOT", AEGIR_UP_ROOT . WORKSPACE_LABEL . "s/");
 define("BLUEPRINT_DIR", AEGIR_UP_ROOT . "lib/" . BLUEPRINT_LABEL . "s/");
 
+///////////////////////////////////////////////////////////////////////////////
+//                        HOOK IMPLEMENTATIONS                               //
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Implementation of hook_drush_help().
@@ -134,6 +137,11 @@ function aegirup_drush_pm_download_destination_alter(&$project, $release) {
     $project['project_install_location'] = BLUEPRINT_DIR;
   }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                              COMMAND FUNCTIONS                            //
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Print a status of workspaces and VMs.
@@ -320,6 +328,11 @@ function drush_aegirup_aegir_up_user() {
   drush_set_context('user', $user_context);
   drush_save_config('user');
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                            HELPER FUNCTIONS                                //
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Ensure that a workspace name is unique and well-formed
