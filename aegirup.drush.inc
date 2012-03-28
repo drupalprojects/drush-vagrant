@@ -44,12 +44,11 @@ function aegirup_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  $items['aegir-up-init'] = array(
+  $items['aegir-up-initialize'] = array(
     'description' => dt('Initialize a new Aegir-up !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
     'arguments' => array(
       WORKSPACE_LABEL => dt('The !workspace to initialize. Defaults to \'Aegir\'.', array('!workspace'=> WORKSPACE_LABEL)),
     ),
-    'callback' => 'drush_aegirup_aegir_up_initialize',
     'options' => array(
       BLUEPRINT_LABEL => array(
         'description' => dt('Specify a !blueprint to use. Defaults to \'aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
