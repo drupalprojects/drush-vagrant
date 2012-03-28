@@ -137,13 +137,156 @@ function drush_aegirup_aegir_up() {
 function drush_aegirup_aegir_up_initialize() {
   $args = func_get_args();
   $workspace = $args[0];
-  $template = '';
-  drush_print($workspace);
-  if ($template = drush_get_option('template')) {
-    $template = '-t ' . $template;
+  if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
+    $blueprint = 'default';
   }
-  drush_print($template);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up init %s %s", $template, $workspace);
+
+  drush_print(dt("This script will create a new !workspace_label at !workspace_root!workspace.",
+    array('!workspace_root'  => WORKSPACE_ROOT,
+          '!workspace'       => $workspace,
+          '!workspace_label' => WORKSPACE_LABEL,
+    ))
+  );
+  drush_print(dt("It will use the '!blueprint' !blueprint_label.",
+    array('!blueprint' => $blueprint,
+          '!blueprint_label' => BLUEPRINT_LABEL,
+    ))
+  );
+
+  // 
+  $subnet = _aegir_up_next_available_subnet();
+
+
+  drush_print($subnet);
+  drush_print($blueprint);
+  drush_print($workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up init -t %s %s", $blueprint, $workspace);
+}
+
+/**
+ * Implementation of drush_hook_commandhook_validate().
+ */
+function drush_aegirup_aegir_up_initialize_validate() {
+  $args = func_get_args();
+  $workspace = $args[0];
+
+  // Check that we're using a valid blueprint
+  if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
+    if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
+      drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
+        array('!blueprint'       => $blueprint,
+              '!blueprint_label' => BLUEPRINT_LABEL,
+        ))
+      );
+    }
+  }
+
+  // Check that the workspace name is unique and well-formed
+  _aegir_up_validate_workspace($workspace);
+
+}
+
+/**
+ * Ensure that a workspace name is unique and well-formed
+ */
+function _aegir_up_validate_workspace($workspace) {
+  if (is_dir(WORKSPACE_ROOT . $workspace)) {
+    drush_set_error(dt('ERROR: There is already a !workspace_label called !workspace.',
+      array('!workspace_label' => WORKSPACE_LABEL,
+            '!workspace'       => $workspace,
+      ))
+    );
+  }
+  $regex = '/^([a-z0-9][a-z0-9.-]*[a-z0-9])$/';
+  if (preg_match($regex, $workspace) < 1) {
+    drush_set_error(dt('ERROR: the name of your !workspace_label (!workspace) should only contains lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
+      array('!workspace_label' => WORKSPACE_LABEL,
+            '!workspace'       => $workspace,
+      ))
+    );
+  }
+}
+
+/**
+ * Return the next available subnet
+ */
+function _aegir_up_next_available_subnet() {
+
+  $initial_subnet = 10;
+  $workspaces = _aegir_up_list_workspaces();
+  $subnets = array();
+  foreach ($workspaces as $workspace) {
+    $subnets[$workspace] = _aegir_up_get_subnet($workspace);
+  }
+
+  // If there aren't any projects yet, use the default  
+  if (count($subnets) > 0) {
+    return $initial_subnet;
+  }
+
+  // Find the first unused subnet
+  $subnets = array_flip($subnets);
+  for ( $key = $initial_subnet; $key <= 254; $key++) {
+    if (!array_key_exists($key, $subnets)) {
+      return $key;
+    }
+  }
+  
+  // If we've reached here, then no subnets are available
+  drush_set_error(dt('ERROR: We\'ve run out of Subnets!'));
+}
+
+/**
+ * Return an array of current workspaces
+ */
+function _aegir_up_list_workspaces(){
+  $workspaces = array();
+  // See: http://php.net/manual/en/function.readdir.php
+  if ($handle = opendir(WORKSPACE_ROOT)) {
+    while (false !== ($entry = readdir($handle))) {
+      if ($entry != "." && $entry != ".." && is_dir($entry)) {
+        $workspaces[] = $entry;
+      }
+    }
+    closedir($handle);
+  }
+  return $workspaces;
+}
+
+/**
+ * Return the subnet of a given workspace
+ */
+function _aegir_up_get_subnet($workspace){
+  $subnet = '';
+  $match = '';
+  $config_file = WORKSPACE_ROOT . $workspace . '/.config/config.rb';
+
+  // Read each line of the config file to find the line that contains the subnet
+  if ($file = @fopen($config_file, "r")) {
+    while (($line = fgets($file, 4096)) !== false) {
+      if (strpos($line , 'Subnet')) {
+        $match = $line;
+        break;
+      }
+    }
+    if ($match == '' && !feof($file)) {
+      drush_set_error(dt('ERROR: unexpected fgets() fail in _aegir_up_get_subnet() reading !config_file.', array('!config_file' => $config_file)));
+    }
+    fclose($file);
+  }
+  else {
+    drush_set_error(dt('ERROR: Could not open !config_file in _aegir_up_get_subnet().', array('!config_file' => $config_file)));
+  }
+
+  // The Subnet's value is double-quoted
+  $i = explode('"' , $match);
+  if (is_numeric($i[1])) {
+    return $i[1];
+  }
+  else {
+    drush_set_error(dt('ERROR: Could not parse !config_file in _aegir_up_get_subnet().', array('!config_file' => $config_file)));
+  }
+  
 }
 
 /**
