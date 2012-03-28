@@ -255,7 +255,7 @@ function _aegir_up_next_available_subnet() {
   }
 
   // If there aren't any projects yet, use the default  
-  if (count($subnets) > 0) {
+  if (!(count($subnets) > 0)) {
     return $initial_subnet;
   }
 
