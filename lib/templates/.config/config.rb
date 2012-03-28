@@ -17,8 +17,8 @@ class HsAuto                        # settings for our Aegir hostslave machine(s
 end
 
 class AegirUpUser
-  Username  = 'username'
-  Git_name  = 'Firstname Lastname'
-  Git_email = 'username@example.com'
+  Username  = "username"
+  Git_name  = "Firstname Lastname"
+  Git_email = "username@example.com"
 end
 
