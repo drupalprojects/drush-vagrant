@@ -188,37 +188,137 @@ function drush_aegirup_aegir_up_initialize($workspace) {
     ))
   );
 
-  // 
+  if (!drush_confirm(dt('Do you want to proceed with initializing the !workspace_label?', array('!workspace_label' => WORKSPACE_LABEL)))) {
+    return drush_user_abort();
+  }
+  // Find the next available subnet
   $subnet = _aegir_up_next_available_subnet();
 
+  // Create the workspace directory from the blueprint
+  $workspace_path = WORKSPACE_ROOT . $workspace . '/';
+  drush_copy_dir(BLUEPRINT_DIR . $blueprint, $workspace_path);
 
-  drush_print($subnet);
-  drush_print($blueprint);
-  drush_print($workspace);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up init -t %s %s", $blueprint, $workspace);
+  // Set up the new workspace
+  symlink(BLUEPRINT_DIR . 'Vagrantfile', $workspace_path . 'Vagrantfile');
+  symlink(BLUEPRINT_DIR . 'gitignore', $workspace_path . '.gitignore');
+  drush_copy_dir(BLUEPRINT_DIR . '.config', $workspace_path . '.config');
+  // Make project-specific changes
+  $config_file = file_get_contents($workspace_path . '.config/config.rb');
+  $config_file = str_replace('"10"', '"' . $subnet . '"', $config_file);
+  $config_file = str_replace('"hm"', '"' . $workspace . '"', $config_file);
+  file_put_contents($workspace_path . '.config/config.rb', $config_file);
+
+  //TODO: check for existence of these vars
+  $user_settings = drush_get_context('user');
+  $dotfiles_dir = $workspace_path . '.config/files';
+  mkdir($dotfiles_dir);
+  foreach ($user_settings['aegirup_dotfiles'] as $dotfile => $dotfile_path) {
+    copy($dotfile_path, $dotfiles_dir . '/' . $dotfile);
+  }
+  if (isset($user_settings['aegirup_ssh_keys']['public'])) {
+    copy($user_settings['aegirup_ssh_keys']['public'], $dotfiles_dir . '/authorized_keys');
+  }
+  $config_file = file_get_contents($workspace_path . '.config/config.rb');
+  $config_file = str_replace('"username"', '"' . $user_settings['aegirup_username'] . '"', $config_file);
+  $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['aegirup_git']['name'] . '"', $config_file);
+  $config_file = str_replace('"username@example.com"', '"' . $user_settings['aegirup_git']['email'] . '"', $config_file);
+  file_put_contents($workspace_path . '.config/config.rb', $config_file);
+
 }
 
 /**
- * Implementation of drush_hook_commandhook_validate().
+ * Post-initialize configuration
  */
-function drush_aegirup_aegir_up_initialize_validate() {
+function drush_aegirup_post_aegir_up_initialize($workspace) {
+  $no_hosts = drush_get_option('no-hosts', FALSE);
+  $init_only = drush_get_option('init-only', FALSE);
+//  $no_browser = drush_get_option('no-browser', $init_only);
+
+  // Add domain to hosts file
+  if ($no_hosts == FALSE) {
+    drush_print(dt('Enter your password to add an entry for \'!workspace\' to your hosts file, or press CTRL-c to leave it as is.', array( '!workspace' => $workspace)));
+    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local',_aegir_up_get_subnet($workspace), $workspace);
+    drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
+  }
+
+  if ($init_only == FALSE) {
+    $workspace_path = WORKSPACE_ROOT . $workspace . '/';
+    drush_shell_exec_interactive("cd %s && vagrant up", $workspace_path);
+  }
+
+//  if ($no_browser == FALSE) {}
+}
+
+/**
+ * Delete an existing workspace.
+ */
+function drush_aegirup_aegir_up_delete($workspace) {
+  drush_print($workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up delete %s", $workspace);
+}
+
+/**
+ * Login to a VM via SSH.
+ */
+function drush_aegirup_aegir_up_ssh() {
   $args = func_get_args();
   $workspace = $args[0];
+  $vm = $args[1];
+  drush_print($workspace);
+  drush_print($vm);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up ssh %s %s", $workspace, $vm);
+}
 
-  // Check that we're using a valid blueprint
-  if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
-    if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
-      drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
-        array('!blueprint'       => $blueprint,
-              '!blueprint_label' => BLUEPRINT_LABEL,
-        ))
-      );
+/**
+ * Clone a git repo, and initilize a new workspace within it.
+ */
+function drush_aegirup_aegir_up_clone() {
+  $args = func_get_args();
+  $git_repo = $args[0];
+  $workspace = $args[1];
+  drush_print($git_repo);
+  drush_print($workspace);
+  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up clone %s %s", $git_repo, $workspace);
+}
+
+/**
+ * Create or update user-specific settings.
+ */
+function drush_aegirup_aegir_up_user() {
+
+  $user_context = array();
+
+  // Username & $HOME
+  drush_shell_exec('whoami');
+  $user_context['aegirup_username'] = drush_shell_exec_output()[0];
+  drush_shell_exec('echo $HOME');
+  $user_context['aegirup_home'] = drush_shell_exec_output()[0];
+
+  // dotfiles
+  // TODO: allow other dotfiles to be passed through an option
+  $dotfiles = array('.profile', '.bashrc', '.bash_aliases', '.vimrc', );
+  foreach ($dotfiles as $dotfile) {
+    if (file_exists($user_context['aegirup_home'] . '/' . $dotfile)) {
+      $user_context['aegirup_dotfiles'][$dotfile] = $user_context['aegirup_home'] . '/' . $dotfile;
     }
   }
 
-  // Check that the workspace name is unique and well-formed
-  _aegir_up_validate_workspace($workspace);
+  // SSH keys
+  if (file_exists($user_context['aegirup_home'] . '/.ssh/id_rsa.pub')) {
+    $user_context['aegirup_ssh_keys']['public'] = $user_context['aegirup_home'] . '/.ssh/id_rsa.pub';
+  }
+  if (file_exists($user_context['aegirup_home'] . '/.ssh/id_rsa')) {
+    $user_context['aegirup_ssh_keys']['private'] = $user_context['aegirup_home'] . '/.ssh/id_rsa';
+  }
 
+  // Git settings
+  drush_shell_exec('git config --global --get user.name');
+  $user_context['aegirup_git']['name'] = drush_shell_exec_output()[0];
+  drush_shell_exec('git config --global --get user.email');
+  $user_context['aegirup_git']['email'] = drush_shell_exec_output()[0];
+
+  drush_set_context('user', $user_context);
+  drush_save_config('user');
 }
 
 /**
@@ -324,42 +424,4 @@ function _aegir_up_get_subnet($workspace){
   
 }
 
-/**
- * Delete an existing workspace.
- */
-function drush_aegirup_aegir_up_delete($workspace) {
-  drush_print($workspace);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up delete %s", $workspace);
-}
-
-/**
- * Login to a VM via SSH.
- */
-function drush_aegirup_aegir_up_ssh() {
-  $args = func_get_args();
-  $workspace = $args[0];
-  $vm = $args[1];
-  drush_print($workspace);
-  drush_print($vm);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up ssh %s %s", $workspace, $vm);
-}
-
-/**
- * Clone a git repo, and initilize a new workspace within it.
- */
-function drush_aegirup_aegir_up_clone() {
-  $args = func_get_args();
-  $git_repo = $args[0];
-  $workspace = $args[1];
-  drush_print($git_repo);
-  drush_print($workspace);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up clone %s %s", $git_repo, $workspace);
-}
-
-/**
- * Create or update user-specific settings.
- */
-function drush_aegirup_aegir_up_user() {
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up user");
-}
 
