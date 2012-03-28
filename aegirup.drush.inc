@@ -121,6 +121,18 @@ function aegirup_drush_command() {
 }
 
 /**
+ * Implementation of hook_drush_pm_download_destination_alter().
+ *
+ * For blueprints hosted on d.o, make 'drush dl' put them in the correct folder.
+ */
+function aegirup_drush_pm_download_destination_alter(&$project, $release) {
+  $settings_rb = drush_scan_directory($project['full_project_path'], '/settings.rb/', array('.', '..'), $recurse_max_depth = 1);
+  if (!empty($settings_rb)) {
+    $project['project_install_location'] = BLUEPRINT_DIR;
+  }
+}
+
+/**
  * Print a status of workspaces and VMs.
  */
 function drush_aegirup_aegir_up() {
