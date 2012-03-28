@@ -1,3 +1,6 @@
+# Remove the Aegir-up repo
+rm -rf ./aegir-up
+
 # Remove the post-install scripts
 rm ./*.sh
 
