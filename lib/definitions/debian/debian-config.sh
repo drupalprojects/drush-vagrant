@@ -10,6 +10,6 @@ apt-get install git-core -y
 git clone http://git.drupal.org/project/aegir-up.git
 
 # Install basic packages
-puppet apply ./aegir-up/definitions/debian/debian.pp --modulepath="./aegir-up/modules"
+puppet apply ./aegir-up/lib/definitions/debian/debian.pp --modulepath="./aegir-up/lib/modules"
 
 exit
