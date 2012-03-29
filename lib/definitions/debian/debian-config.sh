@@ -7,7 +7,7 @@ update-grub
 apt-get install git-core -y
 
 # Download Aegir-up locally
-git clone http://git.drupal.org/project/aegir-up.git
+git clone --branch 7.x-0.x http://git.drupal.org/project/aegir-up.git
 
 # Install basic packages
 puppet apply ./aegir-up/lib/definitions/debian/debian.pp --modulepath="./aegir-up/lib/modules"
