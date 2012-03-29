@@ -1,5 +1,5 @@
 class Vm                            # default virtual machine settings
-  Basebox   = "debian-LAMP-6.0.4"   # default basebox
+  Basebox   = "debian-nfs" #LAMP-6.0.4"   # default basebox
   Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
   Gui       = false                 # start VM with GUI? Useful for loading CD/DVD ISOs
   Memory    = 512                   # default VM memory
