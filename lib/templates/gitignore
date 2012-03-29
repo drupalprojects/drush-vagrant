@@ -3,3 +3,4 @@ Vagrantfile
 .vagrant
 .config/*
 modules/README
+aegir_root/
