@@ -3,7 +3,7 @@
 notice("\n
         Running Puppet manifests to install basic packages.\n")
 
-package { [ 'git-core' ]: }
+package { [ 'git-core', 'vim' , 'screen', 'htop': }
 
 group { 'puppet': ensure => present, }
 
