@@ -159,6 +159,8 @@ function drush_aegirup_aegir_up() {
  */
 function drush_aegirup_aegir_up_initialize_validate($workspace) {
 
+ _aegir_up_check_user_context();
+
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
     if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
@@ -386,6 +388,20 @@ function drush_aegirup_aegir_up_user() {
 ////////////////////////////////////////////////////////////////////////////////
 //                            HELPER FUNCTIONS                                //
 ////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Ensure that there is a user context
+ */
+function _aegir_up_check_user_context() {
+  $user_settings = drush_get_context('user');
+  if (!isset($user_settings['aegirup_username'])) {
+    drush_print('This appears to be your first time running Aegir-up or your user settings (~/.drushrc.php) have been deleted.');
+    drush_print('Aegir-up requires those settings in order to function properly.');
+    if (drush_confirm('Proceed?')) {
+      drush_shell_exec_interactive('drush aegir-up-user');
+    }
+  }
+}
 
 /**
  * Ensure that a workspace name is unique and well-formed
