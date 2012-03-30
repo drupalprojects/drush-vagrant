@@ -223,19 +223,31 @@ function drush_aegirup_aegir_up_initialize($workspace) {
   file_put_contents($workspace_path . '.config/config.rb', $config_file);
 
   //TODO: check for existence of these vars
-  $user_settings = drush_get_context('user');
   $dotfiles_dir = $workspace_path . '.config/files';
+  _debug('$dotfiles_dir', $dotfiles_dir);
   mkdir($dotfiles_dir);
-  foreach ($user_settings['aegirup_dotfiles'] as $dotfile => $dotfile_path) {
-    copy($dotfile_path, $dotfiles_dir . '/' . $dotfile);
+  foreach ($user_settings as $key => $dotfile_source) {
+    if (strpos($key, 'dotfiles')) {
+      $path = explode('/', $dotfile_source);
+      $dotfile = $path[count($path) - 1];
+      _debug('$dotfile', $dotfile);
+      _debug('', $dotfile_source);
+      copy($dotfile_source, $dotfiles_dir . '/' . $dotfile);
+    }
   }
-  if (isset($user_settings['aegirup_ssh_keys']['public'])) {
-    copy($user_settings['aegirup_ssh_keys']['public'], $dotfiles_dir . '/authorized_keys');
+  if (isset($user_settings['aegirup_ssh_keyspublic'])) {
+    copy($user_settings['aegirup_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
   $config_file = file_get_contents($workspace_path . '.config/config.rb');
   $config_file = str_replace('"username"', '"' . $user_settings['aegirup_username'] . '"', $config_file);
-  $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['aegirup_git']['name'] . '"', $config_file);
-  $config_file = str_replace('"username@example.com"', '"' . $user_settings['aegirup_git']['email'] . '"', $config_file);
+  if (isset($user_settings['aegirup_git_name'])) {
+    $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['aegirup_git_name'] . '"', $config_file);
+  }
+  if (isset($user_settings['aegirup_git_email'])) {
+    $config_file = str_replace('"username@example.com"', '"' . $user_settings['aegirup_git_email'] . '"', $config_file);
+  }
+  $config_file = str_replace('"uid"', '"' . $user_settings['aegirup_uid'] . '"', $config_file);
+  $config_file = str_replace('"gid"', '"' . $user_settings['aegirup_gid'] . '"', $config_file);
   file_put_contents($workspace_path . '.config/config.rb', $config_file);
 
 }
