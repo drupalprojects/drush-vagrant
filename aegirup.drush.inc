@@ -180,6 +180,9 @@ function drush_aegirup_aegir_up_initialize_validate($workspace) {
  */
 function drush_aegirup_aegir_up_initialize($workspace) {
 
+  $user_settings = drush_get_context('user');
+  _debug('$user_settings', $user_settings);
+
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
     $blueprint = 'default';
   }
@@ -444,13 +447,18 @@ function _aegir_up_list_workspaces(){
   $workspaces = array();
   // See: http://php.net/manual/en/function.readdir.php
   if ($handle = opendir(WORKSPACE_ROOT)) {
-    while (false !== ($entry = readdir($handle))) {
-      if ($entry != "." && $entry != ".." && is_dir($entry)) {
-        $workspaces[] = $entry;
+    _debug('WORKSPACE_ROOT', WORKSPACE_ROOT);
+
+    while (false !== ($file = readdir($handle))) {
+      _debug('$file', $file);
+      if ($file != "." && $file != ".." && is_dir(WORKSPACE_ROOT . $file)) {
+        _debug('Directory', $file);
+        $workspaces[] = $file;
       }
     }
     closedir($handle);
   }
+
   return $workspaces;
 }
 
