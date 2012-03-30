@@ -9,10 +9,9 @@ class aegir-up {
 
   group { 'puppet': ensure => present, }
 
-  group { 'aegir group': ensure => present, name => 'aegir', gid => 1000 }
+  group { 'aegir group': ensure => present, name => $aegir_user, gid => $aegir_user_gid }
 
-  user { 'aegir user': ensure => present, name => 'aegir', uid => 1000, gid => 'aegir', home => '/var/aegir', }
-  $aegir_user_exists = true
+  user { 'aegir user': ensure => present, name => $aegir_user, uid => $aegir_user_uid, gid => $aegir_user, home => $aegir_root, }
 
   # Set some defaults, and make output less verbose
   Group { loglevel => 'info', }
@@ -20,7 +19,7 @@ class aegir-up {
   Notify { loglevel => 'info', }
   User { loglevel => 'info', }
   Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], loglevel => 'info', }
-  File { owner => 0, group => 0, mode => 0644, loglevel => 'info', }
+  File { /*owner => 0, group => 0,*/ mode => 0644, loglevel => 'info', }
 
   file { '/etc/motd':
     content => "\n
