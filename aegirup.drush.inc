@@ -486,4 +486,12 @@ function _aegir_up_get_subnet($workspace){
   
 }
 
-
+/**
+ * Write variables to the Drush log for debugging purposes
+ */
+function _debug($label, $data = null) {
+  if (drush_get_option('debug')) {
+    drush_log('Function: ' . debug_backtrace(false)[1]['function'] . '()', 'debug');
+    drush_log($label . ': ' . print_r($data, true), 'debug');
+  }
+}
