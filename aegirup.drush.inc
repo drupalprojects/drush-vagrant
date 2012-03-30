@@ -308,35 +308,71 @@ function drush_aegirup_aegir_up_clone() {
 function drush_aegirup_aegir_up_user() {
 
   $user_context = array();
+  $data = array();
 
-  // Username & $HOME
-  drush_shell_exec('whoami');
-  $user_context['aegirup_username'] = drush_shell_exec_output()[0];
-  drush_shell_exec('echo $HOME');
-  $user_context['aegirup_home'] = drush_shell_exec_output()[0];
+  // Environment variables
+  // TODO: allow other env vars to be passed through an option or hook?
+  $data['aegirup_username'] = array( 'command' => 'whoami', 'label' => 'username');
+  $data['aegirup_home'] = array( 'command' => 'echo $HOME', 'label' => 'home folder');
+  $data['aegirup_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
+  $data['aegirup_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
+  $data['aegirup_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
+  $data['aegirup_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
+  // Get env var defaults
+  foreach ($data as $key => $datum) {
+    drush_shell_exec($datum['command']);
+    $data[$key]['default'] = drush_shell_exec_output()[0];
+  }
 
-  // dotfiles
-  // TODO: allow other dotfiles to be passed through an option
+  // Files
+  // TODO: allow other files & filesets to be passed through an option or hook?
+  $file_sets = array('dotfiles', 'ssh_keys' );
   $dotfiles = array('.profile', '.bashrc', '.bash_aliases', '.vimrc', );
-  foreach ($dotfiles as $dotfile) {
-    if (file_exists($user_context['aegirup_home'] . '/' . $dotfile)) {
-      $user_context['aegirup_dotfiles'][$dotfile] = $user_context['aegirup_home'] . '/' . $dotfile;
+  $ssh_keys = array('public' => '.ssh/id_rsa.pub', 'private' => '.ssh/id_rsa');
+  // Get file defaults
+  foreach ($file_sets as $set) {
+    foreach ($$set as $key => $file) {
+      if (is_numeric($key)) {
+        $name = $file;
+      }
+      else {
+        $name = $key;
+      }
+      if (file_exists($data['aegirup_home']['default'] . '/' . $file)) {
+        $data['aegirup_' . $set . $name] = array('default' => $data['aegirup_home']['default'] . '/' . $file, 'label' => $name . '(' . $set .')');
+      }
     }
   }
 
-  // SSH keys
-  if (file_exists($user_context['aegirup_home'] . '/.ssh/id_rsa.pub')) {
-    $user_context['aegirup_ssh_keys']['public'] = $user_context['aegirup_home'] . '/.ssh/id_rsa.pub';
-  }
-  if (file_exists($user_context['aegirup_home'] . '/.ssh/id_rsa')) {
-    $user_context['aegirup_ssh_keys']['private'] = $user_context['aegirup_home'] . '/.ssh/id_rsa';
+  // find the longest label so we can align values
+  $i = 0;
+  foreach ($data as $datum) {
+    if (strlen($datum['label']) > $i) {
+      $i = strlen($datum['label']);
+    }
   }
 
-  // Git settings
-  drush_shell_exec('git config --global --get user.name');
-  $user_context['aegirup_git']['name'] = drush_shell_exec_output()[0];
-  drush_shell_exec('git config --global --get user.email');
-  $user_context['aegirup_git']['email'] = drush_shell_exec_output()[0];
+  // Build our confirmation prompt
+  $defaults = "The following settings will be added to your ~/.drushrc.php:\n";
+  foreach ($data as $key => $datum) {
+    $defaults .= '  ' . $datum['label'] . ' ' . str_repeat('.', $i + 1 - strlen($datum['label'])) . ' ' . $datum['default'] . "\n";
+  }
+  $defaults .= 'Are these settings correct?';
+  $correct = drush_confirm($defaults);
+
+  // Build our user context
+  if ($correct) {
+    foreach ($data as $key => $datum) {
+      $user_context[$key] = $datum['default'];
+    }
+  }
+  // Or prompt for everything
+  else {
+    $prompt = 'What !label would you like to use? ';
+    foreach ($data as $key => $datum) {
+      $user_context[$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
+    }
+  }
 
   drush_set_context('user', $user_context);
   drush_save_config('user');
