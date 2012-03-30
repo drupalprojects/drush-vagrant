@@ -14,8 +14,10 @@ end
 class Hm                            # settings for our Aegir hostmaster machine
 #  Basebox   = "debian-LAMP-2012-03-29"           # pre-built Aegir server base box
 #  Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
-  Shortname = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
-  Vmname    = "Aegir"               # VirtualBox name
+  Shortname  = "hm"                  # Vagrant name (also used for manifest name, e.g., hm.pp)
+  Vmname     = "Aegir"               # VirtualBox name
+  Aegir_root = "/var/aegir"
+  Aegir_user = "aegir"
 #  Memory    = 1024                  # override the default memory
 end
 
