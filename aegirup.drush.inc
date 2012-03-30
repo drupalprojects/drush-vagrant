@@ -195,6 +195,7 @@ function drush_aegirup_aegir_up_initialize($workspace) {
           '!blueprint_label' => BLUEPRINT_LABEL,
     ))
   );
+  _debug('Subnet: ', _aegir_up_next_available_subnet());
 
   if (!drush_confirm(dt('Do you want to proceed with initializing the !workspace_label?', array('!workspace_label' => WORKSPACE_LABEL)))) {
     return drush_user_abort();
@@ -411,6 +412,9 @@ function _aegir_up_next_available_subnet() {
 
   $initial_subnet = 10;
   $workspaces = _aegir_up_list_workspaces();
+
+  _debug('Workspaces: ' . count($workspaces), $workspaces);
+
   $subnets = array();
   foreach ($workspaces as $workspace) {
     $subnets[$workspace] = _aegir_up_get_subnet($workspace);
