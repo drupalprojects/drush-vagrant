@@ -264,7 +264,9 @@ function drush_aegirup_post_aegir_up_initialize($workspace) {
 
   drush_print(dt('Your !workspace was successfully initialized.', array('!workspace' => WORKSPACE_LABEL)));
   drush_print(dt('The root for your !workspace is !workspace_path', array('!workspace' => WORKSPACE_LABEL, '!workspace_path' => $workspace_path)));
-  drush_print(dt('The subnet for your !workspace has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!workspace' => WORKSPACE_LABEL, '!subnet' => $subnet))); 
+  if ($no_hosts == FALSE) {
+    drush_print(dt('The subnet for your !workspace has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!workspace' => WORKSPACE_LABEL, '!subnet' => $subnet))); 
+  }
   drush_print(dt('You can now: * Alter Aegir-up\'s behaviour by editing !workspace_path/settings.rb.', array('!workspace_path' => $workspace_path))); 
   drush_print(dt('             * Redefine the !VM(s) by editing the Puppet manifest(s) in !workspace_path/manifests.', array('!VM' => VM_LABEL, '!workspace_path' => $workspace_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !workspace_path/modules.', array('!workspace_path' => $workspace_path)));
