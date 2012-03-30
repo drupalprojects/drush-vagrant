@@ -18,6 +18,8 @@ end
 
 class AegirUpUser
   Username  = "username"
+  Uid       = "uid"
+  Gid       = "gid"
   Git_name  = "Firstname Lastname"
   Git_email = "username@example.com"
 end
