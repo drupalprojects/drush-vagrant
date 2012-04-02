@@ -55,6 +55,8 @@ function aegirup_drush_command() {
     'options' => array(
       BLUEPRINT_LABEL => array(
         'description' => dt('Specify a !blueprint to use. Defaults to \'aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
+      'git-repo' => array(
+        'description' => dt('Clone a Git repo, instead of using a !blueprint.', array('!blueprint' => BLUEPRINT_LABEL))),
 //      'no-browser' => array(
 //        'description' => dt('Don\'t launch a browser')),
       'no-hosts' => array(
@@ -189,17 +191,24 @@ function drush_aegirup_aegir_up_initialize($workspace) {
     $blueprint = 'default';
   }
 
+  $git_repo = drush_get_option('git-repo');
+
   drush_print(dt("This script will create a new !workspace_label at !workspace_root!workspace.",
     array('!workspace_root'  => WORKSPACE_ROOT,
           '!workspace'       => $workspace,
           '!workspace_label' => WORKSPACE_LABEL,
     ))
   );
-  drush_print(dt("It will use the '!blueprint' !blueprint_label.",
-    array('!blueprint' => $blueprint,
-          '!blueprint_label' => BLUEPRINT_LABEL,
-    ))
-  );
+  if ($git_repo) {
+    drush_print(dt("It will clone the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
+  }
+  else {
+    drush_print(dt("It will use the '!blueprint' !blueprint_label.",
+      array('!blueprint' => $blueprint,
+            '!blueprint_label' => BLUEPRINT_LABEL,
+      ))
+    );
+  }
   _debug('Subnet: ', _aegir_up_next_available_subnet());
 
   if (!drush_confirm(dt('Do you want to proceed with initializing the !workspace_label?', array('!workspace_label' => WORKSPACE_LABEL)))) {
@@ -210,7 +219,12 @@ function drush_aegirup_aegir_up_initialize($workspace) {
 
   // Create the workspace directory from the blueprint
   $workspace_path = WORKSPACE_ROOT . $workspace . '/';
-  drush_copy_dir(BLUEPRINT_DIR . $blueprint, $workspace_path);
+  if ($git_repo) {
+    drush_shell_exec_interactive('git clone %s %s', $git_repo, $workspace_path);
+  }
+  else {
+    drush_copy_dir(BLUEPRINT_DIR . $blueprint, $workspace_path);
+  }
 
   // Set up the new workspace
   symlink(BLUEPRINT_DIR . 'Vagrantfile', $workspace_path . 'Vagrantfile');
