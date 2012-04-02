@@ -302,12 +302,30 @@ function drush_aegirup_aegir_up_delete($workspace) {
  * Login to a VM via SSH.
  */
 function drush_aegirup_aegir_up_ssh() {
+
+  _aegir_up_check_user_context();
+  $user_settings = drush_get_context('user');
+  _debug('$user_settings', $user_settings);
+
   $args = func_get_args();
   $workspace = $args[0];
+  _debug('$workspace', $workspace);
   $vm = $args[1];
-  drush_print($workspace);
-  drush_print($vm);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up ssh %s %s", $workspace, $vm);
+  _debug('$vm', $vm);
+
+  _aegir_up_check_workspace($workspace);
+
+  drush_shell_exec('cd %s && vagrant ssh-config %s', WORKSPACE_ROOT . $workspace, $vm);
+  $ssh_config = drush_shell_exec_output();
+  _debug('$ssh_config', $ssh_config);
+
+  $ssh_hostname  = substr($ssh_config[1], 11);
+  _debug('$ssh_hostname', $ssh_hostname);
+  $ssh_port = substr($ssh_config[3], 7);
+  _debug('$ssh_port', $ssh_port);
+
+  drush_shell_exec_interactive('ssh %s -l %s -i %s -p %s', $ssh_hostname, $user_settings['aegirup_username'], $user_settings['aegirup_ssh_keysprivate'], $ssh_port);
+
 }
 
 /**
