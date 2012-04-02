@@ -418,6 +418,19 @@ function _aegir_up_check_user_context() {
 }
 
 /**
+ * Ensure that a given workspace exists
+ */
+function _aegir_up_check_workspace($workspace) {
+  if (!is_dir(WORKSPACE_ROOT . $workspace)) {
+    drush_set_error(dt('ERROR: Could not find a !workspace_label called !workspace.',
+      array('!workspace_label' => WORKSPACE_LABEL,
+            '!workspace'       => $workspace,
+      ))
+    );
+  }
+}
+
+/**
  * Ensure that a workspace name is unique and well-formed
  */
 function _aegir_up_validate_workspace($workspace) {
