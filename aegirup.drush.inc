@@ -281,8 +281,9 @@ function drush_aegirup_post_aegir_up_initialize($workspace) {
     drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
   }
 
+  $workspace_path = WORKSPACE_ROOT . $workspace;
+
   if ($init_only == FALSE) {
-    $workspace_path = WORKSPACE_ROOT . $workspace . '/';
     drush_shell_exec_interactive("cd %s && vagrant up", $workspace_path);
   }
 
