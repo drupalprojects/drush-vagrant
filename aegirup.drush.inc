@@ -159,7 +159,11 @@ function drush_aegirup_aegir_up() {
  */
 function drush_aegirup_aegir_up_initialize_validate($workspace) {
 
- _aegir_up_check_user_context();
+  _aegir_up_check_user_context();
+
+  // Check that the workspace name is unique and well-formed
+  _aegir_up_validate_workspace($workspace);
+
 
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
@@ -171,10 +175,6 @@ function drush_aegirup_aegir_up_initialize_validate($workspace) {
       );
     }
   }
-
-  // Check that the workspace name is unique and well-formed
-  _aegir_up_validate_workspace($workspace);
-
 }
 
 /**
