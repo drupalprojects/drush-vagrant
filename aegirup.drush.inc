@@ -343,18 +343,6 @@ function drush_aegirup_aegir_up_ssh() {
 }
 
 /**
- * Clone a git repo, and initilize a new workspace within it.
- */
-function drush_aegirup_aegir_up_clone() {
-  $args = func_get_args();
-  $git_repo = $args[0];
-  $workspace = $args[1];
-  drush_print($git_repo);
-  drush_print($workspace);
-  drush_shell_exec_interactive(AEGIR_UP_ROOT . "aegir-up clone %s %s", $git_repo, $workspace);
-}
-
-/**
  * Create or update user-specific settings.
  */
 function drush_aegirup_aegir_up_user() {
