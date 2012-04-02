@@ -330,7 +330,12 @@ function drush_aegirup_aegir_up_ssh() {
 
   _aegir_up_check_workspace($workspace);
 
-  drush_shell_exec('cd %s && vagrant ssh-config %s', WORKSPACE_ROOT . $workspace, $vm);
+  if ($vm) {
+    drush_shell_exec("cd %s && vagrant ssh-config %s", WORKSPACE_ROOT . $workspace, $vm);
+  }
+  else {
+    drush_shell_exec("cd %s && vagrant ssh-config", WORKSPACE_ROOT . $workspace);
+  }
   $ssh_config = drush_shell_exec_output();
   _debug('$ssh_config', $ssh_config);
 
