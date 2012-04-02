@@ -520,7 +520,7 @@ function _aegir_up_list_workspaces(){
 
     while (false !== ($file = readdir($handle))) {
       _debug('$file', $file);
-      if ($file != "." && $file != ".." && is_dir(WORKSPACE_ROOT . $file)) {
+      if (substr($file, 0, 1) != "." && is_dir(WORKSPACE_ROOT . $file)) {
         _debug('Directory', $file);
         $workspaces[] = $file;
       }
@@ -540,7 +540,7 @@ function _aegir_up_get_subnet($workspace){
   $config_file = WORKSPACE_ROOT . $workspace . '/.config/config.rb';
 
   // Read each line of the config file to find the line that contains the subnet
-  if ($file = @fopen($config_file, "r")) {
+  if (is_file($config_file) && $file = @fopen($config_file, "r")) {
     while (($line = fgets($file, 4096)) !== false) {
       if (strpos($line , 'Subnet')) {
         $match = $line;
