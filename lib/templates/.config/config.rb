@@ -1,7 +1,7 @@
 require "./settings.rb"
 
 class VmAuto                        # default virtual machine settings
-  Modules   = "../../lib/modules"   # puppet modules folder name
+  Modules   = "aegirup_modules_path"   # puppet modules folder name
   Subnet    = "10"                  # 192.168.###.0/24 subnet for this network
 end
 
