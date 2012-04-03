@@ -22,7 +22,7 @@ DEPENDENCIES
 ------------
 
 Aegir-up depends on Drush and Vagrant (which in turn depends on VirtualBox,
-and possibly Ruby and RubyGems.) 
+and possibly Ruby and RubyGems), along with NFS.
 
 Vagrant 1.0+ is required, and installation instructions can be found at:
 http://vagrantup.com/docs/getting-started/index.html
@@ -33,6 +33,10 @@ downloaded from: https://www.virtualbox.org/wiki/Downloads.
 Drush 4.x is required (and 5.x support is planned). Drush can be installed in a
 number of ways, as detailed here:
 http://drupalcode.org/project/drush.git/blob/HEAD:/README.txt#l30
+
+NFS (Network File System) is pre-installed on many, if not most Unix-like OSes.
+If it isn't already, a recent version should be easy to install using your OS's
+preferred packaging method.
 
 Compatible releases of Vagrant, VirtualBox and Drush are available in Debian's
 Testing branch, and so can be installed (along with all dependencies) with a
