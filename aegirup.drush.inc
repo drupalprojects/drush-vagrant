@@ -193,6 +193,15 @@ function drush_aegirup_aegir_up_initialize_validate($workspace) {
 function drush_aegirup_aegir_up_initialize($workspace) {
 
   $user_settings = drush_get_context('user');
+  if (!$user_settings) {
+    $home = drush_shell_exec_output();
+    _debug('$home', $home);
+    include($home[0] . '/.drushrc.php');
+    _debug('$options', $options);
+    foreach ($options as $option => $value) {
+      $user_settings[$option] = $value;
+    }
+  }
   _debug('$user_settings', $user_settings);
 
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
