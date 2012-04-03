@@ -383,6 +383,8 @@ function drush_aegirup_aegir_up_ssh() {
   $ssh_port = substr($ssh_config[3], 7);
   _debug('$ssh_port', $ssh_port);
 
+  drush_shell_exec_interactive('cd %s && vagrant up', WORKSPACE_ROOT . '/' . $workspace);
+
   drush_shell_exec_interactive('ssh %s -l %s -i %s -p %s', $ssh_hostname, $user_settings['aegirup_username'], $user_settings['aegirup_ssh_keysprivate'], $ssh_port);
 
 }
