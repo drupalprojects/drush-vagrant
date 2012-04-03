@@ -5,8 +5,8 @@
  *   Aegir-up family of drush commands for managing Vagrant-based VMs.
  */
 
-define("WORKSPACE_LABEL", "project");
-define("BLUEPRINT_LABEL", "template");
+define("WORKSPACE_LABEL", "workspace");
+define("BLUEPRINT_LABEL", "blueprint");
 define("VM_LABEL", "VM");
 define("AEGIR_UP_ROOT", dirname(__FILE__).'/');
 define("BLUEPRINT_DIR", AEGIR_UP_ROOT . "lib/" . BLUEPRINT_LABEL . "s/");
@@ -61,25 +61,25 @@ function aegirup_drush_command() {
     ),
     'options' => array(
       BLUEPRINT_LABEL => array(
-        'description' => dt('Specify a !blueprint to use. Defaults to \'aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
+        'description' => dt('Specify a !blueprint to use. Defaults to \'dev-aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
       'git-repo' => array(
         'description' => dt('Clone a Git repo, instead of using a !blueprint.', array('!blueprint' => BLUEPRINT_LABEL))),
 //      'no-browser' => array(
 //        'description' => dt('Don\'t launch a browser')),
       'no-hosts' => array(
-        'description' => dt('Don\'t edit /etc/hosts')),
+        'description' => dt('Don\'t edit /etc/hosts.')),
       'init-only' => array(
-        'description' => dt('Don\'t start the !VM (implies \'--no-browser\')', array('!VM' => VM_LABEL))),
+        'description' => dt('Don\'t start the !VM.', array('!VM' => VM_LABEL))),
     ),
     'examples' => array(
-      'drush aui Workspace1 --' . BLUEPRINT_LABEL .'=dev' => dt('Initialize a new Aegir-up !workspace using the \'aegir-dev\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+      'drush aui Workspace1 --' . BLUEPRINT_LABEL .'=dev-aegir' => dt('Initialize a new Aegir-up !workspace using the \'dev-aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!workspace'=> WORKSPACE_LABEL)),
     ),
     'aliases' => array('aui'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
   $items['aegir-up-delete'] = array(
-    'description' => dt('Delete a Aegir-up !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
+    'description' => dt('Delete an Aegir-up !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
     'arguments' => array(
       WORKSPACE_LABEL => dt('The !workspace to delete.', array('!workspace'=> WORKSPACE_LABEL)),
     ),
