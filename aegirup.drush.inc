@@ -431,7 +431,8 @@ function drush_aegirup_aegir_up_user() {
   // Get env var defaults
   foreach ($data as $key => $datum) {
     drush_shell_exec($datum['command']);
-    $data[$key]['default'] = drush_shell_exec_output()[0];
+    $default = drush_shell_exec_output();
+    $data[$key]['default'] = $default[0];
   }
 
   // Files
