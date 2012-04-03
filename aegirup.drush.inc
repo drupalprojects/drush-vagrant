@@ -32,7 +32,10 @@ function aegirup_drush_help($section) {
  */
 function aegirup_drush_init() {
   $user_settings = drush_get_context('user');
-  define("WORKSPACE_ROOT", $user_settings['aegirup_workspace_root']);
+  if (isset($user_settings['aegirup_workspace_root'])) {
+    define("WORKSPACE_ROOT", $user_settings['aegirup_workspace_root']);
+  }
+  _debug("WORKSPACE_ROOT", WORKSPACE_ROOT);
 }
 
 /**
@@ -487,6 +490,17 @@ function _aegir_up_check_user_context() {
     drush_print('Aegir-up requires those settings in order to function properly.');
     if (drush_confirm('Proceed?')) {
       drush_shell_exec_interactive('drush aegir-up-user');
+      drush_shell_exec('echo $HOME');
+      // WORKSPACE_ROOT won't have been defined in hook_drush_init() yet, so we
+      // have to do it here for the first run of aegir-up-initialize
+      $home = drush_shell_exec_output();
+      _debug('$home', $home);
+      include_once($home[0] . '/.drushrc.php');
+      define("WORKSPACE_ROOT", $options['aegirup_workspace_root']);
+      _debug("WORKSPACE_ROOT", WORKSPACE_ROOT);
+    }
+    else {
+      drush_user_abort();
     }
   }
 }
