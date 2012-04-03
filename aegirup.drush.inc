@@ -103,19 +103,6 @@ function aegirup_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  $items['aegir-up-clone'] = array(
-    'description' => dt('Clone and initialize a !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
-    'arguments' => array(
-      'git repo' => dt('The Git repo of the !workspace definition.', array('!workspace'=> WORKSPACE_LABEL)),
-      WORKSPACE_LABEL => dt('The name of the new !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
-    ),
-    'examples' => array(
-      'drush auc http://git.drupal.org/project/openatria.git openatria' => dt('Clone the git repo into a new !workspace directory (openatria).', array('!workspace'=> WORKSPACE_LABEL)),
-    ),
-    'aliases' => array('auc'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
-  );
-
   $items['aegir-up-user'] = array(
     'description' => "Initialize or update user-specific settings for Aegir-up.",
     'aliases' => array('auu'),
