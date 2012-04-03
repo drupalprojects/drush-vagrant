@@ -647,7 +647,8 @@ function _aegir_up_get_subnet($workspace){
  */
 function _debug($label, $data = null) {
   if (drush_get_option('debug')) {
-    drush_log('Function: ' . debug_backtrace(false)[1]['function'] . '()', 'debug');
+    $backtrace = debug_backtrace(false);
+    drush_log('Function: ' . $backtrace[1]['function'] . '()', 'debug');
     drush_log($label . ': ' . print_r($data, true), 'debug');
   }
 }
