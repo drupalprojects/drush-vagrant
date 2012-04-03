@@ -408,7 +408,7 @@ function drush_aegirup_aegir_up_ssh() {
  */
 function drush_aegirup_aegir_up_user() {
 
-  $user_context = array();
+  $user_settings = array();
   $data = array();
 
   // Environment variables
@@ -465,22 +465,24 @@ function drush_aegirup_aegir_up_user() {
   // Build our user context
   if ($correct) {
     foreach ($data as $key => $datum) {
-      $user_context[$key] = $datum['default'];
+      $user_settings[$key] = $datum['default'];
     }
   }
   // Or prompt for everything
   else {
     $prompt = 'What !label would you like to use? ';
     foreach ($data as $key => $datum) {
-      $user_context[$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
+      $user_settings[$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
     }
   }
 
-  if (!is_dir($user_context['aegirup_workspace_root'])) {
-    mkdir($user_context['aegirup_workspace_root']);
+  if (!is_dir($user_settings['aegirup_workspace_root'])) {
+    mkdir($user_settings['aegirup_workspace_root']);
   }
 
-  drush_set_context('user', $user_context);
+  _debug("WORKSPACE_ROOT", WORKSPACE_ROOT);
+
+  drush_set_context('user', $user_settings);
   drush_save_config('user');
 }
 
