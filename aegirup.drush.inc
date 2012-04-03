@@ -376,18 +376,26 @@ function drush_aegirup_aegir_up_ssh() {
   _debug('$user_settings', $user_settings);
 
   $args = func_get_args();
-  $workspace = $args[0];
+  if (!($workspace = $args[0])) {
+    drush_set_error(dt('ERROR: aegir-up-ssh requires a !workspace_label as an argument', array('!workspace_label' => WORKSPACE_LABEL)));
+    drush_print(dt('You can initialize a new !workspace_label by running \'drush aegir-up-initialize [<!workspace_label>]\'', array('!workspace_label' => WORKSPACE_LABEL)));
+    drush_print(dt('Currently available !workspace_labels include:', array('!workspace_label' => WORKSPACE_LABEL)));
+    drush_shell_exec_interactive('drush aegir-up');
+    exit(1);
+  }
   _debug('$workspace', $workspace);
   $vm = $args[1];
   _debug('$vm', $vm);
+  $workspace_path = WORKSPACE_ROOT . $workspace;
+  _debug('$workspace_path', $workspace_path);
 
   _aegir_up_check_workspace($workspace);
 
   if ($vm) {
-    drush_shell_exec("cd %s && vagrant ssh-config %s", WORKSPACE_ROOT . $workspace, $vm);
+    drush_shell_exec("cd %s && vagrant ssh-config %s", $workspace_path, $vm);
   }
   else {
-    drush_shell_exec("cd %s && vagrant ssh-config", WORKSPACE_ROOT . $workspace);
+    drush_shell_exec("cd %s && vagrant ssh-config", $workspace_path);
   }
   $ssh_config = drush_shell_exec_output();
   _debug('$ssh_config', $ssh_config);
