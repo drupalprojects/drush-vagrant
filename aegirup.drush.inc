@@ -242,6 +242,18 @@ function drush_aegirup_aegir_up_initialize($workspace) {
     drush_copy_dir(BLUEPRINT_DIR . $blueprint, $workspace_path);
   }
 
+  //Check for support of 64-bit client OSes
+  drush_shell_exec('egrep \'(vmx|svm)\' /proc/cpuinfo');
+  $output = drush_shell_exec_output();
+  if (!$output) {
+    // Switch to i386 base box
+    $settings_file = file_get_contents($workspace_path . 'settings.rb');
+    $settings_file = str_replace('debian-LAMP-20', 'debian-LAMP-i386-20', $settings_file);
+    $settings_file = str_replace('debian-LAMP-current.box', 'debian-LAMP-i386-current.box', $settings_file);
+    file_put_contents($workspace_path . 'settings.rb', $settings_file);
+  }
+
+
   // Set up the new workspace
   symlink(BLUEPRINT_DIR . 'Vagrantfile', $workspace_path . 'Vagrantfile');
   symlink(BLUEPRINT_DIR . 'gitignore', $workspace_path . '.gitignore');
