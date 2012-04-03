@@ -362,7 +362,7 @@ function drush_aegirup_aegir_up_delete($workspace) {
     }
   }
   else {
-    drush_print(dt('Aborting.'));
+    drush_user_abort();
   }
 }
 
