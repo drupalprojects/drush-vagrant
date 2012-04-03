@@ -205,7 +205,7 @@ function drush_aegirup_aegir_up_initialize($workspace) {
   _debug('$user_settings', $user_settings);
 
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
-    $blueprint = 'default';
+    $blueprint = 'dev-aegir';
   }
 
   $git_repo = drush_get_option('git-repo');
