@@ -57,7 +57,7 @@ function aegirup_drush_command() {
   $items['aegir-up-initialize'] = array(
     'description' => dt('Initialize a new Aegir-up !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
     'arguments' => array(
-      WORKSPACE_LABEL => dt('The !workspace to initialize. Defaults to \'Aegir\'.', array('!workspace'=> WORKSPACE_LABEL)),
+      WORKSPACE_LABEL => dt('The !workspace to initialize.', array('!workspace'=> WORKSPACE_LABEL)),
     ),
     'options' => array(
       BLUEPRINT_LABEL => array(
@@ -161,6 +161,12 @@ function drush_aegirup_aegir_up() {
  * Implementation of drush_hook_commandhook_validate().
  */
 function drush_aegirup_aegir_up_initialize_validate($workspace) {
+
+  if (!isset($workspace)) {
+    drush_set_error(dt("ERROR: Please provide a name for your new !workspace_label.",
+      array('!workspace_label' => WORKSPACE_LABEL,)));
+    exit(1);
+  }
 
   _aegir_up_check_user_context();
 
