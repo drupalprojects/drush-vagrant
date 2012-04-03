@@ -42,14 +42,14 @@ function aegirup_drush_command() {
   $items = array();
 
   $items['aegir-up'] = array(
-    'description' => "Print the status of your Aegir-up system.",
-    'arguments' => array(
-      WORKSPACE_LABEL => dt('An (optional) !workspace to present status information for.', array('!workspace'=> WORKSPACE_LABEL)),
-      VM_LABEL => dt('An (optional) !VM to present status information for.', array('!VM' => VM_LABEL)),
-    ),
-    'examples' => array(
-      'drush au Workspace1 hm' => dt('Print the status of the hm !VM in the Workspace1 !workspace.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
-    ),
+    'description' => dt('List current !workspace_labels.', array('!workspace_label' => WORKSPACE_LABEL)),
+//    'arguments' => array(
+//      WORKSPACE_LABEL => dt('An (optional) !workspace to present status information for.', array('!workspace'=> WORKSPACE_LABEL)),
+//      VM_LABEL => dt('An (optional) !VM to present status information for.', array('!VM' => VM_LABEL)),
+//    ),
+//    'examples' => array(
+//      'drush au Workspace1 hm' => dt('Print the status of the hm !VM in the Workspace1 !workspace.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+//    ),
     'aliases' => array('au'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
@@ -145,9 +145,16 @@ function aegirup_drush_pm_download_destination_alter(&$project, $release) {
 function drush_aegirup_aegir_up() {
   $args = func_get_args();
   $workspace = $args[0];
+  _debug('$workspace', $workspace);
   $vm = $args[1];
-  drush_print($workspace);
-  drush_print($vm);
+  _debug('$vm', $vm);
+
+  $workspaces = _aegir_up_list_workspaces();
+  _debug('$workspaces', $workspaces);
+  
+  foreach ($workspaces as $entry) {
+    drush_print($entry);
+  }
 }
 
 /**
