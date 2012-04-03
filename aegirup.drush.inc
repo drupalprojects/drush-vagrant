@@ -151,7 +151,7 @@ function drush_aegirup_aegir_up() {
 
   $workspaces = _aegir_up_list_workspaces();
   _debug('$workspaces', $workspaces);
-  
+
   foreach ($workspaces as $entry) {
     drush_print($entry);
   }
@@ -173,9 +173,7 @@ function drush_aegirup_aegir_up_initialize_validate($workspace) {
     if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
       drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
         array('!blueprint'       => $blueprint,
-              '!blueprint_label' => BLUEPRINT_LABEL,
-        ))
-      );
+              '!blueprint_label' => BLUEPRINT_LABEL,)));
     }
   }
 }
@@ -197,9 +195,8 @@ function drush_aegirup_aegir_up_initialize($workspace) {
   drush_print(dt("This script will create a new !workspace_label at !workspace_root!workspace.",
     array('!workspace_root'  => WORKSPACE_ROOT,
           '!workspace'       => $workspace,
-          '!workspace_label' => WORKSPACE_LABEL,
-    ))
-  );
+          '!workspace_label' => WORKSPACE_LABEL,)));
+
   if ($git_repo) {
     drush_print(dt("It will clone the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
   }
@@ -294,16 +291,15 @@ function drush_aegirup_post_aegir_up_initialize($workspace) {
   drush_print(dt('Your !workspace was successfully initialized.', array('!workspace' => WORKSPACE_LABEL)));
   drush_print(dt('The root for your !workspace is !workspace_path', array('!workspace' => WORKSPACE_LABEL, '!workspace_path' => $workspace_path)));
   if ($no_hosts == FALSE) {
-    drush_print(dt('The subnet for your !workspace has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!workspace' => WORKSPACE_LABEL, '!subnet' => $subnet))); 
+    drush_print(dt('The subnet for your !workspace has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!workspace' => WORKSPACE_LABEL, '!subnet' => $subnet)));
   }
-  drush_print(dt('You can now: * Alter Aegir-up\'s behaviour by editing !workspace_path/settings.rb.', array('!workspace_path' => $workspace_path))); 
+  drush_print(dt('You can now: * Alter Aegir-up\'s behaviour by editing !workspace_path/settings.rb.', array('!workspace_path' => $workspace_path)));
   drush_print(dt('             * Redefine the !VM(s) by editing the Puppet manifest(s) in !workspace_path/manifests.', array('!VM' => VM_LABEL, '!workspace_path' => $workspace_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !workspace_path/modules.', array('!workspace_path' => $workspace_path)));
 
-  // * Build platforms in the front-end based on makefiles added to .../makefiles." 
-  // * Have platforms built outside the VM by mounting /var/aegir under NFS." 
+  // * Build platforms in the front-end based on makefiles added to .../makefiles."
+  // * Have platforms built outside the VM by mounting /var/aegir under NFS."
 
- 
 //  if ($no_browser == FALSE) {}
 }
 
@@ -496,9 +492,7 @@ function _aegir_up_check_workspace($workspace) {
   if (!is_dir(WORKSPACE_ROOT . $workspace)) {
     drush_set_error(dt('ERROR: Could not find a !workspace_label called !workspace.',
       array('!workspace_label' => WORKSPACE_LABEL,
-            '!workspace'       => $workspace,
-      ))
-    );
+            '!workspace'       => $workspace,)));
   }
 }
 
@@ -509,17 +503,13 @@ function _aegir_up_validate_workspace($workspace) {
   if (is_dir(WORKSPACE_ROOT . $workspace)) {
     drush_set_error(dt('ERROR: There is already a !workspace_label called !workspace.',
       array('!workspace_label' => WORKSPACE_LABEL,
-            '!workspace'       => $workspace,
-      ))
-    );
+            '!workspace'       => $workspace,)));
   }
   $regex = '/^([a-z0-9][a-z0-9.-]*[a-z0-9])$/';
   if (preg_match($regex, $workspace) < 1) {
     drush_set_error(dt('ERROR: the name of your !workspace_label (!workspace) should only contains lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
       array('!workspace_label' => WORKSPACE_LABEL,
-            '!workspace'       => $workspace,
-      ))
-    );
+            '!workspace'       => $workspace,)));
   }
 }
 
@@ -538,7 +528,7 @@ function _aegir_up_next_available_subnet() {
     $subnets[$workspace] = _aegir_up_get_subnet($workspace);
   }
 
-  // If there aren't any projects yet, use the default  
+  // If there aren't any projects yet, use the default
   if (!(count($subnets) > 0)) {
     return $initial_subnet;
   }
@@ -550,7 +540,7 @@ function _aegir_up_next_available_subnet() {
       return $key;
     }
   }
-  
+
   // If we've reached here, then no subnets are available
   drush_set_error(dt('ERROR: We\'ve run out of Subnets!'));
 }
@@ -573,7 +563,6 @@ function _aegir_up_list_workspaces(){
     }
     closedir($handle);
   }
-
   return $workspaces;
 }
 
@@ -610,7 +599,7 @@ function _aegir_up_get_subnet($workspace){
   else {
     drush_set_error(dt('ERROR: Could not parse !config_file in _aegir_up_get_subnet().', array('!config_file' => $config_file)));
   }
-  
+
 }
 
 /**
