@@ -28,6 +28,14 @@ function aegirup_drush_help($section) {
 }
 
 /**
+ * Implementation of hook_drush_init().
+ */
+function aegirup_drush_init() {
+  $user_settings = drush_get_context('user');
+  define("WORKSPACE_ROOT", $user_settings['aegirup_workspace_root']);
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function aegirup_drush_command() {
