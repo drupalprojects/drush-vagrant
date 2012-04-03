@@ -306,7 +306,7 @@ function drush_aegirup_post_aegir_up_initialize($workspace) {
   // Add domain to hosts file
   if ($no_hosts == FALSE) {
     drush_print(dt('Enter your password to add an entry for \'!workspace\' to your hosts file, or press CTRL-c to leave it as is.', array( '!workspace' => $workspace)));
-    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local',_aegir_up_get_subnet($workspace), $workspace);
+    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local', _aegir_up_get_subnet($workspace), $workspace);
     drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
   }
 
