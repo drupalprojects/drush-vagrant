@@ -9,7 +9,6 @@ define("WORKSPACE_LABEL", "project");
 define("BLUEPRINT_LABEL", "template");
 define("VM_LABEL", "VM");
 define("AEGIR_UP_ROOT", dirname(__FILE__).'/');
-define("WORKSPACE_ROOT", AEGIR_UP_ROOT . WORKSPACE_LABEL . "s/");
 define("BLUEPRINT_DIR", AEGIR_UP_ROOT . "lib/" . BLUEPRINT_LABEL . "s/");
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,6 +233,7 @@ function drush_aegirup_aegir_up_initialize($workspace) {
   $config_file = file_get_contents($workspace_path . '.config/config.rb');
   $config_file = str_replace('"10"', '"' . $subnet . '"', $config_file);
   $config_file = str_replace('"hm"', '"' . $workspace . '"', $config_file);
+  $config_file = str_replace('"aegirup_modules_path"', '"' . AEGIR_UP_ROOT . 'lib/modules"', $config_file);
   file_put_contents($workspace_path . '.config/config.rb', $config_file);
 
   //TODO: check for existence of these vars
@@ -399,6 +399,7 @@ function drush_aegirup_aegir_up_user() {
   $data['aegirup_home'] = array( 'command' => 'echo $HOME', 'label' => 'home folder');
   $data['aegirup_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
   $data['aegirup_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
+  $data['aegirup_workspace_root'] = array( 'command' => 'echo $HOME/aegir-up/', 'label' => 'Workspace folder');
   $data['aegirup_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
   $data['aegirup_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
   // Get env var defaults
@@ -455,6 +456,10 @@ function drush_aegirup_aegir_up_user() {
     foreach ($data as $key => $datum) {
       $user_context[$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
     }
+  }
+
+  if (!is_dir($user_context['aegirup_workspace_root'])) {
+    mkdir($user_context['aegirup_workspace_root']);
   }
 
   drush_set_context('user', $user_context);
