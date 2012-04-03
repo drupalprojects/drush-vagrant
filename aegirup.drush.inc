@@ -111,12 +111,12 @@ function aegirup_drush_command() {
 
   // Drush topic
   $items['aegir-up-docs'] = array(
-    'description' => 'Aegir-up documentation.',
+    'description' => 'Aegir-up README.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . 'aegir-up-topic.txt'),
+    'callback arguments' => array(AEGIR_UP_ROOT . 'README.md'),
   );
 
   return $items;
