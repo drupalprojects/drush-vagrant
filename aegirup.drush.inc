@@ -112,14 +112,38 @@ function aegirup_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  // Drush topic
-  $items['aegir-up-docs'] = array(
+  // Drush topics
+  $items['aegir-up-readme'] = array(
     'description' => 'Aegir-up README.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
     'callback arguments' => array(AEGIR_UP_ROOT . 'README.md'),
+  );
+  $items['aegir-up-architecture'] = array(
+    'description' => 'Aegir-up architecture documentation.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/architecture.md'),
+  );
+  $items['aegir-up-blueprints'] = array(
+    'description' => 'Aegir-up blueprints documentation.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/blueprints.md'),
+  );
+   $items['aegir-up-workspaces'] = array(
+    'description' => 'Aegir-up workspaces documentation.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/workspaces.md'),
   );
 
   return $items;
