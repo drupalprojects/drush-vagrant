@@ -24,7 +24,7 @@ function vagrant_drush_command() {
   );
   $items['vagrant-alias-config'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Convert the output of `vagrant ssh_config` into a Drush remote alias.',
+    'description' => 'Convert the output of `vagrant ssh-config` into a Drush remote alias.',
   );
   return $items;
 }
@@ -52,10 +52,10 @@ function drush_vagrant_alias_config() {
   $args = func_get_args();
 
   drush_print("Attempting to read the Vagrant SSH configuration.");
-  $status = drush_shell_exec("vagrant ssh_config");
+  $status = drush_shell_exec("vagrant ssh-config");
   $output = drush_shell_exec_output();
   if (!$status) {
-    drush_log(dt("The following errors occurred when running `vagrant ssh_config`. Are you in the directory with the Vagrantfile?"), "error");
+    drush_log(dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"), "error");
     if (!empty($output)) {
       foreach ($output as $line) {
         drush_print($line);
