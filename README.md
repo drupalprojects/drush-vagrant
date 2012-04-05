@@ -85,8 +85,16 @@ More detailed usage information is provided by running:
 OTHER DOCS & HELP
 -----------------
 
-Additional documentation can be found on the wiki at:
-http://community.openatria.com/c/aegir-up
+More detailed documentation can be found in the docs/ folder, which are also
+available as Drush topics:
+
+  drush topic
+
+Additional documentation, including user-contributed guides can be found on the
+wiki at: http://community.openatria.com/c/aegir-up
+
+Bug reports, feature and support requests should be submitted to the drupal.org
+issue queue: http://drupal.org/project/issues/aegir-up
 
 Also, the developers (See Credits section, below) can usually be found on IRC
 in the #aegir and #openatria channels on irc.freenode.net
