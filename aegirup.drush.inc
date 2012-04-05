@@ -337,11 +337,11 @@ function drush_aegirup_post_aegir_up_initialize($workspace) {
 
   $workspace_path = WORKSPACE_ROOT . $workspace;
 
+  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $workspace_path);
+
   if ($init_only == FALSE) {
     drush_shell_exec_interactive("cd %s && vagrant up", $workspace_path);
   }
-
-  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $workspace_path);
 
   drush_print(dt('Your !workspace was successfully initialized.', array('!workspace' => WORKSPACE_LABEL)));
   drush_print(dt('The root for your !workspace is !workspace_path', array('!workspace' => WORKSPACE_LABEL, '!workspace_path' => $workspace_path)));
