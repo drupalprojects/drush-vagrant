@@ -325,12 +325,13 @@ function drush_aegirup_aegir_up_initialize($workspace) {
 function drush_aegirup_post_aegir_up_initialize($workspace) {
   $no_hosts = drush_get_option('no-hosts', FALSE);
   $init_only = drush_get_option('init-only', FALSE);
+  $subnet =  _aegir_up_get_subnet($workspace);
 //  $no_browser = drush_get_option('no-browser', $init_only);
 
   // Add domain to hosts file
   if ($no_hosts == FALSE) {
     drush_print(dt('Enter your password to add an entry for \'!workspace\' to your hosts file, or press CTRL-c to leave it as is.', array( '!workspace' => $workspace)));
-    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local', _aegir_up_get_subnet($workspace), $workspace);
+    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local', $subnet, $workspace);
     drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
   }
 
@@ -394,7 +395,7 @@ function drush_aegirup_aegir_up_delete($workspace) {
       drush_shell_exec('rm -rf %s', WORKSPACE_ROOT . '/' . $workspace);
     }
     else {
-      drush_set_error(dt('Failure during \'vagrant destroy\''), 'error');
+      drush_set_error(dt('Failure during \'vagrant destroy\''));
     }
   }
   else {
