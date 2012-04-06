@@ -35,8 +35,10 @@ number of ways, as detailed here:
 http://drupalcode.org/project/drush.git/blob/HEAD:/README.txt#l30
 
 NFS (Network File System) is pre-installed on many, if not most Unix-like OSes.
-If it isn't already, a recent version should be easy to install using your OS's
-preferred packaging method.
+Aegir-up requires an NFS-server, in order to share entire directory trees
+transparently between the host machine and the VM. If it isn't already, a
+recent version should be easy to install using your OS's preferred packaging
+method. For Debian-like systems, this means 'apt-get install nfs-kernel-server'.
 
 Compatible releases of Vagrant, VirtualBox and Drush are available in Debian's
 Testing branch, and so can be installed (along with all dependencies) with a
