@@ -6,7 +6,7 @@ Vagrant::Config.run do |config|
   config.vm.box_url = Vm::Box_url
 
   # add a gui
-  if Vm::Gui == 1
+  if Vm::Gui == true
     config.vm.boot_mode = :gui
   end
 
@@ -51,10 +51,10 @@ Vagrant::Config.run do |config|
             [ "aegir_user_exists",  "true"],
           ] 
         end
-        if Vm::Debug == 1
+        if Vm::Debug == true
           puppet.options     = puppet.options + " --debug"
         end
-        if Vm::Verbose == 1
+        if Vm::Verbose == true
           puppet.options     = puppet.options + " --verbose"
         end
       end
