@@ -11,9 +11,11 @@ class HmAuto                        # settings for our Aegir hostmaster machine
   Vmname    = "#{Hm::Vmname}(#{Hostname})"               # VirtualBox name
 end
 
-class HsAuto                        # settings for our Aegir hostslave machine(s)
-  Hostname  = "cluster"
-  Vmname    = "#{Hs::Vmname}(#{HmAuto::Hostname})"             # VirtualBox name
+if defined?(Hs)
+  class HsAuto                        # settings for our Aegir hostslave machine(s)
+    Hostname  = "cluster"
+    Vmname    = "#{Hs::Vmname}(#{HmAuto::Hostname})"             # VirtualBox name
+  end
 end
 
 class AegirUpUser

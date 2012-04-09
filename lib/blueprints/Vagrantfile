@@ -62,24 +62,26 @@ Vagrant::Config.run do |config|
   end
 
   # add several hostslave Aegir servers on a shared host-only network
-  (1..Hs::Count).each do |index|
-    config.vm.define "#{Hs::Shortname}#{index}" do |hs_config|
-      if defined?(Hs::Basebox)
-        hm_config.vm.box = Hs::Basebox
-        hm_config.vm.box = Hs::Box_url
-      end
-      hs_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.1#{index}"
-      hs_config.vm.host_name = "#{HsAuto::Hostname}#{index}.#{Vm::Domain}"
-      hs_config.vm.customize ["modifyvm", :id, "--name", "#{HsAuto::Vmname} #{index}"]
-      if defined?(Hs::Memory)
-        hs_config.vm.customize ["modifyvm", :id, "--memory", "#{Hs::Memory}"]
-      end
-      if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
-        hs_config.vm.provision :puppet do |puppet|
-          puppet.manifest_file  = "#{Hs::Shortname}.pp"
-          puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
-          if defined?(Vm::Options)
-            puppet.options      = Vm::Options
+  if defined?(Hs)
+    (1..Hs::Count).each do |index|
+      config.vm.define "#{Hs::Shortname}#{index}" do |hs_config|
+        if defined?(Hs::Basebox)
+          hm_config.vm.box = Hs::Basebox
+          hm_config.vm.box = Hs::Box_url
+        end
+        hs_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.1#{index}"
+        hs_config.vm.host_name = "#{HsAuto::Hostname}#{index}.#{Vm::Domain}"
+        hs_config.vm.customize ["modifyvm", :id, "--name", "#{HsAuto::Vmname} #{index}"]
+        if defined?(Hs::Memory)
+          hs_config.vm.customize ["modifyvm", :id, "--memory", "#{Hs::Memory}"]
+        end
+        if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
+          hs_config.vm.provision :puppet do |puppet|
+            puppet.manifest_file  = "#{Hs::Shortname}.pp"
+            puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
+            if defined?(Vm::Options)
+              puppet.options      = Vm::Options
+            end
           end
         end
       end
