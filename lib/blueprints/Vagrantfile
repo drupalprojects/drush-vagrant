@@ -1,91 +1,56 @@
 Vagrant::Config.run do |config|
   require "./.config/config"
 
-  # base box
-  config.vm.box = Vm::Basebox
-  config.vm.box_url = Vm::Box_url
-
-  # add a gui
-  if Vm::Gui == true
-    config.vm.boot_mode = :gui
-  end
-
-  # set memory to 512MB
-  config.vm.customize ["modifyvm", :id, "--memory", "#{Vm::Memory}"]
-
-  # mount /var/aegir on the host using NFS
-  config.vm.share_folder("aegir_root", "#{Hm::Aegir_root}", "./aegir_root", { :nfs => true, :create => true, :remount => true })
-
-  # add a hostmaster Aegir server on a shared host-only network
-  config.vm.define Hm::Shortname do |hm_config|
-    if defined?(Hm::Basebox)
-      hm_config.vm.box = Hm::Basebox
-      hm_config.vm.box_url = Hm::Box_url
-    end
-    hm_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.10"
-    hm_config.vm.host_name = HmAuto::FQDN
-    hm_config.vm.customize ["modifyvm", :id, "--name", "#{HmAuto::Vmname}"]
-    if defined?(Hm::Memory)
-      hm_config.vm.customize ["modifyvm", :id, "--memory", "#{Hm::Memory}"]
-    end
-    
-    if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
-      hm_config.vm.provision :puppet do |puppet|
-        puppet.manifest_file = "#{Hm::Shortname}.pp"
-        puppet.module_path   = [ "#{Vm::Modules}" , "#{VmAuto::Modules}" ]
-        if defined?(Vm::Options)
-          puppet.options     = Vm::Options
-          puppet.facter = [
-            # Add user variables to be processed in aegir-up::user
-            [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
-            [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
-            [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
-            [ "fqdn",               "#{HmAuto::FQDN}" ],
-            # Match aegir's uid/gid to the host user for NFS
-            [ "aegir_user_uid",     "#{AegirUpUser::Uid}" ],
-            [ "aegir_user_gid",     "#{AegirUpUser::Gid}" ],
-            # Set Aegir's root directory and username, again for NFS
-            [ "aegir_root",         "#{Hm::Aegir_root}" ],
-            [ "aegir_user",         "#{Hm::Aegir_user}" ],
-            # Tell the Aegir Puppet module not to bother with the 'aegir' user
-            [ "aegir_user_exists",  "true"],
-          ] 
-        end
-        if Vm::Debug == true
-          puppet.options     = puppet.options + " --debug"
-        end
-        if Vm::Verbose == true
-          puppet.options     = puppet.options + " --verbose"
-        end
+  Vm::Types.each do |vm|
+    (1..vm::Count).each do |index|
+      # Set a counter
+      count = ""
+      if vm::Count > 1
+        count = "(#{index})"
       end
-    end
-  end
 
-  # add several hostslave Aegir servers on a shared host-only network
-  if defined?(Hs)
-    (1..Hs::Count).each do |index|
-      config.vm.define "#{Hs::Shortname}#{index}" do |hs_config|
-        if defined?(Hs::Basebox)
-          hm_config.vm.box = Hs::Basebox
-          hm_config.vm.box = Hs::Box_url
+      config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
+
+        vm_config.vm.box = vm::Basebox
+        vm_config.vm.box_url = vm::Box_url
+        vm_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.#{vm::Address + index}"
+        vm_config.vm.host_name = HmAuto::FQDN
+        vm_config.vm.customize ["modifyvm", :id, "--name", "#{HmAuto::Vmname}#{count}"]
+        vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
+        vm_config.vm.share_folder("aegir_root", "#{vm::Aegir_root}", "./aegir_root", { :nfs => true, :create => true, :remount => true })
+        if vm::Gui == true
+          vm_config.vm.boot_mode = :gui
         end
-        hs_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.1#{index}"
-        hs_config.vm.host_name = "#{HsAuto::Hostname}#{index}.#{Vm::Domain}"
-        hs_config.vm.customize ["modifyvm", :id, "--name", "#{HsAuto::Vmname} #{index}"]
-        if defined?(Hs::Memory)
-          hs_config.vm.customize ["modifyvm", :id, "--memory", "#{Hs::Memory}"]
-        end
-        if File::exists?("#{Vm::Manifests}/#{Hm::Shortname}.pp")
-          hs_config.vm.provision :puppet do |puppet|
-            puppet.manifest_file  = "#{Hs::Shortname}.pp"
-            puppet.module_path    = [ Vm::Modules, VmAuto::Modules ]
-            if defined?(Vm::Options)
-              puppet.options      = Vm::Options
+
+        if File::exists?("#{vm::Manifests}/#{vm::Shortname}.pp")
+          vm_config.vm.provision :puppet do |puppet|
+            puppet.manifest_file = "#{vm::Shortname}.pp"
+            puppet.module_path   = [ "#{vm::Modules}" , "#{VmAuto::Modules}" ]
+            puppet.facter = [
+              # Add user variables to be processed in aegir-up::user
+              [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
+              [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
+              [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
+              [ "fqdn",               "#{HmAuto::FQDN}" ],
+              # Match aegir's uid/gid to the host user for NFS
+              [ "aegir_user_uid",     "#{AegirUpUser::Uid}" ],
+              [ "aegir_user_gid",     "#{AegirUpUser::Gid}" ],
+              # Set Aegir's root directory and username, again for NFS
+              [ "aegir_root",         "#{vm::Aegir_root}" ],
+              [ "aegir_user",         "#{vm::Aegir_user}" ],
+              # Tell the Aegir Puppet module not to bother with the 'aegir' user
+              [ "aegir_user_exists",  "true"],
+            ] 
+            puppet.options = vm::Options
+            if vm::Debug == true
+              puppet.options = puppet.options + " --debug"
+            end
+            if vm::Verbose == true
+              puppet.options = puppet.options + " --verbose"
             end
           end
         end
       end
     end
   end
-
 end
