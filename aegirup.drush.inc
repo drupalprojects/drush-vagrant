@@ -161,30 +161,6 @@ function aegirup_drush_pm_download_destination_alter(&$project, $release) {
   }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-//                              COMMAND FUNCTIONS                            //
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Print a status of workspaces and VMs.
- */
-function drush_aegirup_aegir_up() {
-  $args = func_get_args();
-  $workspace = $args[0];
-  _debug('$workspace', $workspace);
-  $vm = $args[1];
-  _debug('$vm', $vm);
-
-  $workspaces = _aegir_up_list_workspaces();
-  _debug('$workspaces', $workspaces);
-
-  foreach ($workspaces as $entry) {
-    drush_print($entry);
-  }
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 //                            HELPER FUNCTIONS                                //
 ////////////////////////////////////////////////////////////////////////////////
