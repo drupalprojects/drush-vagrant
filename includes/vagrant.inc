@@ -1,5 +1,13 @@
 <?php
 
+// Include all the commands
+include_once('includes/alias.vagrant.inc');
+include_once('includes/delete.vagrant.inc');
+include_once('includes/init.vagrant.inc');
+include_once('includes/ssh.vagrant.inc');
+include_once('includes/status.vagrant.inc');
+include_once('includes/user.vagrant.inc');
+
 /**
  * Ensure that there is a user context
  */

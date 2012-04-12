@@ -10,6 +10,9 @@ define("VM_LABEL", "VM");
 define("VVAGRANT_ROOT", dirname(__FILE__).'/');
 define("BLUEPRINT_DIR", VAGRANT_ROOT . "lib/" . BLUEPRINT_LABEL . "s/");
 
+// Include all command and helper functions
+include_once('includes/vagrant.inc');
+
 /**
  * Implementation of hook_drush_help().
  */
