@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This script needs to run in the current shell, and so has to be called using
+# 'source' or '.'
+
+PROJECT_PATH=$(pwd)
+alias vp="pushd $PROJECT_PATH && vagrant provision && popd"

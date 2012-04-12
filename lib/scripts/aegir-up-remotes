@@ -1,0 +1,6 @@
+#!/bin/bash
+
+git remote add aegir_remote ergonlogic@git.drupal.org:project/puppet-aegir.git
+git remote add drush_remote ergonlogic@git.drupal.org:project/puppet-drush.git
+git remote add apt_remote git://git.koumbit.net/puppet-apt.git
+git remote add common_remote git://labs.riseup.net/shared-common

@@ -1,0 +1,56 @@
+Vagrant::Config.run do |config|
+  require "./.config/config"
+
+  Vm::Types.each do |vm|
+    (1..vm::Count).each do |index|
+      # Set a counter
+      count = ""
+      if vm::Count > 1
+        count = "(#{index})"
+      end
+
+      config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
+
+        vm_config.vm.box = vm::Basebox
+        vm_config.vm.box_url = vm::Box_url
+        vm_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.#{vm::Address + index}"
+        vm_config.vm.host_name = HmAuto::FQDN
+        vm_config.vm.customize ["modifyvm", :id, "--name", "#{HmAuto::Vmname}#{count}"]
+        vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
+        vm_config.vm.share_folder("aegir_root", "#{vm::Aegir_root}", "./aegir_root", { :nfs => true, :create => true, :remount => true })
+        if vm::Gui == true
+          vm_config.vm.boot_mode = :gui
+        end
+
+        if File::exists?("#{vm::Manifests}/#{vm::Shortname}.pp")
+          vm_config.vm.provision :puppet do |puppet|
+            puppet.manifest_file = "#{vm::Shortname}.pp"
+            puppet.module_path   = [ "#{vm::Modules}" , "#{VmAuto::Modules}" ]
+            puppet.facter = [
+              # Add user variables to be processed in aegir-up::user
+              [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
+              [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
+              [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
+              [ "fqdn",               "#{HmAuto::FQDN}" ],
+              # Match aegir's uid/gid to the host user for NFS
+              [ "aegir_user_uid",     "#{AegirUpUser::Uid}" ],
+              [ "aegir_user_gid",     "#{AegirUpUser::Gid}" ],
+              # Set Aegir's root directory and username, again for NFS
+              [ "aegir_root",         "#{vm::Aegir_root}" ],
+              [ "aegir_user",         "#{vm::Aegir_user}" ],
+              # Tell the Aegir Puppet module not to bother with the 'aegir' user
+              [ "aegir_user_exists",  "true"],
+            ] 
+            puppet.options = vm::Options
+            if vm::Debug == true
+              puppet.options = puppet.options + " --debug"
+            end
+            if vm::Verbose == true
+              puppet.options = puppet.options + " --verbose"
+            end
+          end
+        end
+      end
+    end
+  end
+end
