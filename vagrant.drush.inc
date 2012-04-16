@@ -91,7 +91,6 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vagrant-delete Workspace1' => dt('Delete the Workspace1 !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
     ),
-    'aliases' => array('vdel'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
