@@ -8,7 +8,7 @@ define("WORKSPACE_LABEL", "workspace");
 define("BLUEPRINT_LABEL", "blueprint");
 define("VM_LABEL", "VM");
 define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
-define("BLUEPRINT_DIR", DRUSH_VAGRANT_ROOT . "lib/" . BLUEPRINT_LABEL . "s");
+define("BLUEPRINT_DIR", DRUSH_VAGRANT_ROOT . "/lib/" . BLUEPRINT_LABEL . "s");
 
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
@@ -61,9 +61,8 @@ function vagrant_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
-  $items['vagrant-init'] = array(
+  $items['vagrant-initialize'] = array(
     'description' => dt('Initialize a new Drush Vagrant !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
-    'command hook' => 'initialize',
     'arguments' => array(
       WORKSPACE_LABEL => dt('The !workspace to initialize.', array('!workspace'=> WORKSPACE_LABEL)),
     ),
@@ -80,7 +79,7 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush aui Workspace1 --' . BLUEPRINT_LABEL .'=dev-aegir' => dt('Initialize a new Aegir-up !workspace using the \'dev-aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!workspace'=> WORKSPACE_LABEL)),
     ),
-    'aliases' => array('vinit', 'vagrant-initialize'),
+    'aliases' => array('vinit', 'vagrant-init'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
