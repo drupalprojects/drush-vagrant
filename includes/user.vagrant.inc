@@ -78,8 +78,6 @@ function drush_vagrant_user() {
     mkdir($user_settings['vagrant_workspace_root']);
   }
 
-  _debug("WORKSPACE_ROOT", WORKSPACE_ROOT);
-
   drush_set_context('user', $user_settings);
   drush_save_config('user');
 }
