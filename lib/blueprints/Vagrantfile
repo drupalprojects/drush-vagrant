@@ -1,23 +1,33 @@
 Vagrant::Config.run do |config|
   require "./.config/config"
 
-  Vm::Types.each do |vm|
+  count_vms = 0
+  Vm.descendants.each do |vm|
+    count_vms += 1
     (1..vm::Count).each do |index|
-      # Set a counter
+      # Set counters
       count = ""
+      count_fmt = ""
       if vm::Count > 1
-        count = "(#{index})"
+        count = "#{index}"
+        formatted_count = "(#{index} of #{vm::Count})"
       end
 
-      config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
+      config.vm.define "#{vm::Shortname}#{formatted_count}" do |vm_config|
 
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
-        vm_config.vm.network :hostonly, "192.168.#{VmAuto::Subnet}.#{vm::Address + index}"
-        vm_config.vm.host_name = HmAuto::FQDN
-        vm_config.vm.customize ["modifyvm", :id, "--name", "#{HmAuto::Vmname}#{count}"]
+        vm_config.vm.auto_port_range = Conf::SSH_range
+        vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + (count_vms * 10) + index - 1}"
+        hostname = "#{Conf::Workspace}#{count}.#{vm::Domain}"
+        vm_config.vm.host_name = $hostname
+        vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname}#{formatted_count}"]
         vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
-        vm_config.vm.share_folder("aegir_root", "#{vm::Aegir_root}", "./aegir_root", { :nfs => true, :create => true, :remount => true })
+        if defined?(vm::NFS_shares)
+          vm::NFS_shares.each do |name,path|
+            vm_config.vm.share_folder("#{name}", "#{path}", "./#{name}", { :nfs => true, :create => true, :remount => true })
+          end
+        end
         if vm::Gui == true
           vm_config.vm.boot_mode = :gui
         end
@@ -25,13 +35,14 @@ Vagrant::Config.run do |config|
         if File::exists?("#{vm::Manifests}/#{vm::Shortname}.pp")
           vm_config.vm.provision :puppet do |puppet|
             puppet.manifest_file = "#{vm::Shortname}.pp"
-            puppet.module_path   = [ "#{vm::Modules}" , "#{VmAuto::Modules}" ]
+            puppet.module_path   = [ "#{vm::Modules}" , "#{Conf::Modules}" ]
             puppet.facter = [
+              # Fix for broken $fqdn fact on Debian
+              [ "fqdn",               $hostname ],
               # Add user variables to be processed in aegir-up::user
               [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
               [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
               [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
-              [ "fqdn",               "#{HmAuto::FQDN}" ],
               # Match aegir's uid/gid to the host user for NFS
               [ "aegir_user_uid",     "#{AegirUpUser::Uid}" ],
               [ "aegir_user_gid",     "#{AegirUpUser::Gid}" ],
@@ -50,7 +61,10 @@ Vagrant::Config.run do |config|
             end
           end
         end
+
       end
+
     end
   end
+
 end

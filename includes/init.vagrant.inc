@@ -91,14 +91,15 @@ function drush_vagrant_initialize($workspace) {
 
 
   // Set up the new workspace
-  symlink(BLUEPRINT_DIR . 'Vagrantfile', $workspace_path . 'Vagrantfile');
-  symlink(BLUEPRINT_DIR . 'gitignore', $workspace_path . '.gitignore');
-  drush_copy_dir(BLUEPRINT_DIR . '.config', $workspace_path . '.config');
+  symlink(BLUEPRINT_DIR . '/' . 'Vagrantfile', $workspace_path . 'Vagrantfile');
+  symlink(BLUEPRINT_DIR . '/' . 'gitignore', $workspace_path . '.gitignore');
+  drush_copy_dir(BLUEPRINT_DIR . '/' . '.config', $workspace_path . '.config');
   // Make project-specific changes
   $config_file = file_get_contents($workspace_path . '.config/config.rb');
-  $config_file = str_replace('"10"', '"' . $subnet . '"', $config_file);
-  $config_file = str_replace('"hm"', '"' . $workspace . '"', $config_file);
-  $config_file = str_replace('"aegirup_modules_path"', '"' . DRUSH_VAGRANT_ROOT . '/lib/modules"', $config_file);
+  $config_file = str_replace('"/path/to/global.rb"', '"' . DRUSH_VAGRANT_ROOT . '/lib/blueprints/global.rb"', $config_file);
+  $config_file = str_replace('"subnet"', '"' . $subnet . '"', $config_file);
+  $config_file = str_replace('"workspace_name"', '"' . $workspace . '"', $config_file);
+  $config_file = str_replace('"vagrant_modules_path"', '"' . DRUSH_VAGRANT_ROOT . '/lib/modules"', $config_file);
   file_put_contents($workspace_path . '.config/config.rb', $config_file);
 
   //TODO: check for existence of these vars
@@ -111,19 +112,19 @@ function drush_vagrant_initialize($workspace) {
       copy($dotfile_source, $dotfiles_dir . '/' . $dotfile);
     }
   }
-  if (isset($user_settings['aegirup_ssh_keyspublic'])) {
-    copy($user_settings['aegirup_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
+  if (isset($user_settings['vagrant_ssh_keyspublic'])) {
+    copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
   $config_file = file_get_contents($workspace_path . '.config/config.rb');
-  $config_file = str_replace('"username"', '"' . $user_settings['aegirup_username'] . '"', $config_file);
-  if (isset($user_settings['aegirup_git_name'])) {
-    $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['aegirup_git_name'] . '"', $config_file);
+  $config_file = str_replace('"username"', '"' . $user_settings['vagrant_username'] . '"', $config_file);
+  if (isset($user_settings['vagrant_git_name'])) {
+    $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['vagrant_git_name'] . '"', $config_file);
   }
-  if (isset($user_settings['aegirup_git_email'])) {
-    $config_file = str_replace('"username@example.com"', '"' . $user_settings['aegirup_git_email'] . '"', $config_file);
+  if (isset($user_settings['vagrant_git_email'])) {
+    $config_file = str_replace('"username@example.com"', '"' . $user_settings['vagrant_git_email'] . '"', $config_file);
   }
-  $config_file = str_replace('"uid"', '"' . $user_settings['aegirup_uid'] . '"', $config_file);
-  $config_file = str_replace('"gid"', '"' . $user_settings['aegirup_gid'] . '"', $config_file);
+  $config_file = str_replace('"uid"', '"' . $user_settings['vagrant_uid'] . '"', $config_file);
+  $config_file = str_replace('"gid"', '"' . $user_settings['vagrant_gid'] . '"', $config_file);
   file_put_contents($workspace_path . '.config/config.rb', $config_file);
 
 }
@@ -131,7 +132,7 @@ function drush_vagrant_initialize($workspace) {
 /**
  * Post-initialize configuration
  */
-function drush_vagrant_post_initialize($workspace) {
+function drush_vagrant_post_vagrant_initialize($workspace) {
   $no_hosts = drush_get_option('no-hosts', FALSE);
   $init_only = drush_get_option('init-only', FALSE);
   $subnet =  _drush_vagrant_get_subnet($workspace);
