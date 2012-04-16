@@ -7,8 +7,8 @@
 define("WORKSPACE_LABEL", "workspace");
 define("BLUEPRINT_LABEL", "blueprint");
 define("VM_LABEL", "VM");
-define("VVAGRANT_ROOT", dirname(__FILE__).'/');
-define("BLUEPRINT_DIR", VAGRANT_ROOT . "lib/" . BLUEPRINT_LABEL . "s/");
+define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
+define("BLUEPRINT_DIR", DRUSH_VAGRANT_ROOT . "lib/" . BLUEPRINT_LABEL . "s");
 
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
@@ -122,7 +122,7 @@ function vagrant_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . 'README.md'),
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/README.md'),
   );
   $items['docs-vagrant-architecture'] = array(
     'description' => 'Drush Vagrant architecture documentation.',
@@ -130,7 +130,7 @@ function vagrant_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/architecture.md'),
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/architecture.md'),
   );
   $items['docs-vagrant-blueprints'] = array(
     'description' => 'Drush Vagrant blueprints documentation.',
@@ -138,7 +138,7 @@ function vagrant_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/blueprints.md'),
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/blueprints.md'),
   );
    $items['docs-vagrant-workspaces'] = array(
     'description' => 'Drush Vagrant workspaces documentation.',
@@ -146,7 +146,7 @@ function vagrant_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(AEGIR_UP_ROOT . 'docs/workspaces.md'),
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/workspaces.md'),
   );
 
   return $items;
