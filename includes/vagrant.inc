@@ -13,17 +13,17 @@ include_once('user.vagrant.inc');
  */
 function _drush_vagrant_check_user_context() {
   $user_settings = drush_get_context('user');
-  if (!isset($user_settings['aegirup_username'])) {
-    drush_print('This appears to be your first time running Aegir-up or your user settings (~/.drushrc.php) have been deleted.');
-    drush_print('Aegir-up requires those settings in order to function properly.');
+  if (!isset($user_settings['vagrant_username'])) {
+    drush_print('This appears to be your first time running Drush Vagrant or your user settings (~/.drushrc.php) have been deleted.');
+    drush_print('Drush Vagrant Integration requires those settings in order to function properly.');
     if (drush_confirm('Proceed?')) {
-      drush_shell_exec_interactive('drush aegir-up-user');
+      drush_shell_exec_interactive('drush vagrant-user');
       drush_shell_exec('echo $HOME');
       // WORKSPACE_ROOT won't have been defined in hook_drush_init() yet, so we
-      // have to do it here for the first run of aegir-up-initialize
+      // have to do it here for the first run of vagrant-initialize
       $home = drush_shell_exec_output();
       include_once($home[0] . '/.drushrc.php');
-      define("WORKSPACE_ROOT", $options['aegirup_workspace_root']);
+      define("WORKSPACE_ROOT", $options['vagrant_workspace_root']);
     }
     else {
       drush_user_abort();
