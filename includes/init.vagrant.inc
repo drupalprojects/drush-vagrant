@@ -19,7 +19,7 @@ function drush_vagrant_initialize_validate($workspace) {
 
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
-    if (!is_dir(BLUEPRINT_DIR . $blueprint)) {
+    if (!is_dir(BLUEPRINT_DIR . '/' . $blueprint)) {
       drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
         array('!blueprint'       => $blueprint,
               '!blueprint_label' => BLUEPRINT_LABEL,)));
@@ -70,12 +70,12 @@ function drush_vagrant_initialize($workspace) {
   $subnet = _drush_vagrant_next_available_subnet();
 
   // Create the workspace directory from the blueprint
-  $workspace_path = WORKSPACE_ROOT . $workspace . '/';
+  $workspace_path = WORKSPACE_ROOT . '/' . $workspace . '/';
   if ($git_repo) {
     drush_shell_exec_interactive('git clone %s %s', $git_repo, $workspace_path);
   }
   else {
-    drush_copy_dir(BLUEPRINT_DIR . $blueprint, $workspace_path);
+    drush_copy_dir(BLUEPRINT_DIR . '/' . $blueprint, $workspace_path);
   }
 
   //Check for support of 64-bit client OSes
@@ -143,7 +143,7 @@ function drush_vagrant_post_initialize($workspace) {
     drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
   }
 
-  $workspace_path = WORKSPACE_ROOT . $workspace;
+  $workspace_path = WORKSPACE_ROOT . '/' . $workspace;
 
   drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $workspace_path);
 
