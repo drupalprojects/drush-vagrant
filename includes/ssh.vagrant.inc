@@ -9,29 +9,29 @@ function drush_vagrant_ssh() {
   $user_settings = drush_get_context('user');
 
   $args = func_get_args();
-  if (!($workspace = $args[0])) {
-    drush_set_error(dt('ERROR: vagrant-ssh requires a !workspace_label as an argument', array('!workspace_label' => WORKSPACE_LABEL)));
-    drush_print(dt('You can initialize a new !workspace_label by running \'drush vagrant-init [<!workspace_label>]\'', array('!workspace_label' => WORKSPACE_LABEL)));
-    drush_print(dt('Currently available !workspace_labels include:', array('!workspace_label' => WORKSPACE_LABEL)));
+  if (!($project = $args[0])) {
+    drush_set_error(dt('ERROR: vagrant-ssh requires a !project_label as an argument', array('!project_label' => PROJECT_LABEL)));
+    drush_print(dt('You can initialize a new !project_label by running \'drush vagrant-init [<!project_label>]\'', array('!project_label' => PROJECT_LABEL)));
+    drush_print(dt('Currently available !project_labels include:', array('!project_label' => PROJECT_LABEL)));
     drush_shell_exec_interactive('drush vagrant-status');
     exit(1);
   }
   $vm = $args[1];
-  $workspace_path = WORKSPACE_ROOT . $workspace;
+  $project_path = PROJECT_ROOT . $project;
 
-  _drush_vagrant_check_workspace($workspace);
+  _drush_vagrant_check_project($project);
 
   if ($vm) {
-    drush_shell_exec("cd %s && vagrant ssh-config %s", $workspace_path, $vm);
+    drush_shell_exec("cd %s && vagrant ssh-config %s", $project_path, $vm);
   }
   else {
-    drush_shell_exec("cd %s && vagrant ssh-config", $workspace_path);
+    drush_shell_exec("cd %s && vagrant ssh-config", $project_path);
   }
   $ssh_config = drush_shell_exec_output();
   $ssh_hostname  = substr($ssh_config[1], 11);
   $ssh_port = substr($ssh_config[3], 7);
 
-  drush_shell_exec_interactive('cd %s && vagrant up', WORKSPACE_ROOT . '/' . $workspace);
+  drush_shell_exec_interactive('cd %s && vagrant up', PROJECT_ROOT . '/' . $project);
   drush_shell_exec_interactive('ssh %s -l %s -i %s -p %s', $ssh_hostname, $user_settings['vagrant_username'], $user_settings['vagrant_ssh_keysprivate'], $ssh_port);
 
 }

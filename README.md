@@ -4,7 +4,7 @@ DESCRIPTION
 Drush Vagrant Integration provides Drush commands to accomplish common Vagrant
 tasks, and enables a powerful templating framework ('blueprints'). It simpli-
 fies building collaborative, distributed development and testing environments,
-that encourage the use of Drupal development best-practices. Workspaces can
+that encourage the use of Drupal development best-practices. Projects can
 easily be cloned and shared via Git, or even bundled into blueprints that
 others can use as templates for their own development environments.
 
@@ -69,10 +69,10 @@ Or downloading it to your personal .drush folder:
   mkdir .drush
   drush dl drush-vagrant --destination=./.drush
 
-When a Drush Vagrant workspace is first initialized, user settings are
-automatically saved to ~/.drushrc.php, and a folder for workspace created (by
-default) at ~/vagrant. User settings can be modified by running 'drush
-vagrant-user' (or 'drush vuser') at any time.
+When a Drush Vagrant project is first initialized, user settings are
+automatically saved to ~/.drushrc.php. By default, it will use the Vagrant
+'projects' folder usually located at ~/vagrant/projects. User settings can be
+modified by running 'drush vagrant-user' (or 'drush vuser') at any time.
 
 Now that Vagrant is available in Debian (Testing), .deb packaging is planned,
 to further simplify installation.

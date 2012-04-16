@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Print a status of workspaces and VMs.
+ * Print a status of projects and VMs.
  */
 function drush_vagrant_status() {
   $args = func_get_args();
-  $workspace = $args[0];
+  $project = $args[0];
   $vm = $args[1];
 
-  $workspaces = _drush_vagrant_list_workspaces();
+  $projects = _drush_vagrant_list_projects();
 
-  foreach ($workspaces as $entry) {
+  foreach ($projects as $entry) {
     drush_print($entry);
   }
 }

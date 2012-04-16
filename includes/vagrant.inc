@@ -19,11 +19,11 @@ function _drush_vagrant_check_user_context() {
     if (drush_confirm('Proceed?')) {
       drush_shell_exec_interactive('drush vagrant-user');
       drush_shell_exec('echo $HOME');
-      // WORKSPACE_ROOT won't have been defined in hook_drush_init() yet, so we
+      // PROJECT_ROOT won't have been defined in hook_drush_init() yet, so we
       // have to do it here for the first run of vagrant-initialize
       $home = drush_shell_exec_output();
       include_once($home[0] . '/.drushrc.php');
-      define("WORKSPACE_ROOT", $options['vagrant_workspace_root']);
+      define("PROJECT_ROOT", $options['vagrant_project_root']);
     }
     else {
       drush_user_abort();
@@ -32,39 +32,39 @@ function _drush_vagrant_check_user_context() {
 }
 
 /**
- * Ensure that a given workspace exists
+ * Ensure that a given project exists
  */
-function _drush_vagrant_check_workspace($workspace) {
-  if (!is_dir(WORKSPACE_ROOT . $workspace)) {
-    drush_set_error(dt('ERROR: Could not find a !workspace_label called !workspace.',
-      array('!workspace_label' => WORKSPACE_LABEL,
-            '!workspace'       => $workspace,)));
+function _drush_vagrant_check_project($project) {
+  if (!is_dir(PROJECT_ROOT . $project)) {
+    drush_set_error(dt('ERROR: Could not find a !project_label called !project.',
+      array('!project_label' => PROJECT_LABEL,
+            '!project'       => $project,)));
   }
 }
 
 /**
- * Return an array of current workspaces
+ * Return an array of current projects
  */
-function _drush_vagrant_list_workspaces(){
-  $workspaces = array();
-  if ($handle = opendir(WORKSPACE_ROOT)) {
+function _drush_vagrant_list_projects(){
+  $projects = array();
+  if ($handle = opendir(PROJECT_ROOT)) {
     while (false !== ($file = readdir($handle))) {
-      if (substr($file, 0, 1) != "." && is_dir(WORKSPACE_ROOT . $file)) {
-        $workspaces[] = $file;
+      if (substr($file, 0, 1) != "." && is_dir(PROJECT_ROOT . $file)) {
+        $projects[] = $file;
       }
     }
     closedir($handle);
   }
-  return $workspaces;
+  return $projects;
 }
 
 /**
- * Return the subnet of a given workspace
+ * Return the subnet of a given project
  */
-function _drush_vagrant_get_subnet($workspace){
+function _drush_vagrant_get_subnet($project){
   $subnet = '';
   $match = '';
-  $config_file = WORKSPACE_ROOT . $workspace . '/.config/config.rb';
+  $config_file = PROJECT_ROOT . $project . '/.config/config.rb';
 
   // Read each line of the config file to find the line that contains the subnet
   if (is_file($config_file) && $file = @fopen($config_file, "r")) {

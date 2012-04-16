@@ -14,7 +14,7 @@ function drush_vagrant_user() {
   $data['vagrant_home'] = array( 'command' => 'echo $HOME', 'label' => 'home folder');
   $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
   $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
-  $data['vagrant_workspace_root'] = array( 'command' => 'echo $HOME/aegir-up/', 'label' => 'Workspace folder');
+  $data['vagrant_project_root'] = array( 'command' => 'echo $HOME/vagrant/projects', 'label' => 'Project folder');
   $data['vagrant_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
   $data['vagrant_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
   // Get env var defaults
@@ -74,8 +74,8 @@ function drush_vagrant_user() {
     }
   }
 
-  if (!is_dir($user_settings['vagrant_workspace_root'])) {
-    mkdir($user_settings['vagrant_workspace_root']);
+  if (!is_dir($user_settings['vagrant_project_root'])) {
+    mkdir($user_settings['vagrant_project_root']);
   }
 
   drush_set_context('user', $user_settings);

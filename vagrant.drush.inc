@@ -4,7 +4,7 @@
  *   Vagrant family of Drush commands for managing Vagrant-based VMs.
  */
 
-define("WORKSPACE_LABEL", "workspace");
+define("PROJECT_LABEL", "project");
 define("BLUEPRINT_LABEL", "blueprint");
 define("VM_LABEL", "VM");
 define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
@@ -30,8 +30,8 @@ function vagrant_drush_help($section) {
  */
 function vagrant_drush_init() {
   $user_settings = drush_get_context('user');
-  if (isset($user_settings['vagrant_workspace_root'])) {
-    define("WORKSPACE_ROOT", $user_settings['vagrant_workspace_root']);
+  if (isset($user_settings['vagrant_project_root'])) {
+    define("PROJECT_ROOT", $user_settings['vagrant_project_root']);
   }
 }
 
@@ -49,22 +49,22 @@ function vagrant_drush_command() {
     'description' => 'Convert the output of `vagrant ssh-config` into a Drush remote alias.',
   );
   $items['vagrant-status'] = array(
-    'description' => dt('List current !workspace_labels.', array('!workspace_label' => WORKSPACE_LABEL)),
+    'description' => dt('List current !project_labels.', array('!project_label' => PROJECT_LABEL)),
 //    'arguments' => array(
-//      WORKSPACE_LABEL => dt('An (optional) !workspace to present status information for.', array('!workspace'=> WORKSPACE_LABEL)),
+//      PROJECT_LABEL => dt('An (optional) !project to present status information for.', array('!project'=> PROJECT_LABEL)),
 //      VM_LABEL => dt('An (optional) !VM to present status information for.', array('!VM' => VM_LABEL)),
 //    ),
 //    'examples' => array(
-//      'drush au Workspace1 hm' => dt('Print the status of the hm !VM in the Workspace1 !workspace.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+//      'drush au Project1 hm' => dt('Print the status of the hm !VM in the Project1 !project.', array('!VM' => VM_LABEL, '!project'=> PROJECT_LABEL)),
 //    ),
     'aliases' => array('vstat'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   $items['vagrant-initialize'] = array(
-    'description' => dt('Initialize a new Drush Vagrant !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
+    'description' => dt('Initialize a new Drush Vagrant !project.', array('!project'=> PROJECT_LABEL)),
     'arguments' => array(
-      WORKSPACE_LABEL => dt('The !workspace to initialize.', array('!workspace'=> WORKSPACE_LABEL)),
+      PROJECT_LABEL => dt('The !project to initialize.', array('!project'=> PROJECT_LABEL)),
     ),
     'options' => array(
       BLUEPRINT_LABEL => array(
@@ -77,19 +77,19 @@ function vagrant_drush_command() {
         'description' => dt('Don\'t start the !VM.', array('!VM' => VM_LABEL))),
     ),
     'examples' => array(
-      'drush aui Workspace1 --' . BLUEPRINT_LABEL .'=dev-aegir' => dt('Initialize a new Aegir-up !workspace using the \'dev-aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+      'drush aui Project1 --' . BLUEPRINT_LABEL .'=dev-aegir' => dt('Initialize a new Aegir-up !project using the \'dev-aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!project'=> PROJECT_LABEL)),
     ),
     'aliases' => array('vinit', 'vagrant-init'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   $items['vagrant-delete'] = array(
-    'description' => dt('Delete a Drush Vagrant !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
+    'description' => dt('Delete a Drush Vagrant !project.', array('!project'=> PROJECT_LABEL)),
     'arguments' => array(
-      WORKSPACE_LABEL => dt('The !workspace to delete.', array('!workspace'=> WORKSPACE_LABEL)),
+      PROJECT_LABEL => dt('The !project to delete.', array('!project'=> PROJECT_LABEL)),
     ),
     'examples' => array(
-      'drush vagrant-delete Workspace1' => dt('Delete the Workspace1 !workspace.', array('!workspace'=> WORKSPACE_LABEL)),
+      'drush vagrant-delete Project1' => dt('Delete the Project1 !project.', array('!project'=> PROJECT_LABEL)),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
@@ -97,11 +97,11 @@ function vagrant_drush_command() {
   $items['vagrant-ssh'] = array(
     'description' => dt('Log into a Drush Vagrant !VM via SSH.', array('!VM'=> VM_LABEL)),
     'arguments' => array(
-      WORKSPACE_LABEL => dt('The !workspace where the !VM to log into exists.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
-      VM_LABEL => dt('The !VM to log into. Optional, if there is only one !VM in the !workspace.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+      PROJECT_LABEL => dt('The !project where the !VM to log into exists.', array('!VM' => VM_LABEL, '!project'=> PROJECT_LABEL)),
+      VM_LABEL => dt('The !VM to log into. Optional, if there is only one !VM in the !project.', array('!VM' => VM_LABEL, '!project'=> PROJECT_LABEL)),
     ),
     'examples' => array(
-      'drush vagrant-ssh Workspace1 vm1' => dt('Log into the \'vm1\' !VM in the Workspace1 !workspace.', array('!VM' => VM_LABEL, '!workspace'=> WORKSPACE_LABEL)),
+      'drush vagrant-ssh Project1 vm1' => dt('Log into the \'vm1\' !VM in the Project1 !project.', array('!VM' => VM_LABEL, '!project'=> PROJECT_LABEL)),
     ),
     'aliases' => array('vssh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -138,13 +138,13 @@ function vagrant_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/blueprints.md'),
   );
-   $items['docs-vagrant-workspaces'] = array(
-    'description' => 'Drush Vagrant workspaces documentation.',
+   $items['docs-vagrant-projects'] = array(
+    'description' => 'Drush Vagrant projects documentation.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/workspaces.md'),
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/projects.md'),
   );
 
   return $items;

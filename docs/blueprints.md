@@ -1,9 +1,9 @@
 DESCRIPTION
 -----------
 
-'Blueprints' are Aegir-up workspace templates. They include the basic compo-
-nents to define a new funtional workspace. Blueprints can be posted as projects
-to drupal.org, and downloaded via 'drush dl <blueprint-name>'.
+'Blueprints' are Aegir-up project templates. They include the basic components
+to define a new funtional project. Blueprints can be posted as projects to
+drupal.org, and downloaded via 'drush dl <blueprint-name>'.
 
 
 STRUCTURE

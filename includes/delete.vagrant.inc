@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Delete an existing workspace.
+ * Delete an existing project.
  */
-function drush_vagrant_delete($workspace) {
+function drush_vagrant_delete($project) {
 
-  _drush_vagrant_check_workspace($workspace);
+  _drush_vagrant_check_project($project);
 
-  $subnet = _drush_vagrant_get_subnet($workspace);
+  $subnet = _drush_vagrant_get_subnet($project);
 
   drush_shell_exec('grep 192.168.%s.10 /etc/hosts', $subnet);
   $remove_lines = drush_shell_exec_output();
 
   drush_print(dt('!!! WARNING: This operation cannot be undone. !!!'));
-  drush_print(dt('This operation will delete the \'!workspace\' !workspace_label, and destroy all of its !VM_label(s)',
-    array('!workspace'       => $workspace,
-          '!workspace_label' => WORKSPACE_LABEL,
+  drush_print(dt('This operation will delete the \'!project\' !project_label, and destroy all of its !VM_label(s)',
+    array('!project'       => $project,
+          '!project_label' => PROJECT_LABEL,
           '!VM_label'        => VM_LABEL,)));
 
   foreach ($remove_lines as $line) {
@@ -29,9 +29,9 @@ function drush_vagrant_delete($workspace) {
     foreach ($remove_lines as $remove_line) {
       drush_shell_exec_interactive('sudo sed /%s/d -i /etc/hosts', $remove_line);
     }
-    drush_shell_exec('cd %s && vagrant destroy --force', WORKSPACE_ROOT . '/' . $workspace);
-    if (!is_file(WORKSPACE_ROOT . '/' . $workspace . '/.vagrant')) {
-      drush_shell_exec('rm -rf %s', WORKSPACE_ROOT . '/' . $workspace);
+    drush_shell_exec('cd %s && vagrant destroy --force', PROJECT_ROOT . '/' . $project);
+    if (!is_file(PROJECT_ROOT . '/' . $project . '/.vagrant')) {
+      drush_shell_exec('rm -rf %s', PROJECT_ROOT . '/' . $project);
     }
     else {
       drush_set_error(dt('Failure during \'vagrant destroy\''));
