@@ -42,7 +42,7 @@ function drush_vagrant_initialize($project) {
   }
 
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
-    $blueprint = 'dev-aegir';
+    $blueprint = 'default';
   }
 
   $git_repo = drush_get_option('git-repo');

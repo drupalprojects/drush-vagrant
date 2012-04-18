@@ -68,7 +68,7 @@ function vagrant_drush_command() {
     ),
     'options' => array(
       BLUEPRINT_LABEL => array(
-        'description' => dt('Specify a !blueprint to use. Defaults to \'dev-aegir\'.', array('!blueprint' => BLUEPRINT_LABEL))),
+        'description' => dt('Specify a !blueprint to use. Defaults to \'default\'.', array('!blueprint' => BLUEPRINT_LABEL))),
       'git-repo' => array(
         'description' => dt('Clone a Git repo, instead of using a !blueprint.', array('!blueprint' => BLUEPRINT_LABEL))),
       'no-hosts' => array(
@@ -77,7 +77,7 @@ function vagrant_drush_command() {
         'description' => dt('Don\'t start the !VM.', array('!VM' => VM_LABEL))),
     ),
     'examples' => array(
-      'drush aui Project1 --' . BLUEPRINT_LABEL .'=dev-aegir' => dt('Initialize a new Aegir-up !project using the \'dev-aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!project'=> PROJECT_LABEL)),
+      'drush aui Project1 --' . BLUEPRINT_LABEL .'=aegir' => dt('Initialize a new Aegir-up !project using the \'aegir\' !blueprint.', array('!blueprint' => BLUEPRINT_LABEL, '!project'=> PROJECT_LABEL)),
     ),
     'aliases' => array('vinit', 'vagrant-init'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
