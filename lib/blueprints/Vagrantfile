@@ -39,18 +39,18 @@ Vagrant::Config.run do |config|
             puppet.facter = [
               # Fix for broken $fqdn fact on Debian
               [ "fqdn",               $hostname ],
-              # Add user variables to be processed in aegir-up::user
-              [ "aegir_up_username",  "#{AegirUpUser::Username}" ],
-              [ "aegir_up_git_name",  "#{AegirUpUser::Git_name}" ],
-              [ "aegir_up_git_email", "#{AegirUpUser::Git_email}" ],
-              # Match aegir's uid/gid to the host user for NFS
-              [ "aegir_user_uid",     "#{AegirUpUser::Uid}" ],
-              [ "aegir_user_gid",     "#{AegirUpUser::Gid}" ],
+              # Add user variables to be processed in drush-vagrant::user
+              [ "drush_vagrant_username",  "#{DrushVagrantUser::Username}" ],
+              [ "drush_vagrant_git_name",  "#{DrushVagrantUser::Git_name}" ],
+              [ "drush_vagrant_git_email", "#{DrushVagrantUser::Git_email}" ],
+              # For NFS, these can be used to match uid/gid to the host user
+              [ "drush_vagrant_uid",     "#{DrushVagrantUser::Uid}" ],
+              [ "drush_vagrant_gid",     "#{DrushVagrantUser::Gid}" ],
               # Set Aegir's root directory and username, again for NFS
-              [ "aegir_root",         "#{vm::Aegir_root}" ],
-              [ "aegir_user",         "#{vm::Aegir_user}" ],
+              #[ "aegir_root",         "#{vm::Aegir_root}" ],
+              #[ "aegir_user",         "#{vm::Aegir_user}" ],
               # Tell the Aegir Puppet module not to bother with the 'aegir' user
-              [ "aegir_user_exists",  "true"],
+              #[ "aegir_user_exists",  "true"],
             ] 
             puppet.options = vm::Options
             if vm::Debug == true
