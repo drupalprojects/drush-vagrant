@@ -14,7 +14,7 @@ class Vm                                 # default virtual machine settings
   Verbose   = false                      # make output verbose?
   Debug     = false                      # output debug info?
   Options   = ""                         # options to pass to Puppet
-
+  Facts     = []
 end
 
 class Global

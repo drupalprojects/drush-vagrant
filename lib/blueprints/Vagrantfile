@@ -36,22 +36,7 @@ Vagrant::Config.run do |config|
           vm_config.vm.provision :puppet do |puppet|
             puppet.manifest_file = "#{vm::Shortname}.pp"
             puppet.module_path   = [ "#{vm::Modules}" , "#{Conf::Modules}" ]
-            puppet.facter = [
-              # Fix for broken $fqdn fact on Debian
-              [ "fqdn",               $hostname ],
-              # Add user variables to be processed in drush-vagrant::user
-              [ "drush_vagrant_username",  "#{DrushVagrantUser::Username}" ],
-              [ "drush_vagrant_git_name",  "#{DrushVagrantUser::Git_name}" ],
-              [ "drush_vagrant_git_email", "#{DrushVagrantUser::Git_email}" ],
-              # For NFS, these can be used to match uid/gid to the host user
-              [ "drush_vagrant_uid",     "#{DrushVagrantUser::Uid}" ],
-              [ "drush_vagrant_gid",     "#{DrushVagrantUser::Gid}" ],
-              # Set Aegir's root directory and username, again for NFS
-              #[ "aegir_root",         "#{vm::Aegir_root}" ],
-              #[ "aegir_user",         "#{vm::Aegir_user}" ],
-              # Tell the Aegir Puppet module not to bother with the 'aegir' user
-              #[ "aegir_user_exists",  "true"],
-            ] 
+            puppet.facter = Conf::Facts | vm::Facts
             puppet.options = vm::Options
             if vm::Debug == true
               puppet.options = puppet.options + " --debug"
