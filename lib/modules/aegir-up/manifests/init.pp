@@ -30,7 +30,7 @@ class aegir-up {
 
   import "common"
 
-  include aegir-up::user
+  include drush-vagrant::user
 
   include aegir
 
