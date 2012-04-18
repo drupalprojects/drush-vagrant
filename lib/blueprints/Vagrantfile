@@ -7,7 +7,7 @@ Vagrant::Config.run do |config|
     (1..vm::Count).each do |index|
       # Set counters
       count = ""
-      count_fmt = ""
+      formatted_count = ""
       if vm::Count > 1
         count = "#{index}"
         formatted_count = "(#{index} of #{vm::Count})"
