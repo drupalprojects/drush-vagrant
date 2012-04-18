@@ -19,11 +19,11 @@ function _drush_vagrant_check_user_context() {
     if (drush_confirm('Proceed?')) {
       drush_shell_exec_interactive('drush vagrant-user');
       drush_shell_exec('echo $HOME');
-      // PROJECT_ROOT won't have been defined in hook_drush_init() yet, so we
+      // PROJECTS_PATH won't have been defined in hook_drush_init() yet, so we
       // have to do it here for the first run of vagrant-initialize
       $home = drush_shell_exec_output();
       include_once($home[0] . '/.drushrc.php');
-      define("PROJECT_ROOT", $options['vagrant_project_root']);
+      define("PROJECTS_PATH", $options['vagrant_project_root' . '/']);
     }
     else {
       drush_user_abort();
@@ -35,7 +35,7 @@ function _drush_vagrant_check_user_context() {
  * Ensure that a given project exists
  */
 function _drush_vagrant_check_project($project) {
-  if (!is_dir(PROJECT_ROOT . $project)) {
+  if (!is_dir(PROJECTS_PATH . $project)) {
     drush_set_error(dt('ERROR: Could not find a !project_label called !project.',
       array('!project_label' => PROJECT_LABEL,
             '!project'       => $project,)));
@@ -47,13 +47,13 @@ function _drush_vagrant_check_project($project) {
  */
 function _drush_vagrant_list_projects(){
   $projects = array();
-  if ($handle = opendir(PROJECT_ROOT)) {
-    while (false !== ($file = readdir($handle))) {
-      if (substr($file, 0, 1) != "." && is_dir(PROJECT_ROOT . $file)) {
-        $projects[] = $file;
+  if ($dir = opendir(PROJECTS_PATH)) {
+    while (false !== ($project = readdir($dir))) {
+      if (substr($project, 0, 1) != "." && is_dir(PROJECTS_PATH . $project)) {
+        $projects[] = $project;
       }
     }
-    closedir($handle);
+    closedir($dir);
   }
   return $projects;
 }
@@ -64,7 +64,7 @@ function _drush_vagrant_list_projects(){
 function _drush_vagrant_get_subnet($project){
   $subnet = '';
   $match = '';
-  $config_file = PROJECT_ROOT . $project . '/.config/config.rb';
+  $config_file = PROJECTS_PATH . $project . '/.config/config.rb';
 
   // Read each line of the config file to find the line that contains the subnet
   if (is_file($config_file) && $file = @fopen($config_file, "r")) {

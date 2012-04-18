@@ -11,10 +11,10 @@ function drush_vagrant_user() {
   // Environment variables
   // TODO: allow other env vars to be passed through an option or hook?
   $data['vagrant_username'] = array( 'command' => 'whoami', 'label' => 'username');
-  $data['vagrant_home'] = array( 'command' => 'echo $HOME', 'label' => 'home folder');
+  $data['vagrant_home'] = array( 'command' => 'echo $HOME', 'label' => 'home directory');
   $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
   $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
-  $data['vagrant_project_root'] = array( 'command' => 'echo $HOME/vagrant/projects', 'label' => 'Project folder');
+  $data['vagrant_project_root'] = array( 'command' => 'echo $HOME/vagrant/projects', 'label' => 'Projects directory');
   $data['vagrant_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
   $data['vagrant_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
   // Get env var defaults

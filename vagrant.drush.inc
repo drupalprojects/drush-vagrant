@@ -31,7 +31,7 @@ function vagrant_drush_help($section) {
 function vagrant_drush_init() {
   $user_settings = drush_get_context('user');
   if (isset($user_settings['vagrant_project_root'])) {
-    define("PROJECT_ROOT", $user_settings['vagrant_project_root']);
+    define("PROJECTS_PATH", $user_settings['vagrant_project_root'] . '/');
   }
 }
 

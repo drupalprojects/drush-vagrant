@@ -17,7 +17,7 @@ function drush_vagrant_ssh() {
     exit(1);
   }
   $vm = $args[1];
-  $project_path = PROJECT_ROOT . $project;
+  $project_path = PROJECTS_PATH . $project;
 
   _drush_vagrant_check_project($project);
 
@@ -31,7 +31,7 @@ function drush_vagrant_ssh() {
   $ssh_hostname  = substr($ssh_config[1], 11);
   $ssh_port = substr($ssh_config[3], 7);
 
-  drush_shell_exec_interactive('cd %s && vagrant up', PROJECT_ROOT . '/' . $project);
+  drush_shell_exec_interactive('cd %s && vagrant up', $project_path);
   drush_shell_exec_interactive('ssh %s -l %s -i %s -p %s', $ssh_hostname, $user_settings['vagrant_username'], $user_settings['vagrant_ssh_keysprivate'], $ssh_port);
 
 }

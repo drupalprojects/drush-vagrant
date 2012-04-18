@@ -48,7 +48,7 @@ function drush_vagrant_initialize($project) {
   $git_repo = drush_get_option('git-repo');
 
   drush_print(dt("This script will create a new !project_label at !project_root!project.",
-    array('!project_root'  => PROJECT_ROOT,
+    array('!project_root'  => PROJECTS_PATH,
           '!project'       => $project,
           '!project_label' => PROJECT_LABEL,)));
 
@@ -70,7 +70,7 @@ function drush_vagrant_initialize($project) {
   $subnet = _drush_vagrant_next_available_subnet();
 
   // Create the project directory from the blueprint
-  $project_path = PROJECT_ROOT . '/' . $project . '/';
+  $project_path = PROJECTS_PATH . $project ;
   if ($git_repo) {
     drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path);
   }
@@ -91,19 +91,19 @@ function drush_vagrant_initialize($project) {
 
 
   // Set up the new project
-  symlink(BLUEPRINT_DIR . '/' . 'Vagrantfile', $project_path . 'Vagrantfile');
-  symlink(BLUEPRINT_DIR . '/' . 'gitignore', $project_path . '.gitignore');
-  drush_copy_dir(BLUEPRINT_DIR . '/' . '.config', $project_path . '.config');
+  symlink(BLUEPRINT_DIR . '/' . 'Vagrantfile', $project_path . '/Vagrantfile');
+  symlink(BLUEPRINT_DIR . '/' . 'gitignore', $project_path . '/.gitignore');
+  drush_copy_dir(BLUEPRINT_DIR . '/' . '.config', $project_path . '/.config');
   // Make project-specific changes
-  $config_file = file_get_contents($project_path . '.config/config.rb');
+  $config_file = file_get_contents($project_path . '/.config/config.rb');
   $config_file = str_replace('"/path/to/global.rb"', '"' . DRUSH_VAGRANT_ROOT . '/lib/blueprints/global.rb"', $config_file);
   $config_file = str_replace('"subnet"', '"' . $subnet . '"', $config_file);
   $config_file = str_replace('"project_name"', '"' . $project . '"', $config_file);
   $config_file = str_replace('"vagrant_modules_path"', '"' . DRUSH_VAGRANT_ROOT . '/lib/modules"', $config_file);
-  file_put_contents($project_path . '.config/config.rb', $config_file);
+  file_put_contents($project_path . '/.config/config.rb', $config_file);
 
   //TODO: check for existence of these vars
-  $dotfiles_dir = $project_path . '.config/files';
+  $dotfiles_dir = $project_path . '/.config/files';
   mkdir($dotfiles_dir);
   foreach ($user_settings as $key => $dotfile_source) {
     if (strpos($key, 'dotfiles')) {
@@ -115,7 +115,7 @@ function drush_vagrant_initialize($project) {
   if (isset($user_settings['vagrant_ssh_keyspublic'])) {
     copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
-  $config_file = file_get_contents($project_path . '.config/config.rb');
+  $config_file = file_get_contents($project_path . '/.config/config.rb');
   $config_file = str_replace('"username"', '"' . $user_settings['vagrant_username'] . '"', $config_file);
   if (isset($user_settings['vagrant_git_name'])) {
     $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['vagrant_git_name'] . '"', $config_file);
@@ -125,7 +125,7 @@ function drush_vagrant_initialize($project) {
   }
   $config_file = str_replace('"uid"', '"' . $user_settings['vagrant_uid'] . '"', $config_file);
   $config_file = str_replace('"gid"', '"' . $user_settings['vagrant_gid'] . '"', $config_file);
-  file_put_contents($project_path . '.config/config.rb', $config_file);
+  file_put_contents($project_path . '/.config/config.rb', $config_file);
 
 }
 
@@ -144,7 +144,7 @@ function drush_vagrant_post_vagrant_initialize($project) {
     drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
   }
 
-  $project_path = PROJECT_ROOT . '/' . $project;
+  $project_path = PROJECTS_PATH . $project;
 
   drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $project_path);
 
@@ -167,7 +167,7 @@ function drush_vagrant_post_vagrant_initialize($project) {
  * Ensure that a project name is unique and well-formed
  */
 function _drush_vagrant_validate_project($project) {
-  if (is_dir(PROJECT_ROOT . $project)) {
+  if (is_dir(PROJECTS_PATH . $project)) {
     drush_set_error(dt('ERROR: There is already a !project_label called !project.',
       array('!project_label' => PROJECT_LABEL,
             '!project'       => $project,)));

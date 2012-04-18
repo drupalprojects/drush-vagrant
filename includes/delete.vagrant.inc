@@ -29,9 +29,9 @@ function drush_vagrant_delete($project) {
     foreach ($remove_lines as $remove_line) {
       drush_shell_exec_interactive('sudo sed /%s/d -i /etc/hosts', $remove_line);
     }
-    drush_shell_exec('cd %s && vagrant destroy --force', PROJECT_ROOT . '/' . $project);
-    if (!is_file(PROJECT_ROOT . '/' . $project . '/.vagrant')) {
-      drush_shell_exec('rm -rf %s', PROJECT_ROOT . '/' . $project);
+    drush_shell_exec('cd %s && vagrant destroy --force', PROJECTS_PATH . $project);
+    if (!is_file(PROJECTS_PATH . $project . '/.vagrant')) {
+      drush_shell_exec('rm -rf %s', PROJECTS_PATH . $project);
     }
     else {
       drush_set_error(dt('Failure during \'vagrant destroy\''));
