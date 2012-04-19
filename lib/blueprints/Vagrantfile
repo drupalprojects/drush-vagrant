@@ -20,7 +20,7 @@ Vagrant::Config.run do |config|
         vm_config.vm.auto_port_range = Conf::SSH_range
         vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + (count_vms * 10) + index - 1}"
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
-        vm_config.vm.host_name = $hostname
+        vm_config.vm.host_name = hostname
         vm_config.vm.customize ["modifyvm", :id, "--name", "[#{Conf::Project}] #{vm::Longname}#{formatted_count} (#{hostname})"]
         vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
         if defined?(vm::NFS_shares)
