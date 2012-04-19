@@ -138,13 +138,21 @@ function vagrant_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/blueprints.md'),
   );
-   $items['docs-vagrant-projects'] = array(
+  $items['docs-vagrant-projects'] = array(
     'description' => 'Drush Vagrant projects documentation.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/projects.md'),
+  );
+  $items['docs-vagrant-api'] = array(
+    'description' => 'Drush Vagrant API documentation.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/drush-vagrant.api.php'),
   );
 
   return $items;
@@ -167,14 +175,26 @@ function drush_vagrant() {
 }
 
 /**
- * Implementation of hook_drush_pm_download_destination_alter().
+ * Poll all Drush extensions implementing hook_vagrant_blueprints().
  *
- * For blueprints hosted on d.o, make 'drush dl' put them in the correct folder.
+ * @return
+ *   Returns an array of blueprints where the key is the name, and the value is
+ *   the path to the blueprint.
+ *
+ * See also: docs/drush-vagrant.api.php
  */
-function drush_vagrant_drush_pm_download_destination_alter(&$project, $release) {
-  $settings_rb = drush_scan_directory($project['full_project_path'], '/settings.rb/', array('.', '..'), $recurse_max_depth = 1);
-  if (!empty($settings_rb)) {
-    $project['project_install_location'] = BLUEPRINT_DIR;
-  }
+function drush_vagrant_register_blueprints() {
+  return drush_command_invoke_all('vagrant_blueprints');
 }
+
+/**
+ * Implemention of hook_vagrant_blueprints().
+ */
+function vagrant_vagrant_blueprints() {
+  $blueprints = array(
+    'default' => 'lib/blueprints/default',
+    );
+  return $blueprints;
+}
+
 
