@@ -4,8 +4,8 @@ class Vm                                 # default virtual machine settings
   end
 
   Count     = 1                          # The number of VMs to create
-  Basebox   = "debian-LAMP-2012-03-29"   # default basebox
-  Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
+  Basebox   = "lucid32"                  # default basebox
+  Box_url   = "http://files.vagrantup.com/lucid32.box"
   Memory    = 512                        # default VM memory
   Domain    = "local"                    # default domain
   Manifests = "manifests"                # puppet manifests folder name

@@ -1,5 +1,7 @@
 class drush-vagrant::user {
 
+  group { 'puppet': ensure => present, }
+
   user {"${drush_vagrant_username}":
     ensure => present,
     groups => 'sudo',
@@ -36,10 +38,15 @@ class drush-vagrant::user {
   }
 
   #git username & email
-  Exec { user  =>       "${drush_vagrant_username}",
-         group =>       "${drush_vagrant_username}",
+  package {'git-core':
+    ensure => present,
+  }
+  
+  Exec { user        => "${drush_vagrant_username}",
+         group       => "${drush_vagrant_username}",
          environment => "HOME=/home/${drush_vagrant_username}",
-         path =>        '/usr/bin',
+         path        => '/usr/bin',
+         require     => Package['git-core'],
   }
   if $drush_vagrant_git_name {
     exec {"git config --global user.name '${drush_vagrant_git_name}'":}
