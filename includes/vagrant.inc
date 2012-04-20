@@ -7,6 +7,7 @@ include_once('init.vagrant.inc');
 include_once('ssh.vagrant.inc');
 include_once('status.vagrant.inc');
 include_once('user.vagrant.inc');
+include_once('blueprints.vagrant.inc');
 
 /**
  * Ensure that there is a user context

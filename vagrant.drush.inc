@@ -60,6 +60,11 @@ function vagrant_drush_command() {
     'aliases' => array('vstat'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['vagrant-blueprints'] = array(
+    'description' => dt('List all !blueprints.', array('!blueprint' => BLUEPRINT_LABEL)),
+    'aliases' => array('vbl'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
 
   $items['vagrant-initialize'] = array(
     'description' => dt('Initialize a new Drush Vagrant !project.', array('!project'=> PROJECT_LABEL)),
@@ -175,16 +180,40 @@ function drush_vagrant() {
 }
 
 /**
+ * Return a list of all extensions that implement blueprints 
+ */
+function drush_vagrant_register_extensions() {
+  $all_extensions = drush_commandfile_list();
+  $extensions = drush_command_implements('vagrant_blueprints');
+  foreach ($extensions as $key => $value) {
+    $blueprints = array_keys(call_user_func($value . '_vagrant_blueprints'));
+    $extensions[$value]['blueprints'] = $blueprints;
+    $extensions[$value]['full_path'] = dirname($all_extensions[$value]);
+    unset($extensions[$key]);
+  }
+
+  return $extensions;
+}
+
+/**
  * Poll all Drush extensions implementing hook_vagrant_blueprints().
  *
  * @return
  *   Returns an array of blueprints where the key is the name, and the value is
- *   the path to the blueprint.
+ *   an array of information relevant to the blueprint.
  *
  * See also: docs/drush-vagrant.api.php
  */
 function drush_vagrant_register_blueprints() {
-  return drush_command_invoke_all('vagrant_blueprints');
+  $extensions = drush_vagrant_register_extensions();
+  $blueprints =  drush_command_invoke_all('vagrant_blueprints');
+  foreach ($extensions as $name => $info) {
+    foreach ($info['blueprints'] as $key => $value) {
+      $blueprints[$value]['extension'] = $name;
+      $blueprints[$value]['full_path'] = $info['full_path'] . '/' . $blueprints[$value]['path'];
+    }
+  }
+  return $blueprints;
 }
 
 /**
@@ -192,7 +221,11 @@ function drush_vagrant_register_blueprints() {
  */
 function vagrant_vagrant_blueprints() {
   $blueprints = array(
-    'default' => 'lib/blueprints/default',
+    'default' => array(
+      'name' => 'Default',
+      'description' => 'The default blueprint.',
+      'path' => 'lib/blueprints/default',
+      ),
     );
   return $blueprints;
 }
