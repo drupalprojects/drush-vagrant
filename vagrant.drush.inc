@@ -198,13 +198,16 @@ function drush_vagrant_register_extensions() {
 /**
  * Poll all Drush extensions implementing hook_vagrant_blueprints().
  *
+ * @blueprint
+ *   Optional argument, used to return info for only one blueprint.
+ *
  * @return
  *   Returns an array of blueprints where the key is the name, and the value is
  *   an array of information relevant to the blueprint.
  *
  * See also: docs/drush-vagrant.api.php
  */
-function drush_vagrant_register_blueprints() {
+function drush_vagrant_register_blueprints($blueprint = null) {
   $extensions = drush_vagrant_register_extensions();
   $blueprints =  drush_command_invoke_all('vagrant_blueprints');
   foreach ($extensions as $name => $info) {
@@ -212,6 +215,9 @@ function drush_vagrant_register_blueprints() {
       $blueprints[$value]['extension'] = $name;
       $blueprints[$value]['full_path'] = $info['full_path'] . '/' . $blueprints[$value]['path'];
     }
+  }
+  if ($blueprint) {
+    return $blueprints[$blueprint];
   }
   return $blueprints;
 }

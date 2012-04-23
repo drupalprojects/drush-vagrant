@@ -74,7 +74,8 @@ function drush_vagrant_initialize($project) {
     drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path);
   }
   else {
-    drush_copy_dir(BLUEPRINT_DIR . '/' . $blueprint, $project_path);
+    $blueprint_info = drush_vagrant_register_blueprints($blueprint);
+    drush_copy_dir($blueprint_info['full_path'], $project_path);
   }
 
   //Check for support of 64-bit client OSes
