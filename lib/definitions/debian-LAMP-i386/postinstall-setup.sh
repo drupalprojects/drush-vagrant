@@ -1,1 +1,0 @@
-../debian/postinstall-setup.sh

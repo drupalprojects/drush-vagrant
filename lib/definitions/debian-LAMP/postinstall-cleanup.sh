@@ -1,1 +1,0 @@
-../debian/postinstall-cleanup.sh
