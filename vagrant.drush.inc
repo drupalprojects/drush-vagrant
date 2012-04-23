@@ -8,7 +8,6 @@ define("PROJECT_LABEL", "project");
 define("BLUEPRINT_LABEL", "blueprint");
 define("VM_LABEL", "VM");
 define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
-define("BLUEPRINT_DIR", DRUSH_VAGRANT_ROOT . "/lib/" . BLUEPRINT_LABEL . "s");
 
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
@@ -230,7 +229,7 @@ function vagrant_vagrant_blueprints() {
     'default' => array(
       'name' => 'Default',
       'description' => 'The default blueprint.',
-      'path' => 'lib/blueprints/default',
+      'path' => 'blueprints/default',
       ),
     );
   return $blueprints;
