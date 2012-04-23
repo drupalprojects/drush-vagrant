@@ -57,9 +57,10 @@ function drush_vagrant_initialize($project) {
     drush_print(dt("It will clone the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
   }
   else {
-    drush_print(dt("It will use the '!blueprint' !blueprint_label.",
+    drush_print(dt("It will use the '!blueprint' !blueprint_label from the '!extension' extension.",
       array('!blueprint' => $blueprint,
             '!blueprint_label' => BLUEPRINT_LABEL,
+            '!extension' => $blueprint_info['extension'],
       ))
     );
   }
@@ -92,12 +93,12 @@ function drush_vagrant_initialize($project) {
 
 
   // Set up the new project
-  symlink(BLUEPRINT_DIR . '/' . 'Vagrantfile', $project_path . '/Vagrantfile');
-  symlink(BLUEPRINT_DIR . '/' . 'gitignore', $project_path . '/.gitignore');
-  drush_copy_dir(BLUEPRINT_DIR . '/' . '.config', $project_path . '/.config');
+  symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $project_path . '/Vagrantfile');
+  symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $project_path . '/.gitignore');
+  drush_copy_dir(DRUSH_VAGRANT_ROOT . '/lib/.config', $project_path . '/.config');
   // Make project-specific changes
   $config_file = file_get_contents($project_path . '/.config/config.rb');
-  $config_file = str_replace('"/path/to/global.rb"', '"' . DRUSH_VAGRANT_ROOT . '/lib/blueprints/global.rb"', $config_file);
+  $config_file = str_replace('"/path/to/global.rb"', '"' . DRUSH_VAGRANT_ROOT . '/lib/global.rb"', $config_file);
   $config_file = str_replace('"subnet"', '"' . $subnet . '"', $config_file);
   $config_file = str_replace('"project_name"', '"' . $project . '"', $config_file);
   $config_file = str_replace('"vagrant_modules_path"', '"' . DRUSH_VAGRANT_ROOT . '/lib/modules"', $config_file);
