@@ -16,10 +16,9 @@ function drush_vagrant_initialize_validate($project) {
   // Check that the project name is unique and well-formed
   _drush_vagrant_validate_project($project);
 
-
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
-    if (!is_dir(BLUEPRINT_DIR . '/' . $blueprint)) {
+    if (!array_key_exists($blueprint, drush_vagrant_register_blueprints())) {
       drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
         array('!blueprint'       => $blueprint,
               '!blueprint_label' => BLUEPRINT_LABEL,)));
