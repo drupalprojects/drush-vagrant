@@ -18,7 +18,7 @@ function drush_vagrant_initialize_validate($project) {
 
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
-    if (!array_key_exists($blueprint, drush_vagrant_register_blueprints())) {
+    if (!array_key_exists($blueprint, drush_vagrant_blueprint_info())) {
       drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
         array('!blueprint'       => $blueprint,
               '!blueprint_label' => BLUEPRINT_LABEL,)));
@@ -43,6 +43,8 @@ function drush_vagrant_initialize($project) {
   if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
     $blueprint = 'default';
   }
+
+  $blueprint_info = drush_vagrant_blueprint_info($blueprint);
 
   $git_repo = drush_get_option('git-repo');
 
@@ -74,7 +76,6 @@ function drush_vagrant_initialize($project) {
     drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path);
   }
   else {
-    $blueprint_info = drush_vagrant_register_blueprints($blueprint);
     drush_copy_dir($blueprint_info['full_path'], $project_path);
   }
 

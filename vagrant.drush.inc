@@ -182,7 +182,7 @@ function drush_vagrant() {
 /**
  * Return a list of all extensions that implement blueprints 
  */
-function drush_vagrant_register_extensions() {
+function drush_vagrant_extension_info() {
   $all_extensions = drush_commandfile_list();
   $extensions = drush_command_implements('vagrant_blueprints');
   foreach ($extensions as $key => $value) {
@@ -207,8 +207,8 @@ function drush_vagrant_register_extensions() {
  *
  * See also: docs/drush-vagrant.api.php
  */
-function drush_vagrant_register_blueprints($blueprint = null) {
-  $extensions = drush_vagrant_register_extensions();
+function drush_vagrant_blueprint_info($blueprint = null) {
+  $extensions = drush_vagrant_extension_info();
   $blueprints =  drush_command_invoke_all('vagrant_blueprints');
   foreach ($extensions as $name => $info) {
     foreach ($info['blueprints'] as $key => $value) {
