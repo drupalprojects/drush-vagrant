@@ -96,6 +96,7 @@ function vagrant_drush_command() {
       'drush vagrant-delete Project1' => dt('Delete the Project1 !project.', array('!project'=> PROJECT_LABEL)),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    'aliases' => array('vdl'),
   );
 
   $items['vagrant-ssh'] = array(
