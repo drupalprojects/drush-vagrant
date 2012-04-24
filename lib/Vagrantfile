@@ -24,8 +24,8 @@ Vagrant::Config.run do |config|
         vm_config.vm.customize ["modifyvm", :id, "--name", "[#{Conf::Project}] #{vm::Longname}#{formatted_count} (#{hostname})"]
         vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
         if defined?(vm::NFS_shares)
-          vm::NFS_shares.each do |name,path|
-            vm_config.vm.share_folder("#{name}", "#{path}", "./#{name}", { :nfs => true, :create => true, :remount => true })
+          vm::NFS_shares.each do |name, path|
+            vm_config.vm.share_folder(name, path, "./#{name}", { :nfs => true, :create => true, :remount => true })
           end
         end
         if vm::Gui == true
