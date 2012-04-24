@@ -38,15 +38,13 @@ class drush-vagrant::user {
   }
 
   #git username & email
-  package {'git-core':
-    ensure => present,
-  }
-  
+  include git
+
   Exec { user        => "${drush_vagrant_username}",
          group       => "${drush_vagrant_username}",
          environment => "HOME=/home/${drush_vagrant_username}",
          path        => '/usr/bin',
-         require     => Package['git-core'],
+         require     => Class['git'],
   }
   if $drush_vagrant_git_name {
     exec {"git config --global user.name '${drush_vagrant_git_name}'":}
