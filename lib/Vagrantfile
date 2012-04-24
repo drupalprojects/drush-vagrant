@@ -36,7 +36,7 @@ Vagrant::Config.run do |config|
           vm_config.vm.provision :puppet do |puppet|
             puppet.manifest_file = "#{vm::Shortname}.pp"
             puppet.module_path   = [ "#{vm::Modules}" , "#{Conf::Modules}" ]
-            puppet.facter = Conf::Facts | vm::Facts
+            puppet.facter = Conf::Facts.merge(vm::Facts)
             puppet.options = vm::Options
             if vm::Debug == true
               puppet.options = puppet.options + " --debug"
