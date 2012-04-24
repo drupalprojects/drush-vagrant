@@ -41,6 +41,19 @@ function vagrant_drush_command() {
   $items = array();
 
   $items['vagrant'] = array(
+    'description' => dt('Run a Vagrant command.'),
+    'options' => array(
+      'project-path' => array(
+        'description' => dt('The relative or absolute path to the project on which to run the command.'),
+      ),
+      'vm-name' => array(
+        'description' => dt('The name of the Vagrant virtual machine on which to run the command'),
+      ),
+      'params' => array(
+        'description' => dt('Additional parameters to pass to Vagrant'),
+      ),
+    ),
+    'aliases' => array('vg'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-alias-config'] = array(
@@ -168,15 +181,52 @@ function vagrant_drush_command() {
  */
 function drush_vagrant() {
   $args = func_get_args();
+  $vagrant_commands = array(
+    'init',
+    'status',
+    'basebox',
+    'box',
+    'destroy',
+    'gem',
+    'halt',
+    'package',
+    'provision',
+    'reload',
+    'resume',
+    'ssh',
+    'ssh-config',
+    'status',
+    'suspend',
+    'up',
+    );
   $command = array_shift($args);
   if (empty($command)) {
     $command = 'alias-config';
   }
-
+  elseif (in_array($command, $vagrant_commands)) {
+    $vg_command = '';
+    if ($project_path = drush_get_option('project-path')) {
+      if ($command == 'init' && !is_dir($project_path)) {
+        drush_mkdir($project_path);
+      }
+      $vg_command .= sprintf('cd %s && ', $project_path); 
+    }
+    $vg_command .= sprintf('vagrant %s', $command);
+    if ($vm_name = drush_get_option('vm-name')) {
+      $vg_command .= sprintf(' %s', $vm_name);
+    }
+    if ($params = drush_get_option('params')) {
+      $vg_command .= sprintf(' %s', $params);
+    }
+    drush_shell_exec_interactive($vg_command);
+  }
+  else{
   $commands = drush_get_commands();
   $command = $commands['vagrant-'. $command];
 
   drush_dispatch($command, $args);
+  }
+
 }
 
 /**
