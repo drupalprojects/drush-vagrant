@@ -19,6 +19,6 @@ end
 
 class Global
   Network   = "192.168"                  # Private network address: ###.###.0.0
-  Host_IP   = 0                          # Host address: 192.168.0.###
+  Host_IP   = 10                         # Starting host address: 192.168.0.###
   SSH_range = (32200..32250)
 end
