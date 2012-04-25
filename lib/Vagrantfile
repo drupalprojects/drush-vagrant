@@ -13,7 +13,7 @@ Vagrant::Config.run do |config|
         formatted_count = "(#{index}of#{vm::Count})"
       end
 
-      config.vm.define "#{vm::Shortname}#{formatted_count}" do |vm_config|
+      config.vm.define "#{vm::Shortname}#{index}" do |vm_config|
 
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
