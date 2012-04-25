@@ -95,18 +95,28 @@ function drush_vagrant_initialize($project) {
   // Set up the new project
   symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $project_path . '/Vagrantfile');
   symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $project_path . '/.gitignore');
-  drush_copy_dir(DRUSH_VAGRANT_ROOT . '/lib/.config', $project_path . '/.config');
-  // Make project-specific changes
-  $config_file = file_get_contents($project_path . '/.config/config.rb');
-  $config_file = str_replace('"/path/to/global.rb"', '"' . DRUSH_VAGRANT_ROOT . '/lib/global.rb"', $config_file);
-  $config_file = str_replace('"subnet"', '"' . $subnet . '"', $config_file);
-  $config_file = str_replace('"project_name"', '"' . $project . '"', $config_file);
-  $config_file = str_replace('"vagrant_modules_path"', '"' . DRUSH_VAGRANT_ROOT . '/lib/modules"', $config_file);
-  file_put_contents($project_path . '/.config/config.rb', $config_file);
+
+  $variables = array();
+ 
+  $variables["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
+  $variables["project_name"] = $project;
+  $variables["vagrant_modules_path"] = DRUSH_VAGRANT_ROOT . '/lib/modules';
+  $variables["subnet"] = $subnet;
+  $variables["username"] = $user_settings['vagrant_username'];
+  $variables["git_name"] = $user_settings['vagrant_git_name'];
+  $variables["git_email"] = $user_settings['vagrant_git_email'];
+  $variables["uid"] = $user_settings['vagrant_uid'];
+  $variables["gid"] = $user_settings['vagrant_gid'];
+ 
+  $config_file = _drush_vagrant_render_template($variables, $template = "config.tpl.php");
+ 
+  $config_path = $project_path . '/.config';
+  drush_mkdir($config_path);
+  file_put_contents($config_path . '/config.rb', $config_file);
 
   //TODO: check for existence of these vars
-  $dotfiles_dir = $project_path . '/.config/files';
-  mkdir($dotfiles_dir);
+  $dotfiles_dir = $config_path . '/files';
+  drush_mkdir($dotfiles_dir);
   foreach ($user_settings as $key => $dotfile_source) {
     if (strpos($key, 'dotfiles')) {
       $path = explode('/', $dotfile_source);
@@ -117,17 +127,6 @@ function drush_vagrant_initialize($project) {
   if (isset($user_settings['vagrant_ssh_keyspublic'])) {
     copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
-  $config_file = file_get_contents($project_path . '/.config/config.rb');
-  $config_file = str_replace('"username"', '"' . $user_settings['vagrant_username'] . '"', $config_file);
-  if (isset($user_settings['vagrant_git_name'])) {
-    $config_file = str_replace('"Firstname Lastname"', '"' . $user_settings['vagrant_git_name'] . '"', $config_file);
-  }
-  if (isset($user_settings['vagrant_git_email'])) {
-    $config_file = str_replace('"username@example.com"', '"' . $user_settings['vagrant_git_email'] . '"', $config_file);
-  }
-  $config_file = str_replace('"uid"', '"' . $user_settings['vagrant_uid'] . '"', $config_file);
-  $config_file = str_replace('"gid"', '"' . $user_settings['vagrant_gid'] . '"', $config_file);
-  file_put_contents($project_path . '/.config/config.rb', $config_file);
 
 }
 
