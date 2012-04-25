@@ -13,10 +13,7 @@ function drush_vagrant_delete($project) {
   $remove_lines = drush_shell_exec_output();
 
   drush_print(dt('!!! WARNING: This operation cannot be undone. !!!'));
-  drush_print(dt('This operation will delete the \'!project\' !project_label, and destroy all of its !VM_label(s)',
-    array('!project'       => $project,
-          '!project_label' => PROJECT_LABEL,
-          '!VM_label'        => VM_LABEL,)));
+  drush_print(dt('This operation will delete the \'!project\' project, and destroy all of its VMs', array('!project' => $project)));
 
   foreach ($remove_lines as $line) {
     $remove_line_block .= '   ' . $line . "\n";

@@ -10,9 +10,9 @@ function drush_vagrant_ssh() {
 
   $args = func_get_args();
   if (!($project = $args[0])) {
-    drush_set_error(dt('ERROR: vagrant-ssh requires a !project_label as an argument', array('!project_label' => PROJECT_LABEL)));
-    drush_print(dt('You can initialize a new !project_label by running \'drush vagrant-init [<!project_label>]\'', array('!project_label' => PROJECT_LABEL)));
-    drush_print(dt('Currently available !project_labels include:', array('!project_label' => PROJECT_LABEL)));
+    drush_set_error(dt('ERROR: vagrant-ssh requires a project as an argument'));
+    drush_print(dt('You can initialize a new project by running \'drush vagrant-init <project_name>\''));
+    drush_print(dt('Currently available projects include:'));
     drush_shell_exec_interactive('drush vagrant-status');
     exit(1);
   }

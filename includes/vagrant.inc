@@ -37,9 +37,7 @@ function _drush_vagrant_check_user_context() {
  */
 function _drush_vagrant_check_project($project) {
   if (!is_dir(PROJECTS_PATH . $project)) {
-    drush_set_error(dt('ERROR: Could not find a !project_label called !project.',
-      array('!project_label' => PROJECT_LABEL,
-            '!project'       => $project,)));
+    drush_set_error(dt('ERROR: Could not find a project called \'!project\'.', array('!project' => $project,)));
   }
 }
 

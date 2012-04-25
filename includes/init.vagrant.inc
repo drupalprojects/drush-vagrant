@@ -6,8 +6,7 @@
 function drush_vagrant_initialize_validate($project) {
 
   if (!isset($project)) {
-    drush_set_error(dt("ERROR: Please provide a name for your new !project_label.",
-      array('!project_label' => PROJECT_LABEL,)));
+    drush_set_error(dt("ERROR: Please provide a name for your new project."));
     exit(1);
   }
 
@@ -17,11 +16,9 @@ function drush_vagrant_initialize_validate($project) {
   _drush_vagrant_validate_project($project);
 
   // Check that we're using a valid blueprint
-  if ($blueprint = drush_get_option(BLUEPRINT_LABEL)) {
+  if ($blueprint = drush_get_option('blueprint')) {
     if (!array_key_exists($blueprint, drush_vagrant_blueprint_info())) {
-      drush_set_error(dt("ERROR: Could not find the '!blueprint' !blueprint_label.",
-        array('!blueprint'       => $blueprint,
-              '!blueprint_label' => BLUEPRINT_LABEL,)));
+      drush_set_error(dt("ERROR: Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint,)));
     }
   }
 }
@@ -40,7 +37,7 @@ function drush_vagrant_initialize($project) {
     }
   }
 
-  if (!($blueprint = drush_get_option(BLUEPRINT_LABEL))) {
+  if (!($blueprint = drush_get_option('blueprint'))) {
     $blueprint = 'default';
   }
 
@@ -48,24 +45,22 @@ function drush_vagrant_initialize($project) {
 
   $git_repo = drush_get_option('git-repo');
 
-  drush_print(dt("This script will create a new !project_label at !project_root!project.",
+  drush_print(dt("This script will create a new project at \'!project_root!project\'.",
     array('!project_root'  => PROJECTS_PATH,
-          '!project'       => $project,
-          '!project_label' => PROJECT_LABEL,)));
+          '!project'       => $project,)));
 
   if ($git_repo) {
     drush_print(dt("It will clone the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
   }
   else {
-    drush_print(dt("It will use the '!blueprint' !blueprint_label from the '!extension' extension.",
+    drush_print(dt("It will use the '!blueprint' blueprint from the '!extension' extension.",
       array('!blueprint' => $blueprint,
-            '!blueprint_label' => BLUEPRINT_LABEL,
             '!extension' => $blueprint_info['extension'],
       ))
     );
   }
 
-  if (!drush_confirm(dt('Do you want to proceed with initializing the !project_label?', array('!project_label' => PROJECT_LABEL)))) {
+  if (!drush_confirm(dt('Do you want to proceed with initializing the projectl?'))) {
     return drush_user_abort();
   }
   // Find the next available subnet
@@ -153,13 +148,13 @@ function drush_vagrant_post_vagrant_initialize($project) {
     drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
   }
 
-  drush_print(dt('Your !project was successfully initialized.', array('!project' => PROJECT_LABEL)));
-  drush_print(dt('The root for your !project is !project_path', array('!project' => PROJECT_LABEL, '!project_path' => $project_path)));
+  drush_print(dt('Your project was successfully initialized.'));
+  drush_print(dt('The root for your project is \'!project_path\'', array('!project_path' => $project_path)));
   if ($no_hosts == FALSE) {
-    drush_print(dt('The subnet for your !project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!project' => PROJECT_LABEL, '!subnet' => $subnet)));
+    drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!subnet' => $subnet)));
   }
-  drush_print(dt('You can now: * Alter Aegir-up\'s behaviour by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
-  drush_print(dt('             * Redefine the !VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!VM' => VM_LABEL, '!project_path' => $project_path)));
+  drush_print(dt('You can now: * Alter your project\'s behaviour by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
+  drush_print(dt('             * Redefine the VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!project_path' => $project_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !project_path/modules.', array('!project_path' => $project_path)));
 
 }
@@ -169,15 +164,12 @@ function drush_vagrant_post_vagrant_initialize($project) {
  */
 function _drush_vagrant_validate_project($project) {
   if (is_dir(PROJECTS_PATH . $project)) {
-    drush_set_error(dt('ERROR: There is already a !project_label called !project.',
-      array('!project_label' => PROJECT_LABEL,
-            '!project'       => $project,)));
+    drush_set_error(dt('ERROR: There is already a project called \'!project\'.', array('!project' => $project,)));
   }
   $regex = '/^([a-z0-9][a-z0-9.-]*[a-z0-9])$/';
   if (preg_match($regex, $project) < 1) {
-    drush_set_error(dt('ERROR: the name of your !project_label (!project) should only contains lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
-      array('!project_label' => PROJECT_LABEL,
-            '!project'       => $project,)));
+    drush_set_error(dt('ERROR: the name of your project (!project) should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
+      array('!project' => $project,)));
   }
 }
 
