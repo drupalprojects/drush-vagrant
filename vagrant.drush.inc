@@ -67,29 +67,27 @@ function vagrant_drush_command() {
     'aliases' => array('vbl'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-
-  $items['vagrant-initialize'] = array(
-    'description' => dt('Initialize a new Drush Vagrant project.'),
+  $items['vagrant-build'] = array(
+    'description' => dt('Build a new Drush Vagrant project.'),
     'arguments' => array(
       'project' => dt('The name of the new Vagrant project to initialize.'),
     ),
     'options' => array(
       'blueprint' => array(
-        'description' => dt('Specify a blueprint to use. Defaults to \'default\'.')),
+        'description' => dt('Specify the blueprint to use.')),
       'git-repo' => array(
         'description' => dt('Clone a Git repo, instead of using a blueprint.')),
-      'no-hosts' => array(
-        'description' => dt('Don\'t edit /etc/hosts.')),
-      'init-only' => array(
-        'description' => dt('Don\'t start the VM.')),
+      'hosts' => array(
+        'description' => dt('Add an entry to /etc/hosts.')),
+      'up' => array(
+        'description' => dt('Start up the Vagrant project VM(s) immediately.')),
     ),
     'examples' => array(
-      'drush aui project1 --blueprint=aegir' => dt('Initialize a new Aegir-up Vagrant project using the \'aegir\' blueprint.'),
+      'drush aui project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the \'aegir\' blueprint.'),
     ),
-    'aliases' => array('vinit', 'vagrant-init'),
+    'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-
   $items['vagrant-delete'] = array(
     'description' => dt('Delete a Vagrant project.'),
     'arguments' => array(

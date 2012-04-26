@@ -3,7 +3,7 @@
 /**
  * Implementation of drush_hook_commandhook_validate().
  */
-function drush_vagrant_initialize_validate($project) {
+function drush_vagrant_build_validate($project) {
 
   if (!isset($project)) {
     drush_set_error(dt("ERROR: Please provide a name for your new project."));
@@ -26,7 +26,7 @@ function drush_vagrant_initialize_validate($project) {
 /**
  * Initialize a new project.
  */
-function drush_vagrant_initialize($project) {
+function drush_vagrant_build($project) {
 
   $user_settings = drush_get_context('user');
   if (!$user_settings) {
@@ -128,7 +128,7 @@ function drush_vagrant_initialize($project) {
 /**
  * Post-initialize configuration
  */
-function drush_vagrant_post_vagrant_initialize($project) {
+function drush_vagrant_post_vagrant_build($project) {
   $no_hosts = drush_get_option('no-hosts', FALSE);
   $init_only = drush_get_option('init-only', FALSE);
   $subnet =  _drush_vagrant_get_subnet($project);
