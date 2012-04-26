@@ -88,6 +88,17 @@ function vagrant_drush_command() {
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['vagrant-hosts'] = array(
+    'description' => dt('Add an entry to /etc/hosts'),
+    'options' => array(
+      'ip-addr' => array(
+        'description' => dt('The IP address of the server/site.')),
+      'domains' => array(
+        'description' => dt('Comma-delimited list of domains.')),
+    ),
+    'aliases' => array('vh'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
   $items['vagrant-delete'] = array(
     'description' => dt('Delete a Vagrant project.'),
     'arguments' => array(
@@ -195,6 +206,7 @@ function drush_vagrant() {
     $vg_command = '';
     if ($project_path = drush_get_option('project-path')) {
       if ($command == 'init' && !is_dir($project_path)) {
+        // TODO: create alias(es) for the project/VMs
         drush_mkdir($project_path);
       }
       $vg_command .= sprintf('cd %s && ', $project_path); 
