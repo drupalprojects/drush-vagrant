@@ -30,6 +30,7 @@ function vagrant_drush_init() {
     define("PROJECTS_PATH", $user_settings['vagrant_project_root'] . '/');
   }
   define("PROJECT_PATH", drush_get_option('project-path', '.'));
+  define("VM_NAME", drush_get_option('vm-name', NULL));
 }
 
 /**
