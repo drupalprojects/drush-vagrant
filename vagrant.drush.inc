@@ -116,7 +116,7 @@ function vagrant_drush_command() {
     'aliases' => array('vdl'),
   );
 
-  $items['vagrant-ssh'] = array(
+  $items['vagrant-shell'] = array(
     'description' => dt('Log into a Drush Vagrant VM via SSH.'),
     'arguments' => array(
       'project' => dt('The project where the VM to log into exists.'),
@@ -125,7 +125,7 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vagrant-ssh project1 vm1' => dt('Log into the \'vm1\' VM in the \'project1\' project.'),
     ),
-    'aliases' => array('vssh'),
+    'aliases' => array('vsh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 

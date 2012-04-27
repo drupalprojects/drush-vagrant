@@ -3,7 +3,7 @@
 /**
  * Login to a VM via SSH.
  */
-function drush_vagrant_ssh() {
+function drush_vagrant_shell() {
 
   _drush_vagrant_check_user_context();
   $user_settings = drush_get_context('user');
