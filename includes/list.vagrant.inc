@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Print a status of projects and VMs.
+ * List current projects.
  */
-function drush_vagrant_status() {
+function drush_vagrant_list() {
   $args = func_get_args();
   $project = $args[0];
   $vm = $args[1];
