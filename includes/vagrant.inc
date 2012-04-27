@@ -1,14 +1,12 @@
 <?php
 
 // Include all the commands
-include_once('alias.vagrant.inc');
-include_once('blueprints.vagrant.inc');
-include_once('build.vagrant.inc');
-include_once('delete.vagrant.inc');
-include_once('hosts.vagrant.inc');
-include_once('ssh.vagrant.inc');
-include_once('status.vagrant.inc');
-include_once('user.vagrant.inc');
+$includes = scandir(dirname(__FILE__));
+foreach ($includes as $key => $file) {
+  if (@strpos($file, '.vagrant.inc', strlen($file) - 12) !== FALSE) {
+    include_once($file);
+  }
+}
 
 /**
  * Ensure that there is a user context
