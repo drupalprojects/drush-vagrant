@@ -29,6 +29,7 @@ function vagrant_drush_init() {
   if (isset($user_settings['vagrant_project_root'])) {
     define("PROJECTS_PATH", $user_settings['vagrant_project_root'] . '/');
   }
+  define("PROJECT_PATH", drush_get_option('project-path', '.'));
 }
 
 /**
