@@ -40,16 +40,16 @@ function vagrant_drush_command() {
   $items = array();
 
   $items['vagrant'] = array(
-    'description' => dt('Run a Vagrant command.'),
+    'description' => _drush_vagrant_help_text(),
     'options' => array(
       'project-path' => array(
         'description' => dt('The relative or absolute path to the project on which to run the command.'),
       ),
       'vm-name' => array(
-        'description' => dt('The name of the Vagrant virtual machine on which to run the command'),
+        'description' => dt('The name of the Vagrant virtual machine on which to run the command.'),
       ),
       'params' => array(
-        'description' => dt('Additional parameters to pass to Vagrant'),
+        'description' => dt('Additional parameters to pass to Vagrant.'),
       ),
     ),
     'aliases' => array('vg'),
@@ -189,20 +189,24 @@ function drush_vagrant() {
   $command = array_shift($args);
   $commands = drush_get_commands();
   if (!isset($commands['vagrant-'. $command])) {
-    if ($command == 'init' && !is_dir(PROJECT_PATH)) {
+    if (empty($command)) {
+      drush_shell_exec_interactive('drush vagrant --help');
+    }
+    elseif ($command == 'init' && !is_dir(PROJECT_PATH)) {
       drush_mkdir(PROJECT_PATH);
     }
+    else {
+      $vg_command = strtr('VAGRANT_HOME=!path vagrant !command !vm_name !args !params', array(
+        '!path' => PROJECT_PATH,
+        '!command' => $command,
+        '!vm_name' => VM_NAME,
+        '!args' => implode(' ', $args),
+        '!params' => drush_get_option('params', NULL),
+        )
+      );
 
-    $vg_command = strtr('VAGRANT_HOME=!path vagrant !command !vm_name !args !params', array(
-      '!path' => PROJECT_PATH,
-      '!command' => $command,
-      '!vm_name' => VM_NAME,
-      '!args' => implode(' ', $args),
-      '!params' => drush_get_option('params', NULL),
-      )
-    );
-
-    drush_shell_exec_interactive($vg_command);
+      drush_shell_exec_interactive($vg_command);
+    }
   }
   else {
     $command = $commands['vagrant-'. $command];

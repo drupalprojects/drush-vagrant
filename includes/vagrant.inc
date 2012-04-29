@@ -9,6 +9,61 @@ foreach ($includes as $key => $file) {
 }
 
 /**
+ * Generate help text
+ */
+function _drush_vagrant_help_text() {
+  $output[] = dt("Run a command on your Vagrant projects or VMs.\n");
+  $output[] = dt("Usage: !usage\n", array('!usage' => 'drush [<@alias>] vagrant <sub-command> [<arguments>] [<options>]'));
+  
+  $output[] = dt("Available native Vagrant commands:");
+  drush_shell_exec('vagrant');
+  $sub_commands = drush_shell_exec_output();
+  $sub_commands = array_splice($sub_commands, 6, -2);
+  $output[] = _drush_vagrant_help_table($sub_commands);
+  $blueprints = drush_vagrant_blueprint_info();
+  foreach ($blueprints as $blueprint => $info) {
+    $extensions[] = $info['extension'];
+  }
+  $drush_commands = drush_get_context('DRUSH_COMMANDS');
+  $commands = array();
+  foreach ($drush_commands as $command => $info) {
+    if (in_array($info['commandfile'], $extensions)
+        && $info['topic'] != 1
+        && $info['hidden'] != 1
+        && $info['is_alias'] != 1
+        && $command != 'vagrant') {
+      $commands[] = '     ' . substr($command, strlen('vagrant-'));
+    }
+  }
+  if (count($commands)) {
+    $output[] = dt("Commands provided by Drush Vagrant:");
+    $output[] = _drush_vagrant_help_table($commands, 2);
+  }
+
+  $output[] = dt("For additional help on native Vagrant sub-commands try: 'vagrant <sub-command> --help'");
+  $output[] = dt("For additional help on Drush Vagrant sub-commands try 'drush vagrant-<sub-command> --help'");
+
+  $output = implode("\n", $output);
+  return $output;
+}
+
+function _drush_vagrant_help_table($list, $cols = 3) {
+  sort($list, SORT_STRING);
+  $rows = ceil(count($list)/$cols);
+  $i = 0;
+  for ($col = 0; $col < $cols; $col++) {
+    for ($row = 0; $row < $rows; $row++) {
+      $table[$row][$col] = $list[$i];
+      $i++;
+    }
+  }
+  $tmp_file = drush_save_data_to_temp_file('');
+  $handle = fopen($tmp_file, 'w+b');
+  drush_print_table($table, FALSE, NULL, $tmp_file);
+  return fread($handle, 500);
+}
+
+/**
  * Ensure that there is a user context
  */
 function _drush_vagrant_check_user_context() {
