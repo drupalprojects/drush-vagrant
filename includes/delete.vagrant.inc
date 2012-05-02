@@ -5,7 +5,7 @@
  */
 function drush_vagrant_delete($project) {
 
-  _drush_vagrant_check_project($project);
+  drush_vagrant_check_project($project, TRUE);
 
   $subnet = _drush_vagrant_get_subnet($project);
 

@@ -9,7 +9,7 @@ function drush_vagrant_shell() {
   $vm = drush_get_option('vm-name', FALSE);
   $project_path = drush_get_option('project-path', '.');
   
-  _drush_vagrant_check_project($project_path);
+  drush_vagrant_check_project($project_path, TRUE);
   if ($vm) {
     drush_shell_exec(strtr("cd !project_path && vagrant up !vm_name && vagrant ssh-config !vm_name",
       array( '!project_path' => $project_path, '!vm_name' => $vm))

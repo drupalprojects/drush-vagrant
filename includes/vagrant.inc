@@ -96,7 +96,7 @@ function _drush_vagrant_check_user_context() {
 /**
  * Ensure that a given project exists
  */
-function _drush_vagrant_check_project($project_path, $set_error = FALSE) {
+function drush_vagrant_check_project($project_path, $set_error = FALSE) {
   if (!is_dir($project_path)) {
     if ($set_error) {
       drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
