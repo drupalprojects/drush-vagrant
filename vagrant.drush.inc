@@ -116,20 +116,21 @@ function vagrant_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('vdl'),
   );
-
   $items['vagrant-shell'] = array(
     'description' => dt('Log into a Drush Vagrant VM via SSH.'),
     'arguments' => array(
-      'project' => dt('The project where the VM to log into exists.'),
-      'VM' => dt('The VM to log into. Optional, if there is only one VM in the project.'),
+      'remote-command' => dt('(OPTIONAL) Instead of logging into a VM, run this command in the VM. The command should be quoted if there are parameters. Returns the output of the command.'),
+    ),
+    'options' => array(
+      'ssh-connection-string' => 'Instead of running SSH, return the a string of the command that would otherwise be run.',
     ),
     'examples' => array(
-      'drush vagrant-ssh project1 vm1' => dt('Log into the \'vm1\' VM in the \'project1\' project.'),
+      'drush vagrant shell' => dt('Log into the VM in a single VM project.'),
+      'drush @example vsh "hostname -f"' => dt('Return the FQDN of the VM/project specified in the @example alias.'),
     ),
     'aliases' => array('vsh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-
   $items['vagrant-user'] = array(
     'description' => "Initialize or update user-specific settings for Drush Vagrant.",
     'aliases' => array('vuser'),
