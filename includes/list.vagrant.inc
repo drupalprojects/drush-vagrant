@@ -10,7 +10,7 @@ function drush_vagrant_list() {
 
   if (_drush_vagrant_check_project($project_path) && !drush_get_option('all', FALSE)) {
     // We're in a project, so only list its VMs, unless we're told otherwise
-    $project = array_pop(explode('/', $project_path));
+    $project = drush_vagrant_get_project_name($project_path);
     $projects = array( $project => $projects[$project]);
   }
   

@@ -113,6 +113,18 @@ function _drush_vagrant_check_project($project_path, $set_error = FALSE) {
 }
 
 /**
+ * Return the name of a project based on its path
+ *
+ * @project_path
+ *   The absolute path to a project directory.
+ */
+function drush_vagrant_get_project_name($project_path) {
+  $path_array = explode('/', $project_path);
+  return array_pop($path_array);
+}
+
+
+/**
  * Return the subnet of a given project
  */
 function _drush_vagrant_get_subnet($project){
