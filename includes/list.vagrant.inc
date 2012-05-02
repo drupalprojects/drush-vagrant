@@ -1,16 +1,71 @@
 <?php
 
 /**
- * List current projects.
+ * List current projects, VMs and statuses.
  */
 function drush_vagrant_list() {
-  $args = func_get_args();
-  $project = $args[0];
-  $vm = $args[1];
+  $project_path = drush_get_option('project-path', getcwd());
 
-  $projects = _drush_vagrant_list_projects();
+  $projects = _drush_vagrant_projects_info();
 
-  foreach ($projects as $entry) {
-    drush_print($entry);
+  if (_drush_vagrant_check_project($project_path) && !drush_get_option('all', FALSE)) {
+    // We're in a project, so only list its VMs, unless we're told otherwise
+    $project = array_pop(explode('/', $project_path));
+    $projects = array( $project => $projects[$project]);
+  }
+  
+  foreach ($projects as $project => $vms) {
+    if (!drush_get_option('only-vms', FALSE)) {
+      drush_print($project);
+    }
+    if (!drush_get_option('only-projects'))  {
+      foreach ($vms as $vm_name => $vm) {
+        if (drush_get_option('only-vms', FALSE)) {
+          drush_print($vm_name);
+        }
+        else {
+          drush_print('  ' . $vm_name . ' (' . $vm['status'] . ')');
+        }
+      }
+    }
   }
 }
+
+/**
+ * Return an array of current projects, their VMs and statuses
+ */
+function _drush_vagrant_projects_info(){
+  $projects = array();
+  if ($dir = opendir(PROJECTS_PATH)) {
+    while (false !== ($project = readdir($dir))) {
+      $project_path = PROJECTS_PATH . $project;
+      if (_drush_vagrant_check_project($project_path)) {
+        $projects[$project] = _drush_vagrant_vms_info($project_path);
+      }
+   }
+    closedir($dir);
+  }
+  return $projects;
+}
+
+/**
+ * Return an array of VMs in a given project, and status.
+ *
+ * @project_path
+ *   The path to look for the project
+ */
+function _drush_vagrant_vms_info($project_path){
+  $vms = array();
+  drush_shell_cd_and_exec($project_path, 'drush vagrant status');
+  $vms = drush_shell_exec_output();
+  $vms = array_slice($vms, 2, -4);
+  foreach ($vms as $key => $vm) {
+    $vm = explode(' ', $vm);
+    unset($vms[$key]);
+    if ($vm[0] != '') {
+      $vms[array_shift($vm)] = array('status' => array_pop($vm));
+    }
+  }
+  return $vms;
+}
+

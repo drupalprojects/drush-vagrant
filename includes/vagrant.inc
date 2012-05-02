@@ -96,29 +96,20 @@ function _drush_vagrant_check_user_context() {
 /**
  * Ensure that a given project exists
  */
-function _drush_vagrant_check_project($project_path) {
+function _drush_vagrant_check_project($project_path, $set_error = FALSE) {
   if (!is_dir($project_path)) {
-    drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
+    if ($set_error) {
+      drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
+    }
+    return FALSE;
   }
   if (!file_exists($project_path . '/Vagrantfile')) {
-    drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path,)));
-  }
-}
-
-/**
- * Return an array of current projects
- */
-function _drush_vagrant_list_projects(){
-  $projects = array();
-  if ($dir = opendir(PROJECTS_PATH)) {
-    while (false !== ($project = readdir($dir))) {
-      if (substr($project, 0, 1) != "." && is_dir(PROJECTS_PATH . $project)) {
-        $projects[] = $project;
-      }
+    if ($set_error) {
+      drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path,)));
     }
-    closedir($dir);
+    return FALSE;
   }
-  return $projects;
+  return TRUE;
 }
 
 /**
