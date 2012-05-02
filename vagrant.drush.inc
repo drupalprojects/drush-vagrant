@@ -215,6 +215,31 @@ function drush_vagrant() {
   }
 }
 
+function vagrant_drush_help_alter(&$command) {
+  $args = drush_get_arguments();
+  if (array_shift($args) == 'vagrant') {
+    if (count($args)) {
+      $vg_commands = vagrant_drush_command();
+      foreach ($vg_commands as $key => $value) {
+        $sub_commands = str_replace('vagrant-', '', array_keys($vg_commands));
+      }
+      if (in_array($args[0], $sub_commands)) {
+        $vg_command = 'drush vagrant-' . $args[0] . ' --help';
+      }
+      else {
+        $vg_command = strtr("vagrant !sub-commands --help", array('!sub-commands' => implode(' ', $args)));
+        $output[] = dt("Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the '!command' sub-command:\n", array('!command' => implode(' ', $args)));
+      }
+      drush_shell_exec($vg_command);
+      drush_print_r(drush_get_context('argv'));
+      $output[] = implode("\n", drush_shell_exec_output());
+      drush_print(implode("\n", $output));
+      unset($command['options']);
+      unset($command['aliases']);
+    }
+  }
+}
+
 /**
  * Return a list of all extensions that implement blueprints 
  */

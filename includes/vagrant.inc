@@ -12,39 +12,46 @@ foreach ($includes as $key => $file) {
  * Generate help text
  */
 function _drush_vagrant_help_text() {
-  $output[] = dt("Run a command on your Vagrant projects or VMs.\n");
-  $output[] = dt("Usage: !usage\n", array('!usage' => 'drush [<@alias>] vagrant <sub-command> [<arguments>] [<options>]'));
-  
-  $output[] = dt("Available native Vagrant commands:");
-  drush_shell_exec('vagrant');
-  $sub_commands = drush_shell_exec_output();
-  $sub_commands = array_splice($sub_commands, 6, -2);
-  $output[] = _drush_vagrant_help_table($sub_commands);
-  $blueprints = drush_vagrant_blueprint_info();
-  foreach ($blueprints as $blueprint => $info) {
-    $extensions[] = $info['extension'];
+  $args = drush_get_arguments();
+  $short_help = dt("Run a command on your Vagrant projects or VMs.");
+  if ($args[0] == 'help') {
+    // We're in a command list
+    return $short_help;
   }
-  $drush_commands = drush_get_context('DRUSH_COMMANDS');
-  $commands = array();
-  foreach ($drush_commands as $command => $info) {
-    if (in_array($info['commandfile'], $extensions)
-        && $info['topic'] != 1
-        && $info['hidden'] != 1
-        && $info['is_alias'] != 1
-        && $command != 'vagrant') {
-      $commands[] = '     ' . substr($command, strlen('vagrant-'));
+  elseif (isset($args[1])) {
+    // User specified a sub-command
+    return;
+  }
+  else {
+    $variables = array();
+   
+    $variables["short_help"] =  $short_help . "\n";
+    drush_shell_exec('vagrant');
+
+    $variables["vagrant_commands"] = _drush_vagrant_help_table(array_splice(drush_shell_exec_output(), 6, -2));
+   
+    $blueprints = drush_vagrant_blueprint_info();
+    foreach ($blueprints as $blueprint => $info) {
+      $extensions[] = $info['extension'];
     }
-  }
-  if (count($commands)) {
-    $output[] = dt("Commands provided by Drush Vagrant:");
-    $output[] = _drush_vagrant_help_table($commands, 2);
-  }
+    $drush_commands = drush_get_context('DRUSH_COMMANDS');
+    $sub_commands = array();
+    foreach ($drush_commands as $command => $info) {
+      if (in_array($info['commandfile'], $extensions)
+          && $info['topic'] != 1
+          && $info['hidden'] != 1
+          && $info['is_alias'] != 1
+          && $command != 'vagrant') {
+        $sub_commands[] = '     ' . substr($command, strlen('vagrant-'));
+      }
+    }
+    
+    $variables["sub_commands"] = _drush_vagrant_help_table($sub_commands, 2);
 
-  $output[] = dt("For additional help on native Vagrant sub-commands try: 'vagrant <sub-command> --help'");
-  $output[] = dt("For additional help on Drush Vagrant sub-commands try 'drush vagrant-<sub-command> --help'");
+    $help_text = _drush_vagrant_render_template($variables, $template = "help.tpl.php");
 
-  $output = implode("\n", $output);
-  return $output;
+    return $help_text;
+  }
 }
 
 function _drush_vagrant_help_table($list, $cols = 3) {
@@ -59,7 +66,7 @@ function _drush_vagrant_help_table($list, $cols = 3) {
   }
   $tmp_file = drush_save_data_to_temp_file('');
   $handle = fopen($tmp_file, 'w+b');
-  drush_print_table($table, FALSE, NULL, $tmp_file);
+  @drush_print_table($table, FALSE, NULL, $tmp_file);
   return fread($handle, 500);
 }
 
