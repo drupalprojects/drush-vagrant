@@ -6,7 +6,7 @@
 function drush_vagrant_list() {
   $project_path = drush_get_option('project-path', getcwd());
 
-  $projects = _drush_vagrant_projects_info();
+  $projects = drush_vagrant_projects_info();
 
   if (drush_vagrant_check_project($project_path) && !drush_get_option('all', FALSE)) {
     // We're in a project, so only list its VMs, unless we're told otherwise
@@ -34,13 +34,13 @@ function drush_vagrant_list() {
 /**
  * Return an array of current projects, their VMs and statuses
  */
-function _drush_vagrant_projects_info(){
+function drush_vagrant_projects_info(){
   $projects = array();
   if ($dir = opendir(PROJECTS_PATH)) {
     while (false !== ($project = readdir($dir))) {
       $project_path = PROJECTS_PATH . $project;
       if (drush_vagrant_check_project($project_path)) {
-        $projects[$project] = _drush_vagrant_vms_info($project_path);
+        $projects[$project] = drush_vagrant_vms_info($project_path);
       }
    }
     closedir($dir);
@@ -54,7 +54,7 @@ function _drush_vagrant_projects_info(){
  * @project_path
  *   The path to look for the project
  */
-function _drush_vagrant_vms_info($project_path){
+function drush_vagrant_vms_info($project_path){
   $vms = array();
   drush_shell_cd_and_exec($project_path, 'drush vagrant status');
   $vms = drush_shell_exec_output();
