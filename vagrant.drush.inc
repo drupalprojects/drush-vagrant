@@ -48,9 +48,6 @@ function vagrant_drush_command() {
       'vm-name' => array(
         'description' => dt('The name of the Vagrant virtual machine on which to run the command.'),
       ),
-      'params' => array(
-        'description' => dt('Additional parameters to pass to Vagrant.'),
-      ),
     ),
     'aliases' => array('vg'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -197,12 +194,11 @@ function drush_vagrant() {
       drush_mkdir(PROJECT_PATH);
     }
     else {
-      $vg_command = strtr('VAGRANT_HOME=!path vagrant !command !vm_name !args !params', array(
+      $vg_command = drush_get_context('argv');
+      $vg_command = implode(' ', array_splice($vg_command, 1));
+      $vg_command = strtr('cd !path && !command', array(
         '!path' => PROJECT_PATH,
-        '!command' => $command,
-        '!vm_name' => VM_NAME,
-        '!args' => implode(' ', $args),
-        '!params' => drush_get_option('params', NULL),
+        '!command' => $vg_command,
         )
       );
 
