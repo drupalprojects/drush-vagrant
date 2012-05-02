@@ -96,9 +96,12 @@ function _drush_vagrant_check_user_context() {
 /**
  * Ensure that a given project exists
  */
-function _drush_vagrant_check_project($project) {
-  if (!is_dir(PROJECTS_PATH . $project)) {
-    drush_set_error(dt('ERROR: Could not find a project called \'!project\'.', array('!project' => $project,)));
+function _drush_vagrant_check_project($project_path) {
+  if (!is_dir($project_path)) {
+    drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
+  }
+  if (!file_exists($project_path . '/Vagrantfile')) {
+    drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path,)));
   }
 }
 
