@@ -29,55 +29,124 @@ function drush_vagrant_build_validate() {
 /**
  * Initialize a new project.
  */
-function drush_vagrant_build($project) {
+function drush_vagrant_build() {
 
   $user_settings = drush_get_context('user');
-  if (!$user_settings) {
-    $home = drush_shell_exec_output();
-    include($home[0] . '/.drushrc.php');
-    foreach ($options as $option => $value) {
-      $user_settings[$option] = $value;
+
+  // Prompt for a project name if one isn't already set.
+  if (!($project_name = drush_get_option('project-name'))) {
+    drush_print(dt('The name of your project may be used in URLs, and so should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they do not come at the beginning or end of the name.'));
+    // Only accept a valid project name.
+    while ($error_msg !== TRUE) {
+      $project_name = drush_prompt(dt('What would you like to call your project?'));
+      $error_msg = _drush_vagrant_check_project_name($project_name);
+      if ($error_msg !== TRUE) {
+        drush_print($error_msg);
+      }
     }
   }
 
-  if (!($blueprint = drush_get_option('blueprint'))) {
-    $blueprint = 'default';
+  // Prompt for a Git repository if one isn't already set.
+  if (!($git_repo = drush_get_option('git-repo'))) {
+    drush_print(dt('You can build your project based on a Git repository, or a blueprint. Provide the URL of a Git repository, or leave blank to choose a template.'));
+    // Only accept a valid git repo, or pass through to blueprint selection.
+    do {
+      $git_repo = drush_prompt(dt('Git URL'), 'none');
+    } while ($git_repo != 'none' && !_drush_vagrant_check_git_repo($git_repo));
+  }
+  
+  if (!($blueprint = drush_get_option('blueprint')) && $git_repo == 'none') {
+    unset($git_repo);
+    $blueprint_info = drush_vagrant_blueprint_info();
+    foreach ($blueprint_info as $name => $data) {
+      $choice[$name] = $data['name'] . ': ' . $data['description'] ;
+    }
+    $prompt = dt('Which blueprint would you like to use?');
+    $blueprint = drush_choice($choice, $prompt);
+    // User chose 'cancel'
+    if ($blueprint == '') {
+      return drush_user_abort();
+    }
   }
 
-  $blueprint_info = drush_vagrant_blueprint_info($blueprint);
-
-  $git_repo = drush_get_option('git-repo');
-
-  drush_print(dt("This script will create a new project at \'!project_root!project\'.",
-    array('!project_root'  => PROJECTS_PATH,
-          '!project'       => $project,)));
-
-  if ($git_repo) {
-    drush_print(dt("It will clone the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
+  $hosts = drush_get_option('hosts', FALSE);
+  if ($hosts === FALSE) {
+    $hosts = drush_confirm(dt('Would you like to generate entries in /etc/hosts for the VMs in your project?'));
+    if ($hosts !== FALSE) {
+      // Save the new option
+      drush_set_option('hosts', TRUE);
+      // --hosts assumes --aliases
+      drush_set_option('aliases', TRUE);
+    }
   }
   else {
-    drush_print(dt("It will use the '!blueprint' blueprint from the '!extension' extension.",
-      array('!blueprint' => $blueprint,
-            '!extension' => $blueprint_info['extension'],
-      ))
+    // --hosts assumes --aliases
+    drush_set_option('aliases', TRUE);
+  }
+  
+  $aliases = drush_get_option('aliases', FALSE);
+  if ($aliases === FALSE) {
+    $aliases = drush_confirm(dt('Would you like to generate Drush aliases for your project?'));
+    if ($aliases !== FALSE) {
+      // Save the new option
+      drush_set_option('aliases', TRUE);
+      // --aliases assumes --up
+      drush_set_option('up', TRUE);
+    }
+  }
+  else {
+    // --aliases assumes --up
+    drush_set_option('up', TRUE);
+  }
+
+  $up = drush_get_option('up', FALSE);
+  if ($up === FALSE) {
+    drush_confirm(dt('Would you like to launch the VMs immediately?'));
+    if ($up !== FALSE) {
+      // Save the new option
+      drush_set_option('up', TRUE);
+    }
+  }
+
+  $project_path = PROJECTS_PATH . $project_name;
+  drush_set_option('project-path', $project_path);
+  drush_print(dt("You are about to:\n * Create a new project at '!project_path'.",
+    array('!project_path'  => $project_path))
+  );
+
+  if (isset($git_repo)) {
+    drush_print(dt(" * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
+  }
+  else {
+    drush_print(dt(" * Build the project using the '!blueprint' blueprint from the '!extension' extension.",
+      array('!blueprint' => $blueprint, '!extension' => $blueprint_info[$blueprint]['extension']))
     );
   }
+  if ($up) {
+    drush_print(dt(" * Launch the project's VMs immediately."));
+  }
+  if ($aliases) {
+    drush_print(dt(" * Generate Drush aliases for the project and VMs."));
+  }
+  if ($hosts) {
+    drush_print(dt(" * Add entries for the VMs' FQDNs to /etc/hosts. (You will be prompted for your sudo password.)"));
+  }
 
-  if (!drush_confirm(dt('Do you want to proceed with initializing the projectl?'))) {
+  if (!drush_confirm(dt('Do you want to proceed with initializing the project?'))) {
     return drush_user_abort();
   }
-  // Find the next available subnet
+
+  // We need to check subnets before we create the new project, to avoid a race condition
   $subnet = _drush_vagrant_next_available_subnet();
 
-  // Create the project directory from the blueprint
-  $project_path = PROJECTS_PATH . $project ;
+  // Create the project directory from the blueprint, or the git repo
   if ($git_repo) {
     drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path);
   }
   else {
-    drush_copy_dir($blueprint_info['full_path'], $project_path);
+    drush_copy_dir($blueprint_info[$blueprint]['full_path'], $project_path);
   }
-
+/*
   //Check for support of 64-bit client OSes
   drush_shell_exec('egrep \'(vmx|svm)\' /proc/cpuinfo');
   $output = drush_shell_exec_output();
@@ -88,28 +157,32 @@ function drush_vagrant_build($project) {
     $settings_file = str_replace('debian-LAMP-current.box', 'debian-LAMP-i386-current.box', $settings_file);
     file_put_contents($project_path . 'settings.rb', $settings_file);
   }
-
-
+*/
   // Set up the new project
   symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $project_path . '/Vagrantfile');
   symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $project_path . '/.gitignore');
-
-  $variables = array();
- 
-  $variables["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
-  $variables["project_name"] = $project;
-  $variables["vagrant_modules_path"] = DRUSH_VAGRANT_ROOT . '/lib/modules';
-  $variables["subnet"] = $subnet;
-  $variables["username"] = $user_settings['vagrant_username'];
-  $variables["git_name"] = $user_settings['vagrant_git_name'];
-  $variables["git_email"] = $user_settings['vagrant_git_email'];
-  $variables["uid"] = $user_settings['vagrant_uid'];
-  $variables["gid"] = $user_settings['vagrant_gid'];
- 
-  $config_file = _drush_vagrant_render_template($variables, $template = "config.tpl.php");
- 
   $config_path = $project_path . '/.config';
   drush_mkdir($config_path);
+
+  if (!isset($git_repo)) {
+    // Record the blueprint that was used
+    $blueprint_vars['extension'] = $blueprint_info[$blueprint]['extension'];
+    $blueprint_vars['blueprint'] = $blueprint;
+    $blueprint_file = _drush_vagrant_render_template($blueprint_vars, $template = "blueprint.tpl.php");
+    file_put_contents($config_path . '/blueprint.inc', $blueprint_file);
+  }
+
+  $config_vars = array();
+  $config_vars["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
+  $config_vars["project_name"] = $project_name;
+  $config_vars["vagrant_modules_path"] = DRUSH_VAGRANT_ROOT . '/lib/modules';
+  $config_vars["subnet"] = $subnet;
+  $config_vars["username"] = $user_settings['vagrant_username'];
+  $config_vars["git_name"] = $user_settings['vagrant_git_name'];
+  $config_vars["git_email"] = $user_settings['vagrant_git_email'];
+  $config_vars["uid"] = $user_settings['vagrant_uid'];
+  $config_vars["gid"] = $user_settings['vagrant_gid'];
+  $config_file = _drush_vagrant_render_template($config_vars, $template = "config.tpl.php");
   file_put_contents($config_path . '/config.rb', $config_file);
 
   //TODO: check for existence of these vars
