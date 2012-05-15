@@ -77,21 +77,22 @@ function vagrant_drush_command() {
   );
   $items['vagrant-build'] = array(
     'description' => dt('Build a new Drush Vagrant project.'),
-    'arguments' => array(
-      'project' => dt('The name of the new Vagrant project to initialize.'),
-    ),
     'options' => array(
+      'project-name' => array(
+        'description' => dt('The short name of the project.')),
       'blueprint' => array(
         'description' => dt('Specify the blueprint to use.')),
       'git-repo' => array(
         'description' => dt('Clone a Git repo, instead of using a blueprint.')),
+      'aliases' => array(
+        'description' => dt('Generate aliases for the project and its VMs.')),
       'hosts' => array(
-        'description' => dt('Add an entry to /etc/hosts.')),
+        'description' => dt('Add entries to /etc/hosts.')),
       'up' => array(
         'description' => dt('Start up the Vagrant project VM(s) immediately.')),
     ),
     'examples' => array(
-      'drush aui project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the \'aegir\' blueprint.'),
+      'drush vb --project-name=project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the \'aegir\' blueprint.'),
     ),
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
