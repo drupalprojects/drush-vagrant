@@ -37,3 +37,10 @@ function drush_vagrant_shell() {
   }
 
 }
+
+/**
+ * Implementation of drush_COMMAND_validate().
+ */
+function drush_vagrant_shell_validate() {
+  drush_vagrant_get_project_path();
+}
