@@ -3,17 +3,20 @@
 /**
  * Implementation of drush_hook_commandhook_validate().
  */
-function drush_vagrant_build_validate($project) {
+function drush_vagrant_build_validate() {
 
-  if (!isset($project)) {
-    drush_set_error(dt("ERROR: Please provide a name for your new project."));
-    exit(1);
-  }
-
+  // Ensure we've gathered user info
   _drush_vagrant_check_user_context();
 
   // Check that the project name is unique and well-formed
-  _drush_vagrant_validate_project($project);
+  if ($project = drush_get_option('project-name')) {
+    _drush_vagrant_check_project_name($project, TRUE);
+  }
+
+  // Check that the Git repo is accessible
+  if ($git_repo = drush_get_option('git-repo')) {
+    _drush_vagrant_check_git_repo($git_repo, TRUE);
+  }
 
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option('blueprint')) {
