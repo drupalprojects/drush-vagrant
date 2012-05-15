@@ -1,34 +1,44 @@
 <?php
 
 /**
+ * Validate the project to delete
+ */
+function drush_vagrant_delete_validate() {
+  drush_vagrant_get_project_path();
+}
+
+/**
  * Delete an existing project.
  */
-function drush_vagrant_delete($project) {
+function drush_vagrant_delete() {
 
-  drush_vagrant_check_project($project, TRUE);
+  $project_path = drush_vagrant_get_project_path();
 
-  $subnet = _drush_vagrant_get_subnet($project);
+  $project_alias = drush_get_context('alias');
 
-  drush_shell_exec('grep 192.168.%s.10 /etc/hosts', $subnet);
-  $remove_lines = drush_shell_exec_output();
-
-  drush_print(dt('!!! WARNING: This operation cannot be undone. !!!'));
-  drush_print(dt('This operation will delete the \'!project\' project, and destroy all of its VMs', array('!project' => $project)));
-
-  foreach ($remove_lines as $line) {
-    $remove_line_block .= '   ' . $line . "\n";
+  if (isset($project_alias['#name'])) {
+    $project_alias = $project_alias['#name'];
+  }
+  else {
+    $project_alias = '@' . drush_vagrant_get_project_name($project_path);
   }
 
-  drush_print(dt("It will also remove the following line(s) from your /etc/hosts file:\n!remove_line",
-    array('!remove_line' => $remove_line_block,)));
+  drush_print(dt('!!! WARNING: This operation cannot be undone. !!!'));
+  drush_print(dt('This operation will delete the \'!project\' project, and destroy all of its VMs', array('!project' => drush_vagrant_get_project_name($project_path))));
 
   if (drush_confirm(dt('Are you certain that you want to proceed?'))) {
-    foreach ($remove_lines as $remove_line) {
-      drush_shell_exec_interactive('sudo sed /%s/d -i /etc/hosts', $remove_line);
+    drush_shell_cd_and_exec($project_path, 'drush vagrant list --only-vms');
+    $vms = drush_shell_exec_output();
+    foreach ($vms as $vm_name) {
+      drush_shell_exec_interactive('drush %s.%s vagrant hosts --remove', $project_alias , $vm_name);
     }
-    drush_shell_exec('cd %s && vagrant destroy --force', PROJECTS_PATH . $project);
-    if (!is_file(PROJECTS_PATH . $project . '/.vagrant')) {
-      drush_shell_exec('rm -rf %s', PROJECTS_PATH . $project);
+    drush_shell_exec_interactive('cd %s && vagrant destroy --force', $project_path);
+    if (!is_file($project_path . '/.vagrant')) {
+      drush_shell_exec_interactive('cd %s && drush vagrant aliases --delete', $project_path);
+      if ($project_path == getcwd()) {
+        chdir(PROJECTS_PATH);
+      }
+      drush_shell_exec('rm -rf %s', $project_path);
     }
     else {
       drush_set_error(dt('Failure during \'vagrant destroy\''));
