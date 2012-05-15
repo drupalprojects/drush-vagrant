@@ -1,14 +1,19 @@
 <?php
 /**
  * @file
- * Template to generate a drush alias for a VM.
+ * Template to generate a drush alias file for a project.
  *
  * Variables:
- * - $alias: The name of the project.
  * - $project_path: The filesystem path to the project's directory
+ * - $vms: An array of formatted aliases for he project's VMs
  */
 ?>
 <?php print "<?php\n\n" ?>
-$aliases['<?php print $alias; ?>'] = array(
-  'project_path' => '<?php print $project_path; ?>',
+$options['project-path'] = '<?php print $project_path; ?>';
+
+$aliases['project'] = array(
+  'type' => 'project',
 );
+
+
+<?php foreach ($vms as $key => $alias) { print $alias; } ?>
