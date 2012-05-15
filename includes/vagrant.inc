@@ -141,10 +141,10 @@ function drush_vagrant_get_project_name($project_path) {
 /**
  * Return the subnet of a given project
  */
-function _drush_vagrant_get_subnet($project){
+function _drush_vagrant_get_subnet($project_path){
   $subnet = '';
   $match = '';
-  $config_file = PROJECTS_PATH . $project . '/.config/config.rb';
+  $config_file = $project_path . '/.config/config.rb';
 
   // Read each line of the config file to find the line that contains the subnet
   if (is_file($config_file) && $file = @fopen($config_file, "r")) {
