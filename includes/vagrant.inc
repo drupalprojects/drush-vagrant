@@ -100,7 +100,7 @@ function drush_vagrant_check_project($project_path, $set_error = FALSE) {
   if (!is_dir($project_path)) {
     if ($set_error) {
       drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
-    }
+      }
     return FALSE;
   }
   if (!file_exists($project_path . '/Vagrantfile')) {
@@ -110,6 +110,20 @@ function drush_vagrant_check_project($project_path, $set_error = FALSE) {
     return FALSE;
   }
   return TRUE;
+}
+
+/**
+ * Validate and return the current project's path.
+ */
+function drush_vagrant_get_project_path() {
+  if ($project_path = drush_get_option('project-path', getcwd())) {
+    if (drush_vagrant_check_project($project_path, TRUE)) {
+      return $project_path;
+    }
+    else {
+      return FALSE;
+    }
+  }
 }
 
 /**
