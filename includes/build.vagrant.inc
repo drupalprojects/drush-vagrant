@@ -199,36 +199,45 @@ function drush_vagrant_build() {
     copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
 
+  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $project_path);
 }
 
 /**
- * Post-initialize configuration
+ * Post-build configuration
  */
-function drush_vagrant_post_vagrant_build($project) {
-  $no_hosts = drush_get_option('no-hosts', FALSE);
-  $init_only = drush_get_option('init-only', FALSE);
-  $subnet =  _drush_vagrant_get_subnet($project);
+function drush_vagrant_post_vagrant_build() {
+  $project_path = drush_get_option('project-path');
+  $aliases = drush_get_option('aliases', FALSE);
+  $hosts = drush_get_option('hosts', FALSE);
+  $up = drush_get_option('up', FALSE);
+  $subnet =  _drush_vagrant_get_subnet($project_path);
 
-  // Add domain to hosts file
-  if ($no_hosts == FALSE) {
-    drush_print(dt('Enter your password to add an entry for \'!project\' to your hosts file, or press CTRL-c to leave it as is.', array( '!project' => $project)));
-    $hosts_entry = sprintf('192.168.%d.10    "%s".aegir.local', $subnet, $project);
-    drush_shell_exec_interactive('echo "' . $hosts_entry . '" | sudo tee -a /etc/hosts');
+  // Launch the VMs (or skip, as aliases will do it for us)
+  if ($up !== FALSE && $aliases === FALSE) {
+    drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
   }
 
-  $project_path = PROJECTS_PATH . $project;
+  // Generate aliases for the new project
+  if ($aliases !== FALSE) {
+    drush_shell_exec_interactive("cd %s && drush vagrant aliases", $project_path);
+  }
 
-  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $project_path);
-
-  if ($init_only == FALSE) {
-    drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
+  // Add domain to hosts file
+  if ($hosts !== FALSE) {
+    drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
+    drush_shell_cd_and_exec($project_path, 'drush vagrant list --only-vms');
+    $vms = drush_shell_exec_output();
+    foreach ($vms as $vm) {
+      $vm_alias = '@' . drush_vagrant_get_project_name($project_path) . '.' . $vm;
+      $domain = drush_sitealias_get_record($vm_alias);
+      $domain = $domain['fqdn'];
+      drush_shell_exec_interactive("drush %s vagrant hosts --domains=%s", $vm_alias, $domain);
+    }
   }
 
   drush_print(dt('Your project was successfully initialized.'));
   drush_print(dt('The root for your project is \'!project_path\'', array('!project_path' => $project_path)));
-  if ($no_hosts == FALSE) {
-    drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!subnet' => $subnet)));
-  }
+  drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!subnet' => $subnet)));
   drush_print(dt('You can now: * Alter your project\'s behaviour by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
   drush_print(dt('             * Redefine the VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!project_path' => $project_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !project_path/modules.', array('!project_path' => $project_path)));
@@ -302,11 +311,12 @@ function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
 function _drush_vagrant_next_available_subnet() {
 
   $initial_subnet = 10;
-  $projects = _drush_vagrant_list_projects();
+  drush_shell_exec('drush vagrant list --only-projects');
+  $projects = drush_shell_exec_output();
 
   $subnets = array();
   foreach ($projects as $project) {
-    $subnets[$project] = _drush_vagrant_get_subnet($project);
+    $subnets[$project] = _drush_vagrant_get_subnet(PROJECTS_PATH . $project);
   }
 
   // If there aren't any projects yet, use the default
@@ -325,3 +335,4 @@ function _drush_vagrant_next_available_subnet() {
   // If we've reached here, then no subnets are available
   drush_set_error(dt('ERROR: We\'ve run out of Subnets!'));
 }
+
