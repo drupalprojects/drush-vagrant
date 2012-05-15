@@ -5,7 +5,6 @@
  */
 function drush_vagrant_list() {
   $project_path = drush_get_option('project-path', getcwd());
-
   $projects = drush_vagrant_projects_info();
 
   if (drush_vagrant_check_project($project_path) && !drush_get_option('all', FALSE)) {
@@ -13,7 +12,6 @@ function drush_vagrant_list() {
     $project = drush_vagrant_get_project_name($project_path);
     $projects = array( $project => $projects[$project]);
   }
-  
   foreach ($projects as $project => $vms) {
     if (!drush_get_option('only-vms', FALSE)) {
       drush_print($project);

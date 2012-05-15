@@ -26,7 +26,6 @@ function drush_vagrant_shell() {
 
   $args = drush_get_arguments();
   $last_arg = $args[count($args) -1 ];
-  
   if ($args[count($args) - 1] != 'shell' && $args[count($args) - 1] != 'vsh') {
     $command .= ' "' . $last_arg . '"';
   }

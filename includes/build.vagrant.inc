@@ -54,7 +54,7 @@ function drush_vagrant_build() {
       $git_repo = drush_prompt(dt('Git URL'), 'none');
     } while ($git_repo != 'none' && !_drush_vagrant_check_git_repo($git_repo));
   }
-  
+
   if (!($blueprint = drush_get_option('blueprint')) && $git_repo == 'none') {
     unset($git_repo);
     $blueprint_info = drush_vagrant_blueprint_info();
@@ -83,7 +83,7 @@ function drush_vagrant_build() {
     // --hosts assumes --aliases
     drush_set_option('aliases', TRUE);
   }
-  
+
   $aliases = drush_get_option('aliases', FALSE);
   if ($aliases === FALSE) {
     $aliases = drush_confirm(dt('Would you like to generate Drush aliases for your project?'));
@@ -248,7 +248,6 @@ function drush_vagrant_post_vagrant_build() {
  * Ensure that a project name is unique and well-formed
  */
 function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
-  
   // Check whether a project with this name already exists.
   if (is_dir(PROJECTS_PATH . $project_name)) {
     $error_msg = dt('ERROR: There is already a project called \'!project\'.', array('!project' => $project_name));
@@ -280,7 +279,6 @@ function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
  * Ensure that a Git repository is accessible.
  */
 function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
-  
   // Check that Git is installed.
   if ($set_error) {
     $status = drush_shell_exec('which git');

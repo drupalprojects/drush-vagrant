@@ -24,12 +24,9 @@ function _drush_vagrant_help_text() {
   }
   else {
     $variables = array();
-   
     $variables["short_help"] =  $short_help . "\n";
     drush_shell_exec('vagrant');
-
     $variables["vagrant_commands"] = _drush_vagrant_help_table(array_splice(drush_shell_exec_output(), 6, -2));
-   
     $blueprints = drush_vagrant_blueprint_info();
     foreach ($blueprints as $blueprint => $info) {
       $extensions[] = $info['extension'];
@@ -45,9 +42,7 @@ function _drush_vagrant_help_text() {
         $sub_commands[] = '     ' . substr($command, strlen('vagrant-'));
       }
     }
-    
     $variables["sub_commands"] = _drush_vagrant_help_table($sub_commands, 2);
-
     $help_text = _drush_vagrant_render_template($variables, $template = "help.tpl.php");
 
     return $help_text;
@@ -171,5 +166,4 @@ function _drush_vagrant_get_subnet($project_path){
   else {
     drush_set_error(dt('ERROR: Could not parse !config_file in _drush_vagrant_get_subnet().', array('!config_file' => $config_file)));
   }
-
 }

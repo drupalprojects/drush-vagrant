@@ -81,7 +81,7 @@ function _drush_vagrant_render_template($variables, $template = "alias.tpl.php")
 }
 
 /**
- * Generate aliases for a project and its VMs. 
+ * Generate aliases for a project and its VMs.
  */
 function drush_vagrant_aliases() {
   $project_path = drush_get_context('project-path', getcwd());
@@ -125,7 +125,7 @@ function drush_vagrant_aliases() {
       drush_shell_cd_and_exec($project_path, 'drush vagrant shell --vm-name=' . $vm_name . ' "hostname -f"');
       $output = drush_shell_exec_output();
       $vm_vars['fqdn'] = $output[0];
-      drush_shell_cd_and_exec($project_path, 'drush vagrant shell --vm-name=' . $vm_name . ' "hostname -I"'); 
+      drush_shell_cd_and_exec($project_path, 'drush vagrant shell --vm-name=' . $vm_name . ' "hostname -I"');
       $output = drush_shell_exec_output();
       $vm_vars['ip_addr'] = array_pop(explode(' ', $output[0]));
       $vms[] = _drush_vagrant_render_template($vm_vars, 'vm_alias.tpl.php');

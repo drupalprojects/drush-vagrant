@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  *   Vagrant family of Drush commands for managing Vagrant-based VMs.
@@ -252,7 +253,7 @@ function vagrant_drush_help_alter(&$command) {
 }
 
 /**
- * Return a list of all extensions that implement blueprints 
+ * Return a list of all extensions that implement blueprints
  */
 function drush_vagrant_extension_info() {
   $all_extensions = drush_commandfile_list();
@@ -280,5 +281,3 @@ function vagrant_vagrant_blueprints() {
     );
   return $blueprints;
 }
-
-
