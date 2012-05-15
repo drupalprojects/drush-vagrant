@@ -7,7 +7,7 @@ function drush_vagrant_alias_config() {
   $args = func_get_args();
 
   drush_print("Attempting to read the Vagrant SSH configuration.");
-  $status = drush_shell_exec("vagrant ssh-config");
+  $status = drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . VM_NAME);
   $output = drush_shell_exec_output();
   if (!$status) {
     drush_log(dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"), "error");
@@ -66,8 +66,7 @@ function _drush_vagrant_join_ssh_commands($x, $acc) {
  * Run all the variables through a template file.
  */
 function _drush_vagrant_render_template($variables, $template = "alias.tpl.php") {
-  $command = drush_get_command();
-  $template_path = $command['path'] . '/templates/' . $template;
+  $template_path = DRUSH_VAGRANT_ROOT . '/templates/' . $template;
 
   try {
     extract($variables);
