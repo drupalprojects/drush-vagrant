@@ -162,15 +162,62 @@ function drush_vagrant_post_vagrant_build($project) {
 /**
  * Ensure that a project name is unique and well-formed
  */
-function _drush_vagrant_validate_project($project) {
-  if (is_dir(PROJECTS_PATH . $project)) {
-    drush_set_error(dt('ERROR: There is already a project called \'!project\'.', array('!project' => $project,)));
+function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
+  
+  // Check whether a project with this name already exists.
+  if (is_dir(PROJECTS_PATH . $project_name)) {
+    $error_msg = dt('ERROR: There is already a project called \'!project\'.', array('!project' => $project_name));
+    if ($set_error) {
+      drush_set_error($error_msg);
+    }
+    else {
+      return $error_msg;
+    }
   }
+
+  // Check that the project name can safely be used in a URL.
   $regex = '/^([a-z0-9][a-z0-9.-]*[a-z0-9])$/';
-  if (preg_match($regex, $project) < 1) {
-    drush_set_error(dt('ERROR: the name of your project (!project) should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
-      array('!project' => $project,)));
+  if (preg_match($regex, $project_name) < 1) {
+    $error_msg = dt('ERROR: the name of your project (!project) should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
+      array('!project' => $project_name)
+    );
+    if ($set_error) {
+      drush_set_error($error_msg);
+    }
+    else {
+      return $error_msg;
+    }
   }
+  return TRUE;
+}
+
+/**
+ * Ensure that a Git repository is accessible.
+ */
+function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
+  
+  // Check that Git is installed.
+  if ($set_error) {
+    $status = drush_shell_exec('which git');
+    if ($status == FALSE) {
+      drush_set_error(dt("ERROR: You have specified a Git repository from which to build a project, but Git does not appear to be installed.\nPlease install Git before continuing.\n\n"));
+    }
+  }
+
+  // Check that we can access the Git repo.
+  $status = drush_shell_exec('git ls-remote ' . $git_repo);
+  if ($status == FALSE) {
+    $output = drush_shell_exec_output();
+    $error_msg = dt("There was a problem accessing the Git repository. The output of 'git ls-remote' is:\n   ") . implode("\n   ", $output);
+    if ($set_error) {
+      drush_set_error(dt('ERROR:') . $error_msg);
+    }
+    else {
+      drush_print($error_msg, 'warning');
+      return FALSE;
+    }
+  }
+  return TRUE;
 }
 
 /**
