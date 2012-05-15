@@ -97,13 +97,22 @@ function vagrant_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-hosts'] = array(
-    'description' => dt('Add an entry to /etc/hosts'),
+    'description' => dt('Manage entries in /etc/hosts. (Requires sudo password)'),
     'options' => array(
       'ip-addr' => array(
-        'description' => dt('The IP address of the server/site.')),
+        'description' => dt('The IP address of the server or site.')),
       'domains' => array(
-        'description' => dt('Comma-delimited list of domains.')),
+        'description' => dt('A comma-delimited list of domains.')),
+      'remove' => array(
+        'description' => dt('Remove an IP address or domain(s).')),
+      'purge' => array(
+        'description' => dt('Remove all entries in /etc/hosts made by Drush Vagrant.')),
     ),
+    'examples' => array(
+      'drush @machine1 vh --domains=foo.com,bar.net' => dt('Add and entry to /etc/hosts, so that foo.com and bar.net both point to the IP address of the Vagrant VM aliased as \'machine1\'.'),
+      'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain \'bar.com\' from the entry in /etc/hosts for IP address 192.168.22.13.'),
+      'drush vh --ip-addr=192.168.22.13 --remove' => dt('Remove the entire entry in /etc/hosts for IP address 192.168.22.13.'),
+      ),
     'aliases' => array('vh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
