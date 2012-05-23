@@ -21,7 +21,7 @@ function drush_vagrant_build_validate() {
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option('blueprint')) {
     if (!array_key_exists($blueprint, drush_vagrant_blueprint_info())) {
-      drush_set_error(dt("ERROR: Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint,)));
+      drush_log(dt("Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint,)), "error");
     }
   }
 }
@@ -33,9 +33,10 @@ function drush_vagrant_build() {
 
   $user_settings = drush_get_context('user');
 
-  // Prompt for a project name if one isn't already set.
+  // Prompt for a project name, if one wasn't passed as an option
   if (!($project_name = drush_get_option('project-name'))) {
-    drush_print(dt('The name of your project may be used in URLs, and so should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they do not come at the beginning or end of the name.'));
+    drush_print(dt('The name of your project may be used in URLs, and so should only contain lower-case letters and numbers.'));
+    drush_print(dt('It may also contain hyphens (-) and dots (.), so long as they do not come at the beginning or end of the name.'));
     // Only accept a valid project name.
     while ($error_msg !== TRUE) {
       $project_name = drush_prompt(dt('What would you like to call your project?'));
@@ -45,8 +46,13 @@ function drush_vagrant_build() {
       }
     }
   }
+  
+  // Begin building our final confirmation prompt
+  $actions = array();
+  $actions[] = dt("You are about to:");
+  $actions[] = dt("  * Create a new project at '!project_path'.", array('!project_path' => $project_path));
 
-  // Prompt for a Git repository if one isn't already set.
+  // Prompt for a Git repository, if one wasn't passed as an option
   if (!($git_repo = drush_get_option('git-repo'))) {
     drush_print(dt('You can build your project based on a Git repository, or a blueprint. Provide the URL of a Git repository, or leave blank to choose a template.'));
     // Only accept a valid git repo, or pass through to blueprint selection.
@@ -64,8 +70,8 @@ function drush_vagrant_build() {
     }
     $prompt = dt('Which blueprint would you like to use?');
     $blueprint = drush_choice($choice, $prompt);
-    // User chose 'cancel'
     if ($blueprint == '') {
+      // User chose 'cancel'
       return drush_user_abort();
     }
   }
@@ -76,6 +82,7 @@ function drush_vagrant_build() {
     if ($hosts !== FALSE) {
       // Save the new option
       drush_set_option('hosts', TRUE);
+      $actions[] = dt("  * Add entries for the VMs' FQDNs to /etc/hosts. (You will be prompted for your sudo password.)");
       // --hosts assumes --aliases
       drush_set_option('aliases', TRUE);
     }
@@ -91,11 +98,13 @@ function drush_vagrant_build() {
     if ($aliases !== FALSE) {
       // Save the new option
       drush_set_option('aliases', TRUE);
+      $actions[] = dt("  * Generate Drush aliases for the project and VMs.");
       // --aliases assumes --up
       drush_set_option('up', TRUE);
     }
   }
   else {
+    $actions[] = dt("  * Generate Drush aliases for the project and VMs.");
     // --aliases assumes --up
     drush_set_option('up', TRUE);
   }
@@ -106,31 +115,24 @@ function drush_vagrant_build() {
     if ($up !== FALSE) {
       // Save the new option
       drush_set_option('up', TRUE);
+      $actions[] = dt("  * Launch the project's VMs immediately.");
     }
   }
-
-  $project_path = PROJECTS_PATH . $project_name;
-  drush_set_option('project-path', $project_path);
-  drush_print(dt("You are about to:\n * Create a new project at '!project_path'.",
-    array('!project_path'  => $project_path))
-  );
+  else {
+    $actions[] = dt("  * Launch the project's VMs immediately.");
+  }
 
   if (isset($git_repo)) {
-    drush_print(dt(" * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo,)));
+    $actions[] = dt("  * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo,));
   }
   else {
-    drush_print(dt(" * Build the project using the '!blueprint' blueprint from the '!extension' extension.",
-      array('!blueprint' => $blueprint, '!extension' => $blueprint_info[$blueprint]['extension']))
+    $actions[] = dt("  * Build the project using the '!blueprint' blueprint from the '!extension' extension.",
+      array('!blueprint' => $blueprint, '!extension' => $blueprint_info[$blueprint]['extension'])
     );
   }
-  if ($up) {
-    drush_print(dt(" * Launch the project's VMs immediately."));
-  }
-  if ($aliases) {
-    drush_print(dt(" * Generate Drush aliases for the project and VMs."));
-  }
-  if ($hosts) {
-    drush_print(dt(" * Add entries for the VMs' FQDNs to /etc/hosts. (You will be prompted for your sudo password.)"));
+
+  foreach ($actions as $action) {
+    drush_print($action);
   }
 
   if (!drush_confirm(dt('Do you want to proceed with initializing the project?'))) {
