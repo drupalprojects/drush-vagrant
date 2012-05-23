@@ -7,6 +7,12 @@ function drush_vagrant_blueprints() {
   $blueprints = drush_vagrant_blueprint_info();
   foreach ($blueprints as $machine_name => $info) {
     drush_print('BLUEPRINT: ' . $machine_name);
+    if (!drush_get_option('all', FALSE)) {
+      unset($info['path']);
+      unset($info['full_path']);
+      unset($info['build_callback']);
+      unset($info['update_callback']);
+    }
     foreach ($info as $label => $value) {
       drush_print('   ' . $label . ': ' . $value);
     }
