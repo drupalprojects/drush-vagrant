@@ -162,7 +162,11 @@ function _drush_vagrant_build_project() {
 
   // Create the project directory from the blueprint, or the git repo
   if ($git_repo) {
-    drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path);
+    drush_vagrant_exec_and_log(array(
+      'command' => drush_shell_exec_interactive('git clone %s %s', $git_repo, $project_path),
+      'success' => dt("Cloned the git repo at !git_repo to !project_path.", array('!git_repo' => $git_repo, '!project_path' => $project_path)),
+      'failure' => dt("The following errors occurred when running `git clone !git_repo !project_path`.", array('!git_repo' => $git_repo, '!project_path' => $project_path)),
+    ));
   }
   else {
     drush_copy_dir($blueprint_info[$blueprint]['full_path'], $project_path);
