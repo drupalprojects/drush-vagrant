@@ -94,14 +94,12 @@ function _drush_vagrant_render_template($variables, $template = "alias.tpl.php")
  * Generate aliases for a project and its VMs.
  */
 function drush_vagrant_aliases() {
-  $project_path = drush_get_context('project-path', getcwd());
-
   $drush_home = drush_server_home() . '/.drush/';
   if (!is_dir($drush_home)) {
     drush_mkdir($drush_home);
   }
 
-  $alias_filename = $drush_home . drush_vagrant_get_project_name($project_path) . '.aliases.drushrc.php';
+  $alias_filename = $drush_home . drush_vagrant_get_project_name(PROJECT_PATH) . '.aliases.drushrc.php';
 
   if ($delete = drush_get_option('delete')) {
     if (is_file($alias_filename)) {
@@ -124,11 +122,11 @@ function drush_vagrant_aliases() {
       }
     }
 
-    drush_shell_exec_interactive('cd ' . $project_path . ' && drush vagrant up');
+    drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant up');
 
-    $project_vars["project_path"] = $project_path;
+    $project_vars["project_path"] = PROJECT_PATH;
 
-    $vms_info = drush_vagrant_vms_info($project_path);
+    $vms_info = drush_vagrant_vms_info(PROJECT_PATH);
     foreach ($vms_info as $vm_name => $data) {
       $vm_vars = $project_vars;
       $vm_vars['vm_alias'] = $vm_name;

@@ -77,10 +77,10 @@ function _drush_vagrant_check_user_context() {
       drush_shell_exec_interactive('drush vagrant-user');
       drush_shell_exec('echo $HOME');
       // PROJECTS_PATH won't have been defined in hook_drush_init() yet, so we
-      // have to do it here for the first run of vagrant-initialize
+      // have to do it here for the first run of vagrant-build
       $home = drush_shell_exec_output();
       include_once($home[0] . '/.drushrc.php');
-      define("PROJECTS_PATH", $options['vagrant_project_root' . '/']);
+      define("PROJECTS_PATH", $options['vagrant_project_root'] . '/');
     }
     else {
       drush_user_abort();
