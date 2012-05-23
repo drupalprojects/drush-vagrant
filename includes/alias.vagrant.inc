@@ -1,32 +1,42 @@
 <?php
 
 /**
+ * Parse the output of 'vagrant ssh-config'
+ */
+function drush_vagrant_parse_ssh_config() {
+  $output = drush_vagrant_exec_and_log(array(
+    'command' => drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . VM_NAME),
+    'success' => dt("Determined the Vagrant SSH configuration."),
+    'failure' => dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"),
+  ));
+  
+  $ssh_options = array();
+  foreach ($output as $line) {
+    $split_line = explode(" ", trim($line));
+    $ssh_options[array_shift($split_line)] = implode(" ", $split_line);
+  }
+
+  return $ssh_options;
+}
+
+/**
+ * Render an array of SSH options
+ */
+function drush_vagrant_render_ssh_options($ssh_options) {
+  foreach ($ssh_options as $key => $value) {
+    $ssh_options[$key] = $key . ' ' . $value;
+  }
+  return array_reduce($ssh_options, "_drush_vagrant_join_ssh_commands");
+}
+
+
+/**
  * Command callback for `drush vagrant-alias-config`.
  */
 function drush_vagrant_alias_config() {
   $args = func_get_args();
 
-  drush_print("Attempting to read the Vagrant SSH configuration.");
-  $status = drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . VM_NAME);
-  $output = drush_shell_exec_output();
-  if (!$status) {
-    drush_log(dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"), "error");
-    if (!empty($output)) {
-      foreach ($output as $line) {
-        drush_print($line);
-      }
-    }
-    exit(1);
-  }
-  else {
-    drush_log(dt("No errors found in the Vagrant SSH configuration."), "ok");
-  }
-
-  $ssh_options = array();
-  foreach ($output as $line) {
-    $split_line = explode(" ", trim($line));
-    $ssh_options[current($split_line)] = implode(" ", $split_line);
-  }
+  $ssh_options = drush_vagrant_parse_ssh_config();
 
   // These do not need to go into $alias['ssh-options'].
   unset($ssh_options["User"]);
@@ -34,7 +44,7 @@ function drush_vagrant_alias_config() {
 
   // Set up variables to send to the template.
   $variables = array();
-  $variables["ssh_options"] = array_reduce($ssh_options, "_drush_vagrant_join_ssh_commands");
+  $variables["ssh_options"] = drush_vagrant_render_ssh_options($ssh_options);
 
   drush_print(dt("Please enter the information about the Drupal site inside the VM."));
   $variables["alias"] = drush_prompt("Alias", "drush-vagrant");

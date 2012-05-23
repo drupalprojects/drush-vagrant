@@ -6,17 +6,11 @@
 function drush_vagrant_shell() {
   $user_settings = drush_get_context('user');
 
-  $vm = drush_get_option('vm-name', FALSE);
-  $project_path = drush_get_option('project-path', '.');
-  
-  drush_vagrant_check_project($project_path, TRUE);
-  if ($vm) {
-    drush_shell_exec(strtr("cd !project_path && vagrant up !vm_name && vagrant ssh-config !vm_name",
-      array( '!project_path' => $project_path, '!vm_name' => $vm))
-    );
+  if (VM_NAME) {
+    drush_shell_exec("cd %s && vagrant up %s && vagrant ssh-config %s", PROJECT_PATH, VM_NAME, VM_NAME);
   }
   else {
-    drush_shell_exec("cd %s && vagrant up && vagrant ssh-config", $project_path);
+    drush_shell_exec("cd %s && vagrant up && vagrant ssh-config", PROJECT_PATH);
   }
   $ssh_config = drush_shell_exec_output();
   $ssh_hostname  = substr($ssh_config[2], 11);
