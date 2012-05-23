@@ -45,7 +45,11 @@ function drush_vagrant_build() {
         drush_print($error_msg);
       }
     }
+    drush_set_option('project-name', $project_name);
   }
+  // Determine the project's path from its name
+  $project_path = PROJECTS_PATH . $project_name;
+  drush_set_option('project-path', $project_path);
   
   // Begin building our final confirmation prompt
   $actions = array();
@@ -74,6 +78,7 @@ function drush_vagrant_build() {
       // User chose 'cancel'
       return drush_user_abort();
     }
+    drush_set_option('blueprint', $blueprint);
   }
 
   $hosts = drush_get_option('hosts', FALSE);
@@ -138,9 +143,22 @@ function drush_vagrant_build() {
   if (!drush_confirm(dt('Do you want to proceed with initializing the project?'))) {
     return drush_user_abort();
   }
+  // Check subnets before we create the new project, to avoid a race condition
+  drush_set_option('next_subnet', _drush_vagrant_next_available_subnet());
 
-  // We need to check subnets before we create the new project, to avoid a race condition
-  $subnet = _drush_vagrant_next_available_subnet();
+  _drush_vagrant_build_project();
+
+}
+
+/**
+ * Build our project
+ */
+function _drush_vagrant_build_project() {
+  $project_path = drush_get_option('project-path');
+  $project_name = drush_get_option('project-name');
+  $blueprint = drush_get_option('blueprint');
+  $blueprint_info = drush_vagrant_blueprint_info();
+  $git_repo = drush_get_option('git-repo', NULL);
 
   // Create the project directory from the blueprint, or the git repo
   if ($git_repo) {
@@ -175,11 +193,13 @@ function drush_vagrant_build() {
     file_put_contents($config_path . '/blueprint.inc', $blueprint_file);
   }
 
+  $user_settings = drush_get_context('user');
+
   $config_vars = array();
   $config_vars["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
   $config_vars["project_name"] = $project_name;
   $config_vars["vagrant_modules_path"] = DRUSH_VAGRANT_ROOT . '/lib/modules';
-  $config_vars["subnet"] = $subnet;
+  $config_vars["subnet"] = drush_get_option('next_subnet', '10');
   $config_vars["username"] = $user_settings['vagrant_username'];
   $config_vars["git_name"] = $user_settings['vagrant_git_name'];
   $config_vars["git_email"] = $user_settings['vagrant_git_email'];
@@ -215,8 +235,8 @@ function drush_vagrant_post_vagrant_build() {
   $up = drush_get_option('up', FALSE);
   $subnet =  _drush_vagrant_get_subnet($project_path);
 
-  // Launch the VMs (or skip, as aliases will do it for us)
-  if ($up !== FALSE && $aliases === FALSE) {
+  // Launch the VMs
+  if ($up !== FALSE) {
     drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
   }
 
@@ -230,8 +250,9 @@ function drush_vagrant_post_vagrant_build() {
     drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
     drush_shell_cd_and_exec($project_path, 'drush vagrant list --only-vms');
     $vms = drush_shell_exec_output();
+    $project_name = drush_vagrant_get_project_name($project_path);
     foreach ($vms as $vm) {
-      $vm_alias = '@' . drush_vagrant_get_project_name($project_path) . '.' . $vm;
+      $vm_alias = '@' . $project_name . '.' . $vm;
       $domain = drush_sitealias_get_record($vm_alias);
       $domain = $domain['fqdn'];
       drush_shell_exec_interactive("drush %s vagrant hosts --domains=%s", $vm_alias, $domain);
