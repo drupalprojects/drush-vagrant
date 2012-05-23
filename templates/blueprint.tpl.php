@@ -6,9 +6,20 @@
  * Variables:
  * - $extension: The Drush extension that provides the blueprint.
  * - $blueprint: The blueprint used to build a project.
+ * - $data: An array of arbitrary data provided by the blueprint extension.
  */
 ?>
 <?php print "<?php\n\n" ?>
 $options['blueprint'] = array(
-  '<?php print $extension; ?>' => '<?php print $blueprint; ?>',
+  'extension' => '<?php print $extension; ?>',
+  'blueprint' => '<?php print $blueprint; ?>',
+<?php 
+  if (isset($data)) {
+    print "  'data' => array(\n";
+    foreach ($data as $key => $value) {
+      sprintf("    '%s' => '%s',\n", $key, $value);
+    }
+    print "  );\n";
+  }
+?>
 );

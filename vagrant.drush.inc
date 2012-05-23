@@ -10,6 +10,9 @@ define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
 
+// Include hooks for our default blueprint
+include_once('blueprints/blueprints.inc');
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -135,6 +138,8 @@ function vagrant_drush_command() {
       'remote-command' => dt('(OPTIONAL) Instead of logging into a VM, run this command in the VM. The command should be quoted if there are parameters. Returns the output of the command.'),
     ),
     'options' => array(
+      'ssh-user' => 'The username to login under.',
+      'ssh-id' => 'The identity file from which the private key is read.',
       'ssh-connection-string' => 'Instead of running SSH, return the a string of the command that would otherwise be run.',
     ),
     'examples' => array(
@@ -265,18 +270,4 @@ function drush_vagrant_extension_info() {
   }
 
   return $extensions;
-}
-
-/**
- * Implemention of hook_vagrant_blueprints().
- */
-function vagrant_vagrant_blueprints() {
-  $blueprints = array(
-    'default' => array(
-      'name' => 'Default',
-      'description' => 'The default blueprint.',
-      'path' => 'blueprints/default',
-      ),
-    );
-  return $blueprints;
 }
