@@ -12,33 +12,47 @@ function drush_vagrant_delete_validate() {
  */
 function drush_vagrant_delete() {
 
-  $project_path = drush_vagrant_get_project_path();
-
   $project_alias = drush_get_context('alias');
 
   if (isset($project_alias['#name'])) {
     $project_alias = $project_alias['#name'];
   }
   else {
-    $project_alias = '@' . drush_vagrant_get_project_name($project_path);
+    $project_alias = '@' . drush_vagrant_get_project_name(PROJECT_PATH);
   }
 
   drush_print(dt('!!! WARNING: This operation cannot be undone. !!!'));
-  drush_print(dt('This operation will delete the \'!project\' project, and destroy all of its VMs', array('!project' => drush_vagrant_get_project_name($project_path))));
+  drush_print(dt('This operation will delete the \'!project\' project, and destroy all of its VMs', array('!project' => drush_vagrant_get_project_name(PROJECT_PATH))));
 
   if (drush_confirm(dt('Are you certain that you want to proceed?'))) {
-    drush_shell_cd_and_exec($project_path, 'drush vagrant list --only-vms');
-    $vms = drush_shell_exec_output();
+    $vms = drush_vagrant_exec_and_log(array(
+      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant list --only-vms'),
+      'success' => dt("Listed all VMs of the project at !project_path.", array('!project_path' => PROJECT_PATH)),
+      'failure' => dt("The following errors occurred when running `drush vagrant list --only-vms`."),
+    ));
     foreach ($vms as $vm_name) {
-      drush_shell_exec_interactive('drush %s.%s vagrant hosts --remove', $project_alias , $vm_name);
+      drush_vagrant_exec_and_log(array(
+        'command' => drush_shell_exec_interactive('drush %s.%s vagrant hosts --remove', str_replace('.project', '', $project_alias) , $vm_name),
+        'success' => dt("Removed the entry in /etc/hosts for `!vm_name`.", array('!vm_name' => $vm_name)),
+        'failure' => dt("The following errors occurred when running `drush vagrant hosts --remove`."),
+      ));
     }
-    drush_shell_exec_interactive('cd %s && vagrant destroy --force', $project_path);
-    if (!is_file($project_path . '/.vagrant')) {
-      drush_shell_exec_interactive('cd %s && drush vagrant aliases --delete', $project_path);
-      if ($project_path == getcwd()) {
-        chdir(PROJECTS_PATH);
-      }
-      drush_shell_exec('rm -rf %s', $project_path);
+    drush_vagrant_exec_and_log(array(
+      'command'  => drush_shell_exec_interactive('cd %s && vagrant destroy --force', PROJECT_PATH),
+      'success' => dt("Destroyed all VMs of the project at !project_path.", array('!project_path' => PROJECT_PATH)),
+      'failure' => dt("The following errors occurred when running `vagrant destroy --force`."),
+    ));
+    if (!is_file(PROJECT_PATH . '/.vagrant')) {
+      drush_vagrant_exec_and_log(array(
+        'command'  => drush_shell_exec_interactive('cd %s && drush vagrant aliases --delete', PROJECT_PATH),
+        'success' => dt("Deleted all aliases for the project at !project_path.", array('!project_path' => PROJECT_PATH)),
+        'failure' => dt("The following errors occurred when running `drush vagrant aliases --delete`."),
+      ));
+      drush_vagrant_exec_and_log(array(
+        'command'  => drush_shell_exec('rm -rf %s', PROJECT_PATH),
+        'success' => dt("Removed the project directory at !project_path.", array('!project_path' => PROJECT_PATH)),
+        'failure' => dt("The following errors occurred when running `rm -rf`."),
+      ));
     }
     else {
       drush_set_error(dt('Failure during \'vagrant destroy\''));

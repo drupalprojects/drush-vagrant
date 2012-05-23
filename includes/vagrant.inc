@@ -9,6 +9,37 @@ foreach ($includes as $key => $file) {
 }
 
 /**
+ * Run a command, log the result and return the output
+ */
+function drush_vagrant_exec_and_log(array $command) {
+  // Default to output of drush_exec
+  if (!isset($command['output'])) {
+    if ($output = drush_shell_exec_output()) {
+      $command['output'] = drush_shell_exec_output();
+    }
+    else {
+      $command['output'] = $command['command'];
+    }
+  }
+  // Failure
+  if (!$command['command']) {
+    drush_log($command['failure'], "error");
+    if (!empty($command['output'])) {
+      foreach ($command['output'] as $line) {
+        drush_print($line);
+      }
+    }
+    exit(1);
+  }
+  // Success
+  else {
+    drush_log($command['success'], "ok");
+  }
+  // Return our output, in case it's needed
+  return $command['output'];
+}
+
+/**
  * Generate help text
  */
 function _drush_vagrant_help_text() {
