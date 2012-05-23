@@ -1,6 +1,6 @@
 <?php
 
-// Include all the commands
+// Include all the sub-commands
 $includes = scandir(dirname(__FILE__));
 foreach ($includes as $key => $file) {
   if (@strpos($file, '.vagrant.inc', strlen($file) - 12) !== FALSE) {

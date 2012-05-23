@@ -243,7 +243,6 @@ function vagrant_drush_help_alter(&$command) {
         $output[] = dt("Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the '!command' sub-command:\n", array('!command' => implode(' ', $args)));
       }
       drush_shell_exec($vg_command);
-      drush_print_r(drush_get_context('argv'));
       $output[] = implode("\n", drush_shell_exec_output());
       drush_print(implode("\n", $output));
       unset($command['options']);

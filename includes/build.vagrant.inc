@@ -55,6 +55,7 @@ function drush_vagrant_build() {
     } while ($git_repo != 'none' && !_drush_vagrant_check_git_repo($git_repo));
   }
 
+  // Prompt for choice of blueprint, if one wasn't passed as an option, and we aren't building from a Git repo.
   if (!($blueprint = drush_get_option('blueprint')) && $git_repo == 'none') {
     unset($git_repo);
     $blueprint_info = drush_vagrant_blueprint_info();
