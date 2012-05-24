@@ -54,7 +54,7 @@ function drush_vagrant_build() {
   // Begin building our final confirmation prompt
   $actions = array();
   $actions[] = dt("You are about to:");
-  $actions[] = dt("  * Create a new project at '!project_path'.", array('!project_path' => $project_path));
+  $actions[] = dt("  * Create a new project called '!project_name' at '!project_path'.", array('!project_name' => $project_name, '!project_path' => $project_path));
 
   // Prompt for a Git repository, if one wasn't passed as an option
   if (!($git_repo = drush_get_option('git-repo'))) {
