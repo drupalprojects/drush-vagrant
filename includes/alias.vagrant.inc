@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Generate Drush aliases.
+ */
+
+/**
  * Parse the output of 'vagrant ssh-config'
  */
 function drush_vagrant_parse_ssh_config() {
@@ -9,7 +14,7 @@ function drush_vagrant_parse_ssh_config() {
     'success' => dt("Determined the Vagrant SSH configuration."),
     'failure' => dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"),
   ));
-  
+
   $ssh_options = array();
   foreach ($output as $line) {
     $split_line = explode(" ", trim($line));

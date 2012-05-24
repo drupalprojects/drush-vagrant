@@ -14,7 +14,7 @@ include_once('includes/vagrant.inc');
 include_once('blueprints/blueprints.inc');
 
 /**
- * Implementation of hook_drush_help().
+ * Implements hook_drush_help().
  */
 function vagrant_drush_help($section) {
   switch ($section) {
@@ -26,7 +26,7 @@ function vagrant_drush_help($section) {
 }
 
 /**
- * Implementation of hook_drush_init().
+ * Implements hook_drush_init().
  */
 function vagrant_drush_init() {
   $user_settings = drush_get_context('user');
@@ -38,7 +38,7 @@ function vagrant_drush_init() {
 }
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  */
 function vagrant_drush_command() {
   $items = array();
@@ -207,7 +207,7 @@ function drush_vagrant() {
   $args = func_get_args();
   $command = array_shift($args);
   $commands = drush_get_commands();
-  if (!isset($commands['vagrant-'. $command])) {
+  if (!isset($commands['vagrant-' . $command])) {
     if (empty($command)) {
       drush_shell_exec_interactive('drush vagrant --help');
     }
@@ -227,7 +227,7 @@ function drush_vagrant() {
     }
   }
   else {
-    $command = $commands['vagrant-'. $command];
+    $command = $commands['vagrant-' . $command];
     drush_dispatch($command, $args);
   }
 }

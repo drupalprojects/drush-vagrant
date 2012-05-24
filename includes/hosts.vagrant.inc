@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Manage entries in /etc/hosts.
+ */
+
 define(HOSTS_BEGIN_MARKER, "#### Drush Vagrant entries begin ####");
 define(HOSTS_END_MARKER, "#### Drush Vagrant entries end ####");
 

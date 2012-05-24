@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Provide information about available blueprints.
+ */
+
+/**
  * Print a list of blueprints and the information they provide.
  */
 function drush_vagrant_blueprints() {
@@ -20,14 +25,14 @@ function drush_vagrant_blueprints() {
 }
 
 /**
-* Poll all Drush extensions implementing hook_vagrant_blueprints().
-*
-* @return
-*   Returns an array of blueprints where the key is the name, and the value is
-*   an array of information relevant to the blueprint.
-*
-* See also: docs/drush-vagrant.api.php
-*/
+ * Poll all Drush extensions implementing hook_vagrant_blueprints().
+ *
+ * @return
+ *   Returns an array of blueprints where the key is the name, and the value is
+ *   an array of information relevant to the blueprint.
+ *
+ * See also: docs/drush-vagrant.api.php
+ */
 function drush_vagrant_blueprint_info() {
   $extensions = drush_vagrant_extension_info();
   $blueprints =  drush_command_invoke_all('vagrant_blueprints');

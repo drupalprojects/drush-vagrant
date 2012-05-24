@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @file
+ * Delete a project directory after destroying VMs, and removing hosts and
+ * aliases.
+ */
+
+/**
  * Validate the project to delete
  */
 function drush_vagrant_delete_validate() {

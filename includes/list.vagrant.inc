@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * List projects and VMs.
+ */
+
+/**
  * List current projects, VMs and statuses.
  */
 function drush_vagrant_list() {
@@ -31,7 +36,7 @@ function drush_vagrant_list() {
 /**
  * Return an array of current projects, their VMs and statuses
  */
-function drush_vagrant_projects_info(){
+function drush_vagrant_projects_info() {
   $projects = array();
   if ($dir = opendir(PROJECTS_PATH)) {
     while (false !== ($project = readdir($dir))) {
@@ -39,7 +44,7 @@ function drush_vagrant_projects_info(){
       if (drush_vagrant_check_project($project_path)) {
         $projects[$project] = drush_vagrant_vms_info($project_path);
       }
-   }
+    }
     closedir($dir);
   }
   return $projects;
@@ -51,7 +56,7 @@ function drush_vagrant_projects_info(){
  * @project_path
  *   The path to look for the project
  */
-function drush_vagrant_vms_info($project_path){
+function drush_vagrant_vms_info($project_path) {
   $vms = array();
   drush_shell_cd_and_exec($project_path, 'drush vagrant status');
   $vms = drush_shell_exec_output();

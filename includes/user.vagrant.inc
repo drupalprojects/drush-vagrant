@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Save some user-specific settings in a Drush context
+ */
+
+/**
  * Create or update user-specific settings.
  */
 function drush_vagrant_user() {
@@ -9,7 +14,7 @@ function drush_vagrant_user() {
   $data = array();
 
   // Environment variables
-  // TODO: allow other env vars to be passed through an option or hook?
+  // @todo: allow other env vars to be passed through an option or hook?
   $data['vagrant_username'] = array( 'command' => 'whoami', 'label' => 'username');
   $data['vagrant_home'] = array( 'command' => 'echo $HOME', 'label' => 'home directory');
   $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
@@ -25,7 +30,7 @@ function drush_vagrant_user() {
   }
 
   // Files
-  // TODO: allow other files & filesets to be passed through an option or hook?
+  // @todo: allow other files & filesets to be passed through an option or hook?
   $file_sets = array('dotfiles', 'ssh_keys' );
   $dotfiles = array('.profile', '.bashrc', '.bash_aliases', '.vimrc', );
   $ssh_keys = array('public' => '.ssh/id_rsa.pub', 'private' => '.ssh/id_rsa');
@@ -39,7 +44,7 @@ function drush_vagrant_user() {
         $name = $key;
       }
       if (file_exists($data['vagrant_home']['default'] . '/' . $file)) {
-        $data['vagrant_' . $set . $name] = array('default' => $data['vagrant_home']['default'] . '/' . $file, 'label' => $name . '(' . $set .')');
+        $data['vagrant_' . $set . $name] = array('default' => $data['vagrant_home']['default'] . '/' . $file, 'label' => $name . '(' . $set . ')');
       }
     }
   }

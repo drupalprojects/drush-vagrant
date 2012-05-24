@@ -31,5 +31,5 @@ class Conf < Global
                 # For NFS, these can be used to match uid/gid to the host user
                 "drush_vagrant_uid"       => "<?php print $uid; ?>",
                 "drush_vagrant_gid"       => "<?php print $gid; ?>",
-              } 
+              }
 end

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Build projects.
+ */
+
+/**
  * Implementation of drush_hook_commandhook_validate().
  */
 function drush_vagrant_build_validate() {
@@ -21,7 +26,7 @@ function drush_vagrant_build_validate() {
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option('blueprint')) {
     if (!array_key_exists($blueprint, drush_vagrant_blueprint_info())) {
-      drush_log(dt("Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint,)), "error");
+      drush_log(dt("Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint)), "error");
     }
   }
 }
@@ -50,7 +55,7 @@ function drush_vagrant_build() {
   // Determine the project's path from its name
   $project_path = PROJECTS_PATH . $project_name;
   drush_set_option('project-path', $project_path);
-  
+
   // Begin building our final confirmation prompt
   $actions = array();
   $actions[] = dt("You are about to:");
@@ -128,7 +133,7 @@ function drush_vagrant_build() {
   }
 
   if (isset($git_repo)) {
-    $actions[] = dt("  * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo,));
+    $actions[] = dt("  * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo));
   }
   else {
     $actions[] = dt("  * Build the project using the '!blueprint' blueprint from the '!extension' extension.",

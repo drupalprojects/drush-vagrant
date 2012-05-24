@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * The Drush Vagrant API.
+ */
+
+/**
  * Register this extension's blueprints with Drush Vagrant
  *
  * @return

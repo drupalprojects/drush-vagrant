@@ -13,7 +13,7 @@
 $options['blueprint'] = array(
   'extension' => '<?php print $extension; ?>',
   'blueprint' => '<?php print $blueprint; ?>',
-<?php 
+<?php
   if (isset($data)) {
     print "  'data' => array(\n";
     foreach ($data as $key => $value) {

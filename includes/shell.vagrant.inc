@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @file
+ * Login to a VM via SSH.
+ */
+
+
+/**
  * Login to a VM via SSH.
  */
 function drush_vagrant_shell() {

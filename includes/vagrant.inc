@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Common functions used throughout Drush Vagrant
+ */
+
 // Include all the sub-commands
 $includes = scandir(dirname(__FILE__));
 foreach ($includes as $key => $file) {
@@ -125,13 +130,13 @@ function _drush_vagrant_check_user_context() {
 function drush_vagrant_check_project($project_path, $set_error = FALSE) {
   if (!is_dir($project_path)) {
     if ($set_error) {
-      drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path,)));
+      drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path)));
       }
     return FALSE;
   }
   if (!file_exists($project_path . '/Vagrantfile')) {
     if ($set_error) {
-      drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path,)));
+      drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path)));
     }
     return FALSE;
   }
@@ -166,14 +171,14 @@ function drush_vagrant_get_project_name($project_path) {
 /**
  * Return the subnet of a given project
  */
-function _drush_vagrant_get_subnet($project_path){
+function _drush_vagrant_get_subnet($project_path) {
   $subnet = '';
   $match = '';
   $config_file = $project_path . '/.config/config.rb';
 
   // Read each line of the config file to find the line that contains the subnet
   if (is_file($config_file) && $file = @fopen($config_file, "r")) {
-    while (($line = fgets($file, 4096)) !== false) {
+    while (($line = fgets($file, 4096)) !== FALSE) {
       if (strpos($line , 'Subnet')) {
         $match = $line;
         break;

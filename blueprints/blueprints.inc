@@ -53,7 +53,7 @@ function vagrant_default_build() {
   vagrant_default_build_record_blueprint($build);
   vagrant_default_build_user_data($build);
   vagrant_default_build_user_dotfiles($build);
-  vagrant_default_build_git_init($build); 
+  vagrant_default_build_git_init($build);
 }
 
 function vagrant_default_build_project_dir($build) {
@@ -75,7 +75,7 @@ function vagrant_default_build_project_dir($build) {
 }
 
 /*
-  //Check for support of 64-bit client OSes
+  // Check for support of 64-bit client OSes
   drush_shell_exec('egrep \'(vmx|svm)\' /proc/cpuinfo');
   $output = drush_shell_exec_output();
   if (!$output) {
@@ -144,7 +144,7 @@ function vagrant_default_build_user_data($build) {
 function vagrant_default_build_user_dotfiles($build) {
   $user_settings = drush_get_context('user');
 
-  //TODO: check for existence of these vars
+  // @todo: check for existence of these vars
   $dotfiles_dir = $build['config_path'] . '/files';
   drush_mkdir($dotfiles_dir);
   foreach ($user_settings as $key => $dotfile_source) {
