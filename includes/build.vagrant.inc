@@ -146,22 +146,7 @@ function drush_vagrant_build() {
   // Check subnets before we create the new project, to avoid a race condition
   drush_set_option('next_subnet', _drush_vagrant_next_available_subnet());
 
-  _drush_vagrant_build_project();
-
-}
-
-/**
- * Build our project
- */
-function _drush_vagrant_build_project() {
-  $build['project_path'] = drush_get_option('project-path');
-  $build['project_name'] = drush_get_option('project-name');
-  $build['blueprint'] = drush_get_option('blueprint');
-  $build['blueprint_info'] = drush_vagrant_blueprint_info();
-  $build['git_repo'] = drush_get_option('git-repo', NULL);
-
-  call_user_func($build['blueprint_info'][$build['blueprint']]['build_callback'], $build);
-
+  call_user_func($build['blueprint_info'][$build['blueprint']]['build_callback']);
 }
 
 /**
