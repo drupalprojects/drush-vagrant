@@ -40,6 +40,16 @@ function drush_vagrant_pre_vagrant_shell() {
  * Implemention of COMMANDFILE_EXTENSION_build().
  */
 function vagrant_default_build($build) {
+  vagrant_default_build_project_dir($build);
+  vagrant_default_build_project_setup($build);
+  vagrant_default_build_config_dir($build);
+  vagrant_default_build_record_blueprint($build);
+  vagrant_default_build_user_data($build);
+  vagrant_default_build_user_dotfiles($build);
+  vagrant_default_build_git_init($build); 
+}
+
+function vagrant_default_build_project_dir($build) {
   // Create the project directory from the blueprint, or the git repo
   if ($build['git_repo']) {
     drush_vagrant_exec_and_log(array(
@@ -49,8 +59,14 @@ function vagrant_default_build($build) {
     ));
   }
   else {
-    drush_copy_dir($build['blueprint_info'][$build['blueprint']]['full_path'], $build['project_path']);
+    drush_vagrant_exec_and_log(array(
+      'command' => drush_copy_dir($build['blueprint_info'][$build['blueprint']]['full_path'], $build['project_path']),
+      'success' => dt("Copied the `!blueprint` blueprint directory to !project_path.", array('!blueprint' => $build['blueprint'], '!project_path' => $build['project_path'])),
+      'failure' => dt("The following errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_dir()`."),
+    ));
   }
+}
+
 /*
   //Check for support of 64-bit client OSes
   drush_shell_exec('egrep \'(vmx|svm)\' /proc/cpuinfo');
@@ -63,20 +79,45 @@ function vagrant_default_build($build) {
     file_put_contents($project_path . 'settings.rb', $settings_file);
   }
 */
-  // Set up the new project
-  symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $build['project_path'] . '/Vagrantfile');
-  symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $build['project_path'] . '/.gitignore');
-  $config_path = $build['project_path'] . '/.config';
-  drush_mkdir($config_path);
 
+function vagrant_default_build_project_setup($build) {
+  // Set up the new project
+  drush_vagrant_exec_and_log(array(
+    'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $build['project_path'] . '/Vagrantfile'),
+    'success' => dt("Created symlink to Vagrantfile."),
+    'failure' => dt("Errors occurred when running `symlink()` in `!function`.", array('!function' => __FUNCTION__)),
+  ));
+  drush_vagrant_exec_and_log(array(
+    'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $build['project_path'] . '/.gitignore'),
+    'success' => dt("Created symlink to .gitignore."),
+    'failure' => dt("Errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_setup()`."),
+  ));
+}
+
+function vagrant_default_build_config_dir(&$build) {
+  $build['config_path'] = $build['project_path'] . '/.config';
+  drush_vagrant_exec_and_log(array(
+    'command' => drush_mkdir($build['config_path']),
+    'success' => dt("Created the `.config` directory in !project_path.", array('!project_path' => $build['project_path'])),
+    'failure' => dt("Errors occurred when running `drush_mkdir()` in `vagrant_default_build_project_setup()`."),
+  ));
+}
+
+function vagrant_default_build_record_blueprint($build) {
   if (!isset($build['git_repo'])) {
     // Record the blueprint that was used
     $blueprint_vars['extension'] = $build['blueprint_info'][$build['blueprint']]['extension'];
     $blueprint_vars['blueprint'] = $build['blueprint'];
-    $blueprint_file = _drush_vagrant_render_template($blueprint_vars, $template = "blueprint.tpl.php");
-    file_put_contents($config_path . '/blueprint.inc', $blueprint_file);
+    $blueprint_file = _drush_vagrant_render_template($blueprint_vars, "blueprint.tpl.php");
+    drush_vagrant_exec_and_log(array(
+      'command' => file_put_contents($build['config_path'] . '/blueprint.inc', $blueprint_file),
+      'success' => dt("Wrote `blueprint.inc` to !config_path.", array('!config_path' => $build['config_path'])),
+      'failure' => dt("Errors occurred when running `file_put_contents()` in `!function`.", array('!function' => __FUNCTION__)),
+    ));
   }
+}
 
+function vagrant_default_build_user_data($build) {
   $user_settings = drush_get_context('user');
 
   $config_vars = array();
@@ -90,10 +131,14 @@ function vagrant_default_build($build) {
   $config_vars["uid"] = $user_settings['vagrant_uid'];
   $config_vars["gid"] = $user_settings['vagrant_gid'];
   $config_file = _drush_vagrant_render_template($config_vars, $template = "config.tpl.php");
-  file_put_contents($config_path . '/config.rb', $config_file);
+  file_put_contents($build['config_path'] . '/config.rb', $config_file);
+}
+
+function vagrant_default_build_user_dotfiles($build) {
+  $user_settings = drush_get_context('user');
 
   //TODO: check for existence of these vars
-  $dotfiles_dir = $config_path . '/files';
+  $dotfiles_dir = $build['config_path'] . '/files';
   drush_mkdir($dotfiles_dir);
   foreach ($user_settings as $key => $dotfile_source) {
     if (strpos($key, 'dotfiles')) {
@@ -105,8 +150,11 @@ function vagrant_default_build($build) {
   if (isset($user_settings['vagrant_ssh_keyspublic'])) {
     copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
+}
 
-  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $project_path);
+function vagrant_default_build_git_init($build) {
+
+  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $build['project_path']);
 }
 
 
