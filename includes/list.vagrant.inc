@@ -66,12 +66,15 @@ function drush_vagrant_vms_info($project_path) {
       $blanks[] = $key;
     }
   }
-  $vms = array_slice($output, $blanks[0], $blanks[1] - count($output));
+  $vms = array_slice($output, $blanks[0] + 1 , $blanks[1] - count($output));
   foreach ($vms as $key => $vm) {
+    while(substr_count($vm,"  ") != 0){
+      $vm = str_replace("  "," ",$vm);
+    }
     $vm = explode(' ', $vm);
     unset($vms[$key]);
     if ($vm[0] != '') {
-      $vms[array_shift($vm)] = array('status' => array_pop($vm));
+      $vms[array_shift($vm)] = array('status' => implode(' ', $vm));
     }
   }
   return $vms;
