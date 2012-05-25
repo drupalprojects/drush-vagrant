@@ -59,8 +59,14 @@ function drush_vagrant_projects_info() {
 function drush_vagrant_vms_info($project_path) {
   $vms = array();
   drush_shell_cd_and_exec($project_path, 'drush vagrant status');
-  $vms = drush_shell_exec_output();
-  $vms = array_slice($vms, 2, -4);
+  $output = drush_shell_exec_output();
+  $blanks = array();
+  foreach ($output as $key => $line) {
+    if ($line == '') {
+      $blanks[] = $key;
+    }
+  }
+  $vms = array_slice($output, $blanks[0], $blanks[1] - count($output));
   foreach ($vms as $key => $vm) {
     $vm = explode(' ', $vm);
     unset($vms[$key]);
