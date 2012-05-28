@@ -15,8 +15,6 @@ function vagrant_vagrant_blueprints() {
       'name' => 'Default',
       'description' => 'The default blueprint.',
       'path' => 'blueprints/default',
-      'build_callback' => 'vagrant_default_build',
-      'update_callback' => 'vagrant_default_update',
       ),
     );
   return $blueprints;

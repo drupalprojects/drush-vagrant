@@ -153,7 +153,14 @@ function drush_vagrant_build() {
   // Check subnets before we create the new project, to avoid a race condition
   drush_set_option('next_subnet', _drush_vagrant_next_available_subnet());
 
-  call_user_func($blueprint_info[$blueprint]['build_callback']);
+  if (isset($blueprint_info[$blueprint]['build_callback'])) {
+    $build_callback = $blueprint_info[$blueprint]['build_callback'];
+  }
+  else {
+    $build_callback = 'vagrant_default_build';
+  }
+
+  call_user_func($build_callback);
 }
 
 /**
