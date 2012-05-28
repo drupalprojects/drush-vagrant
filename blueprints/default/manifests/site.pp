@@ -2,4 +2,4 @@
 
 Exec { path  => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ] }
 
-include drush-vagrant::user
+import "nodes"

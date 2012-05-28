@@ -130,7 +130,6 @@ function vagrant_default_build_user_data($build) {
   $config_vars = array();
   $config_vars["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
   $config_vars["project_name"] = $build['project_name'];
-  $config_vars["vagrant_modules_path"] = DRUSH_VAGRANT_ROOT . '/lib/modules';
   $config_vars["subnet"] = drush_get_option('next_subnet', '10');
   $config_vars["username"] = $user_settings['vagrant_username'];
   $config_vars["git_name"] = $user_settings['vagrant_git_name'];

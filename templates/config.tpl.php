@@ -6,7 +6,6 @@
  * Variables:
  * - $global_path: The filesystem path to global.rb config file
  * - $project_name: The name of the Vagrant project
- * - $vagrant_modules_path: The filesystem path to Puppet modules directory
  * - $subnet: The /24 subnet the project will use.
  * - $username: The user's system username
  * - $git_name: The user's full name, as registered with Git
@@ -20,7 +19,6 @@ require "./settings.rb"
 
 class Conf < Global
   Project   = "<?php print $project_name; ?>"
-  Modules   = "<?php print $vagrant_modules_path; ?>"    # puppet modules folder name
   Subnet    = "<?php print $subnet; ?>"                  # 192.168.###.0/24 subnet for this network
   Facts     = { # Fix for broken $fqdn fact on Debian
                 "fqdn"                    => $hostname,
