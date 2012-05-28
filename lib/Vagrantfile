@@ -32,9 +32,9 @@ Vagrant::Config.run do |config|
           vm_config.vm.boot_mode = :gui
         end
 
-        if File::exists?("#{vm::Manifests}/#{vm::Shortname}.pp")
+        if File::exists?("#{vm::Manifests}/#{vm::Site}.pp")
           vm_config.vm.provision :puppet do |puppet|
-            puppet.manifest_file = "#{vm::Shortname}.pp"
+            puppet.manifest_file = "#{vm::Site}.pp"
             puppet.module_path   = [ "#{vm::Modules}" , "#{Conf::Modules}" ]
             puppet.facter = Conf::Facts.merge(vm::Facts)
             puppet.options = vm::Options

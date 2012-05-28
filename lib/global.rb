@@ -10,6 +10,7 @@ class Vm                                 # default virtual machine settings
   Domain    = "local"                    # default domain
   Manifests = "manifests"                # puppet manifests folder name
   Modules   = "modules"                  # puppet modules folder name
+  Site      = "site"                     # Name of manifest to apply
   Gui       = false                      # start VM with GUI?
   Verbose   = false                      # make output verbose?
   Debug     = false                      # output debug info?
