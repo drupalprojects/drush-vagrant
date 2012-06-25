@@ -33,7 +33,13 @@ function drush_vagrant_user() {
   // @todo: allow other files & filesets to be passed through an option or hook?
   $file_sets = array('dotfiles', 'ssh_keys' );
   $dotfiles = array('.profile', '.bashrc', '.bash_aliases', '.vimrc', );
-  $ssh_keys = array('public' => '.ssh/id_rsa.pub', 'private' => '.ssh/id_rsa');
+  if (file_exists($data['vagrant_home']['default'] . '/.ssh/id_rsa')) {
+    $ssh_keys = array('public' => '.ssh/id_rsa.pub', 'private' => '.ssh/id_rsa');
+  }
+  elseif (file_exists($data['vagrant_home']['default'] . '/.ssh/id_dsa')) {
+    $ssh_keys = array('public' => '.ssh/id_dsa.pub', 'private' => '.ssh/id_dsa');
+  } 
+
   // Get file defaults
   foreach ($file_sets as $set) {
     foreach ($$set as $key => $file) {
