@@ -37,8 +37,9 @@ Vagrant::Config.run do |config|
             puppet.manifest_file = "#{vm::Site}.pp"
             puppet.module_path = []
             vm::Modules.each do |path|
-              if File::directory?("#{path}")
-                puppet.module_path.push("#{path}")
+              full_path = File.expand_path("#{path}")
+              if File::directory?("#{full_path}")
+                puppet.module_path.push("#{full_path}")
               end
             end
             puppet.facter = Conf::Facts.merge(vm::Facts)
