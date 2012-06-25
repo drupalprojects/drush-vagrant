@@ -87,16 +87,22 @@ function vagrant_default_build_project_dir($build) {
 
 function vagrant_default_build_project_setup($build) {
   // Set up the new project
-  drush_vagrant_exec_and_log(array(
-    'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $build['project_path'] . '/Vagrantfile'),
-    'success' => dt("Created symlink to Vagrantfile."),
-    'failure' => dt("Errors occurred when running `symlink()` in `!function`.", array('!function' => __FUNCTION__)),
-  ));
-  drush_vagrant_exec_and_log(array(
-    'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $build['project_path'] . '/.gitignore'),
-    'success' => dt("Created symlink to .gitignore."),
-    'failure' => dt("Errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_setup()`."),
-  ));
+  $target = $build['project_path'] . '/Vagrantfile';
+  if (!file_exists($target)) {
+    drush_vagrant_exec_and_log(array(
+      'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $target),
+      'success' => dt("Created symlink to Vagrantfile."),
+      'failure' => dt("Errors occurred when running `symlink()` in `!function`.", array('!function' => __FUNCTION__)),
+    ));
+  }
+  $target = $build['project_path'] . '/.gitignore';
+  if (!file_exists($target)) {
+    drush_vagrant_exec_and_log(array(
+      'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $target),
+      'success' => dt("Created symlink to .gitignore."),
+      'failure' => dt("Errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_setup()`."),
+    ));
+  }
 }
 
 function vagrant_default_build_config_dir(&$build) {
@@ -157,8 +163,9 @@ function vagrant_default_build_user_dotfiles($build) {
 }
 
 function vagrant_default_build_git_init($build) {
-
-  drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $build['project_path']);
+  if (!file_exists($build['project_path'] . '/.git')) {
+    drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $build['project_path']);
+  }
 }
 
 

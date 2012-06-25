@@ -61,8 +61,11 @@ function drush_vagrant_build() {
   $actions[] = dt("You are about to:");
   $actions[] = dt("  * Create a new project called '!project_name' at '!project_path'.", array('!project_name' => $project_name, '!project_path' => $project_path));
 
-  // Prompt for a Git repository, if one wasn't passed as an option
-  if (!($git_repo = drush_get_option('git-repo'))) {
+  $blueprint = drush_get_option('blueprint', NULL);
+
+  // Prompt for a Git repository, if one wasn't passed as an option and we
+  // aren't using a blueprint
+  if (!isset($blueprint) && !($git_repo = drush_get_option('git-repo'))) {
     drush_print(dt('You can build your project based on a Git repository, or a blueprint. Provide the URL of a Git repository, or leave blank to choose a template.'));
     // Only accept a valid git repo, or pass through to blueprint selection.
     do {
@@ -75,7 +78,7 @@ function drush_vagrant_build() {
 
   $blueprint_info = drush_vagrant_blueprint_info();
   // Prompt for choice of blueprint, if one wasn't passed as an option, and we aren't building from a Git repo.
-  if (!($blueprint = drush_get_option('blueprint')) && !isset($git_repo)) {
+  if (!isset($blueprint) && !isset($git_repo)) {
     foreach ($blueprint_info as $name => $data) {
       $choice[$name] = $data['name'] . ': ' . $data['description'] ;
     }
