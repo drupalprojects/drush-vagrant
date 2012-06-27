@@ -118,7 +118,7 @@ function vagrant_default_build_config_dir(&$build) {
   drush_vagrant_exec_and_log(array(
     'command' => drush_mkdir($build['config_path']),
     'success' => dt("Created the `.config` directory in !project_path.", array('!project_path' => $build['project_path'])),
-    'failure' => dt("Errors occurred when running `drush_mkdir()` in `vagrant_default_build_project_setup()`."),
+    'failure' => dt("Errors occurred when running `drush_mkdir()` in `!function`.", array('!function' => __FUNCTION__)),
   ));
 }
 
