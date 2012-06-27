@@ -33,14 +33,21 @@ Vagrant::Config.run do |config|
         if File::exists?("#{vm::Manifests}/#{vm::Site}.pp")
           vm_config.vm.provision :puppet do |puppet|
             puppet.manifest_file = "#{vm::Site}.pp"
+            # Initialize an empty array so we can push onto it
             puppet.module_path = []
-            vm::Modules.each do |path|
+            # Merge in project-specific Puppet modules
+            if defined?(Conf::Modules)
+              vm::Modules = Conf::Modules.merge(vm::Modules)
+            end
+            vm::Modules.each do |name,path|
+              # Expand relative paths (such as '~')
               full_path = File.expand_path("#{path}")
+              # Cull directories that don't exist
               if File::directory?("#{full_path}")
                 puppet.module_path.push("#{full_path}")
               end
             end
-            puppet.facter = Conf::Facts.merge(vm::Facts)
+            puppet.facter = Conf::Facts.update(vm::Facts)
             puppet.options = vm::Options
             if vm::Debug == true
               puppet.options = puppet.options + " --debug"
