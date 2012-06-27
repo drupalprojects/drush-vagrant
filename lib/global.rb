@@ -3,19 +3,19 @@ class Vm                                 # default virtual machine settings
     ObjectSpace.each_object(::Class).select {|klass| klass < self }
   end
 
-  Count     = 1                          # The number of VMs to create
+  Count     = 1                          # number of VMs to create
   Basebox   = "lucid32"                  # default basebox
   Box_url   = "http://files.vagrantup.com/lucid32.box"
   Memory    = 512                        # default VM memory
   Domain    = "local"                    # default domain
   Manifests = "manifests"                # puppet manifests folder name
-  Modules   = "modules"                  # puppet modules folder name
-  Site      = "site"                     # Name of manifest to apply
+  Modules   = {}                         # hash of puppet module folder names
+  Site      = "site"                     # name of manifest to apply
   Gui       = false                      # start VM with GUI?
   Verbose   = false                      # make output verbose?
   Debug     = false                      # output debug info?
   Options   = ""                         # options to pass to Puppet
-  Facts     = {}
+  Facts     = {}                         # hash of Factor facts
 end
 
 class Global
