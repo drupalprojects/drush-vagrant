@@ -38,6 +38,10 @@ function drush_vagrant_pre_vagrant_shell() {
  * Implemention of COMMANDFILE_EXTENSION_build().
  */
 function vagrant_default_build() {
+  vagrant_default_build_steps(vagrant_default_build_vars());
+}
+
+function vagrant_default_build_vars() {
   $build = array();
   $build['project_path'] = drush_get_option('project-path');
   $build['project_name'] = drush_get_option('project-name');
@@ -45,6 +49,10 @@ function vagrant_default_build() {
   $build['blueprint_info'] = drush_vagrant_blueprint_info();
   $build['git_repo'] = drush_get_option('git-repo');
 
+  return $build;
+}
+
+function vagrant_default_build_steps($build) {
   vagrant_default_build_project_dir($build);
   vagrant_default_build_project_setup($build);
   vagrant_default_build_config_dir($build);
