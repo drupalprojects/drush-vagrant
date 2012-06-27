@@ -143,11 +143,23 @@ function vagrant_default_build_user_data($build) {
   $config_vars["global_path"] =  DRUSH_VAGRANT_ROOT . '/lib/global.rb';
   $config_vars["project_name"] = $build['project_name'];
   $config_vars["subnet"] = drush_get_option('next_subnet', '10');
-  $config_vars["username"] = $user_settings['vagrant_username'];
-  $config_vars["git_name"] = $user_settings['vagrant_git_name'];
-  $config_vars["git_email"] = $user_settings['vagrant_git_email'];
-  $config_vars["uid"] = $user_settings['vagrant_uid'];
-  $config_vars["gid"] = $user_settings['vagrant_gid'];
+  # Factor facts
+  $config_vars["facts"]["fqdn"] = '$hostname';
+  $config_vars["facts"]["username"] = '"' . $user_settings['vagrant_username'] . '"';
+  $config_vars["facts"]["git_name"] = '"' . $user_settings['vagrant_git_name'] . '"';
+  $config_vars["facts"]["git_email"] = '"' . $user_settings['vagrant_git_email'] . '"';
+  $config_vars["facts"]["uid"] = '"' . $user_settings['vagrant_uid'] . '"';
+  $config_vars["facts"]["gid"] = '"' . $user_settings['vagrant_gid'] . '"';
+  if (isset($build["facts"])) {
+    foreach ($build["facts"] as $name => $fact) {
+      $config_vars["facts"][$name] = $fact;
+    }
+  }
+  # Puppet module directories
+  $config_vars["modules"]["project-specific modules"] = "modules/";
+  foreach ($build["modules"] as $name => $dir) {
+    $config_vars["modules"][$name] = $dir;
+  }
   $config_file = _drush_vagrant_render_template($config_vars, $template = "config.tpl.php");
   file_put_contents($build['config_path'] . '/config.rb', $config_file);
 }
