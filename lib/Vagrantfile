@@ -1,11 +1,9 @@
 Vagrant::Config.run do |config|
   require "./.config/config"
 
-  count_vms = 0
-  Vm.descendants.each do |vm|
-    count_vms += 1
+  Vm.descendants.each_with_index do |vm,count_vms|
     (1..vm::Count).each do |index|
-      # Set counters
+      # Initialize & set counters
       count = ""
       formatted_count = ""
       if vm::Count > 1
@@ -18,7 +16,7 @@ Vagrant::Config.run do |config|
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
         vm_config.vm.auto_port_range = Conf::SSH_range
-        vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms - 1) * 10) + index - 1}"
+        vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
         vm_config.vm.host_name = hostname
         vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname}#{formatted_count}(#{hostname})"]
