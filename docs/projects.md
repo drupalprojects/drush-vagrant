@@ -8,12 +8,14 @@ Vagrantfile, Puppet modules folder, &c.
 STRUCTURE
 ---------
 
-  <my_project>/        Project that will run an Aegir server
-    makefiles/         Drush makefiles for building platforms in Aegir
-    manifests/         Puppet manifests defining each VM
+  <my_project>/
+    manifests/         Puppet manifests
+      nodes.pp         Manifest defining individual VMs (nodes)
+      site.pp          Principle control manifest; includes/runs others
     modules/           Project-specific Puppet modules
+      ...              As required; can include custom modules
     settings.rb        Parameters for VMs
-    Vagrantfile        symlinked to <aegir-up-root>/lib/blueprints/Vagrantfile
+    Vagrantfile        symlinked to <drush-vagrant-root>/lib/Vagrantfile
     .config/           Folder containing generated configuration
       files/           User dotfiles & public ssh key that get added to VMs
       config.rb        Configuration generated during project initialization

@@ -14,11 +14,14 @@
  */
 function hook_vagrant_blueprints() {
   $blueprints = array(
-    'default' => array(
-      'name' => 'Default',
-      'description' => 'The default blueprint.',
-      'path' => 'blueprints/default', // req'd
-      ),
+    'first' => array(
+      'name' => 'First',
+      'description' => 'The first blueprint.',
+      'path' => 'blueprints/first', // req'd
+      'build_callback' => 'my_custom_build_function', // optional
+      '...' => '...',   // Arbitrary data can be passed to the build process
+                        // & saved in .config/blueprint.inc
+    ),
     'another' => array(
       'name' => 'Second',
       'description' => 'Another blueprint.',
