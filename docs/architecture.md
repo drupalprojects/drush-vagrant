@@ -1,31 +1,54 @@
 DESCRIPTION
 -----------
 
-Aegir-up is a system that applies templates to build Vagrant environments in
-VirtualBox. It is implemented as a Drush extension.
+Drush Vagrant Integration is a system that provide Drush wrappers around
+Vagrant (http://vagrantup.com), allowing the use of Drush aliases, for example.
+It also provide a system of templates (blueprints) to build Vagrant environ-
+ments in VirtualBox (http://virtualbox.org). It is implemented as a Drush
+extension.
 
 
 STRUCTURE
 ---------
 
-  aegirup.drush.inc
-  aegirup.drush.load.inc
-  docs/
-  lib/
-    definitions/          Veewee base box definitions
-      debian/             Bare-bones, but current, Debian
-      debian-LAMP/        Debian with a basic LAMP-stack pre-installed
-      debian-LAMP-i386/   Identical to 'debian-LAMP', but 32-bit
-    modules/              Public Puppet modules (included via subtrees)
-      aegir/              Aegir module
-      drush/              Drush module
-      common/             Rise-up shared common module
-      apt/                Koumbit Apt module
-      aegir-up/           Extra-config specific to Aegir-up
-    scripts/              Utility scrips (deprecated)
-    blueprints/           Templates from which to create user projects
-      default/            The default blueprint
-      aegir-dev/          Build Aegir from git repos
-    Vagrantfile           Vagrant control file
-  LICENSE.txt
-  README.md
+  blueprints/                 Drush Vagrant blueprints directory
+    blueprints.inc            Implements blueprint hook, and various default
+                                functions to build blueprints
+    default/                  The 'default' blueprint
+      manifests/              Puppet manifests directory
+        nodes.pp              Manifest defining individual VMs
+        site.pp               Principle control manifest, includes/runs others
+      modules/                Puppet modules directory
+        apt/                  Provides common Apt functions
+        common/               Provides common Puppet functions
+        drush/                Provide some Drush commands
+        drush-vagrant/        Functionality specific to Drush Vagrant
+        git/                  Provides basic Git functions
+      settings.rb             Basic variables used in Vagrantfile
+  docs/                       In-depth documentation
+  includes/                   Code specific to each Drush Vagrant commands
+    alias.vagrant.inc         Output code for a remote site alias
+    blueprints.vagrant.inc    Functions to list blueprints & invoke hook
+    build.vagrant.inc         Functions to build a project
+    delete.vagrant.inc        Functions to delete a project
+    hosts.vagrant.inc         Functions to modify /etc/hosts
+    list.vagrant.inc          Functions to list projects, VMs, and their status
+    shell.vagrant.inc         Functions to connect to a VM via SSH
+    user.vagrant.inc          Generate user-specific alias and settings
+    vagrant.inc               Common helper functions
+  lib/                        Library of miscellaneous required files
+    gitignore                 Template .gitignore
+    global.rb                 Global variables inherited by other config files
+    Vagrantfile               Vagrant control file
+  README.md                   Basic usage documentation
+  templates/                  Templates used to generate various config files
+    alias.tpl.php             Outputs a remote site alias
+    blueprint.tpl.php         Records blueprint-specific data
+    config.tpl.php            Generates variables used in Vagrantfile
+    help.tpl.php              Formats help text
+    project_alias.tpl.php     Generates aliases for Vagrant projects
+    vm_alias.tpl.php          Generates aliases for VMs
+  vagrant.drush.inc           Main Drush commanfile
+  vagrant.drush.load.inc      Ensures Vagrant is installed & re-writes group
+                                aliases
+
