@@ -14,11 +14,14 @@ can be bundled together in a single Drush extension.
 STRUCTURE
 ---------
 
-  example.drush.inc  Drush command file
-  blueprint1/        Template for building a set of VMs
-    manifests/       Puppet manifests defining VMs
-    modules/         Project-specific Puppet modules
-    settings.rb      Parameters for VMs
+  example.drush.inc     Drush command file
+  blueprint1/           Template for building a Vagrant project (set of VMs)
+    manifests/          Puppet manifests defining VMs
+      nodes.pp          Manifest defining individual VMs (nodes)
+      site.pp           Principle control manifest; includes/runs others
+    modules/            Project-specific Puppet modules
+      ...               As required; can include custom modules
+    settings.rb         Parameters for VMs; basic variables used in Vagrantfile
   blueprint2/
     ...
 
@@ -47,7 +50,7 @@ such a command would look like this:
 
 In addition, any blueprints provided must be exposed to Drush Vagrant by imple-
 menting hook_vagrant_blueprints(). For more details see the API docs
-(drush topic docs-vagrant-api). Here is an example:
+(drush topic docs-vagrant-api). Here is a minimalist example:
 
 <?php
 
@@ -68,5 +71,5 @@ EXAMPLES
 --------
 
 For further examples of Drush extensions providing blueprints, see the Aegir-up
-and Gear-up projects.
+project (http://drupal.org/project/aegir-up).
 

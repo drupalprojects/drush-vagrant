@@ -15,16 +15,7 @@ STRUCTURE
     blueprints.inc            Implements blueprint hook, and various default
                                 functions to build blueprints
     default/                  The 'default' blueprint
-      manifests/              Puppet manifests directory
-        nodes.pp              Manifest defining individual VMs
-        site.pp               Principle control manifest, includes/runs others
-      modules/                Puppet modules directory
-        apt/                  Provides common Apt functions
-        common/               Provides common Puppet functions
-        drush/                Provide some Drush commands
-        drush-vagrant/        Functionality specific to Drush Vagrant
-        git/                  Provides basic Git functions
-      settings.rb             Basic variables used in Vagrantfile
+      ...                     See 'blueprints.md' for details
   docs/                       In-depth documentation
   includes/                   Code specific to each Drush Vagrant commands
     alias.vagrant.inc         Output code for a remote site alias
