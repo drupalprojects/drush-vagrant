@@ -55,7 +55,7 @@ Installation should be as simple as:
   drush dl drush-vagrant
 
 This should create a folder at ~/.drush/drush-vagrant, but might also be
-installed to /path/to/drush/commands/aegir-up, depending on how Drush was
+installed to /path/to/drush/commands/drush-vagrant, depending on how Drush was
 itself installed.
 
 Permission issues during installation can be overcome by running the command as
