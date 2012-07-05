@@ -5,8 +5,8 @@
  * Manage entries in /etc/hosts.
  */
 
-define(HOSTS_BEGIN_MARKER, "#### Drush Vagrant entries begin ####");
-define(HOSTS_END_MARKER, "#### Drush Vagrant entries end ####");
+define('HOSTS_BEGIN_MARKER', "#### Drush Vagrant entries begin ####");
+define('HOSTS_END_MARKER', "#### Drush Vagrant entries end ####");
 
 /**
  * Add an entry to /etc/hosts.
