@@ -237,12 +237,12 @@ function drush_vagrant() {
 
 function vagrant_drush_help_alter(&$command) {
   $args = drush_get_arguments();
+
   if (array_shift($args) == 'vagrant') {
+    // If we're using a drush vagrant sub-commands, we'll need to redispatch the
+    // full sub-command with the '-', in order to get the proper help-text
     if (count($args)) {
-      $vg_commands = vagrant_drush_command();
-      foreach ($vg_commands as $key => $value) {
-        $sub_commands = str_replace('vagrant-', '', array_keys($vg_commands));
-      }
+      $sub_commands = str_replace('vagrant-', '', array_keys(vagrant_drush_command()));
       if (in_array($args[0], $sub_commands)) {
         $vg_command = 'drush vagrant-' . $args[0] . ' --help';
       }
@@ -253,6 +253,8 @@ function vagrant_drush_help_alter(&$command) {
       drush_shell_exec($vg_command);
       $output[] = implode("\n", drush_shell_exec_output());
       drush_print(implode("\n", $output));
+      
+      // Remove the 'drush vagrant' options and aliases
       unset($command['options']);
       unset($command['aliases']);
     }
