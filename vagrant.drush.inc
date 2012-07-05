@@ -216,6 +216,9 @@ function drush_vagrant() {
     }
     else {
       $vg_command = drush_get_context('argv');
+      if ($vg_command[1] == 'vg') {
+        $vg_command[1] = 'vagrant';
+      }
       $vg_command = implode(' ', array_splice($vg_command, 1));
       $vg_command = strtr('cd !path && !command', array(
         '!path' => PROJECT_PATH,
