@@ -11,7 +11,7 @@ define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
 include_once('includes/vagrant.inc');
 
 // Include hooks for our default blueprint
-include_once('blueprints/blueprints.inc');
+include_once('vagrant.blueprints.inc');
 
 /**
  * Implements hook_drush_help().
