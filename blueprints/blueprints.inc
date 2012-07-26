@@ -157,6 +157,7 @@ function vagrant_default_build_user_data($build) {
   }
   # Puppet module directories
   $config_vars["modules"]["project-specific modules"] = "modules/";
+  $config_vars["modules"]["drush-vagrant default modules"] = dirname(__FILE__). "/default/modules/";
   foreach ($build["modules"] as $name => $dir) {
     $config_vars["modules"][$name] = $dir;
   }
