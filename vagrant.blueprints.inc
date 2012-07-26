@@ -157,9 +157,11 @@ function vagrant_default_build_user_data($build) {
   }
   # Puppet module directories
   $config_vars["modules"]["project-specific modules"] = "modules/";
-  $config_vars["modules"]["drush-vagrant default modules"] = dirname(__FILE__). "/default/modules/";
-  foreach ($build["modules"] as $name => $dir) {
-    $config_vars["modules"][$name] = $dir;
+  $config_vars["modules"]["drush-vagrant default modules"] = dirname(__FILE__). "/lib/puppet-modules/";
+  if (isset($build["modules"])) {
+    foreach ($build["modules"] as $name => $dir) {
+      $config_vars["modules"][$name] = $dir;
+    }
   }
   $config_file = _drush_vagrant_render_template($config_vars, $template = "config.tpl.php");
   file_put_contents($build['config_path'] . '/config.rb', $config_file);
