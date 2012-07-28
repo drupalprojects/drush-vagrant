@@ -6,9 +6,10 @@ nents to define a new funtional project. Blueprints are included in Drush
 extensions, and can thus be posted as projects to drupal.org, and downloaded
 via 'drush dl'.
 
-By virtue of being Drush extensions, they can declare their own Drush commands,
-implement their own pre- and post- Drush hooks, and several related blueprints
-can be bundled together in a single Drush extension.
+By virtue of being Drush extensions, they can declare their own Drush commands
+and modify the behaviour of other Drush Commands by implementing their own pre-
+and post- Drush hooks. Several related blueprints can be bundled together in a
+single Drush extension.
 
 
 STRUCTURE
@@ -48,6 +49,9 @@ such a command would look like this:
 
 ?>
 
+This example does not implement any actual Drush commands, and so setting the
+'hidden' parameter ensures that it is not listed in Drush's help system.
+
 In addition, any blueprints provided must be exposed to Drush Vagrant by imple-
 menting hook_vagrant_blueprints(). For more details see the API docs
 (drush topic docs-vagrant-api). Here is a minimalist example:
@@ -59,12 +63,14 @@ menting hook_vagrant_blueprints(). For more details see the API docs
  */
 function example_vagrant_blueprints() {
   $blueprints = array(
-    'example' => 'blueprints/example',
+    'example' => array(
+      'name' => 'Example',
+      'description' => 'An example blueprint.',
+      'path' => 'blueprints/first',
+    )
   );
   return $blueprints;
 }
-
-?>
 
 
 EXAMPLES

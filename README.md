@@ -2,12 +2,20 @@ DESCRIPTION
 -----------
 
 Drush Vagrant Integration provides Drush commands to accomplish common Vagrant
-tasks, and enables a powerful templating framework ('blueprints'). It simpli-
-fies building collaborative, distributed development and testing environments,
-that encourage the use of Drupal development best-practices. Projects can
-easily be cloned and shared via Git, or even bundled into blueprints that
-others can use as templates for their own development environments.
+tasks, and provides a powerful templating framework ('blueprints'). It also has
+tools to implement Drush aliases for Vagrant projects and VMs, thus allowing
+simpler remote control of Vagrant projects.
 
+Drush Vagrant is intended to simplify building collaborative, distributed
+development and testing environments, that encourage the use of Drupal best-
+practices. Projects can easily be cloned and shared via Git, or even bundled
+into blueprints that others can use as templates for their own development
+environments.
+
+While initially developed (via the Aegir-up project) as a Drupal and Aegir 
+development tool, Drush Vagrant itself is not Drupal-specific. It provides
+generally useful wrappers around Vagrant, and can thus assist in building and
+testing non-Drupal projects, such as Puppet modules.
 
 DEPENDENCIES
 ------------
@@ -28,9 +36,9 @@ http://drupalcode.org/project/drush.git/blob/HEAD:/README.txt#l30
 
 Compatible releases of Vagrant, VirtualBox and Drush are available in Debian's
 Testing branch, and so can be installed (along with all dependencies) with a
-simple 'apt-get install vagrant', assuming the appropriate repos have been
-added to /etc/apt/source.list.d/ This last is the developers' preferred and
-recommended installation method.
+simple 'apt-get install vagrant drush', assuming the appropriate repos have
+been added to /etc/apt/source.list.d/ This last is the developers' preferred
+and recommended installation method.
 
 In order to take advantage of Vagrant's ability to mount NFS (Network File
 System) shares, an NFS-server is required. This allows the sharing of entire
@@ -103,11 +111,11 @@ Bug reports, feature and support requests should be submitted to the drupal.org
 issue queue: http://drupal.org/project/issues/drush-vagrant
 
 Also, the developers (See Credits section, below) can usually be found on IRC
-in the #aegir and #openatria channels on irc.freenode.net
+in the #aegir and #openatria channels on irc.freenode.net.
 
 
 CREDITS
 -------
 
 Originally developed by Steven Merrill <http://www.stevenwmerrill.com/>
-The 2.x branch is co-maintained by Christopher Gervais <http://ergonlogic.com/>
+The 2.x branch is developed and maintained by Christopher Gervais <http://ergonlogic.com/>

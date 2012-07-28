@@ -12,8 +12,6 @@ STRUCTURE
 ---------
 
   blueprints/                 Drush Vagrant blueprints directory
-    blueprints.inc            Implements blueprint hook, and various default
-                                functions to build blueprints
     default/                  The 'default' blueprint
       ...                     See 'blueprints.md' for details
   docs/                       In-depth documentation
@@ -30,6 +28,7 @@ STRUCTURE
   lib/                        Library of miscellaneous required files
     gitignore                 Template .gitignore
     global.rb                 Global variables inherited by other config files
+    puppet-modules            Common default Puppet modules
     Vagrantfile               Vagrant control file
   README.md                   Basic usage documentation
   templates/                  Templates used to generate various config files
@@ -39,6 +38,8 @@ STRUCTURE
     help.tpl.php              Formats help text
     project_alias.tpl.php     Generates aliases for Vagrant projects
     vm_alias.tpl.php          Generates aliases for VMs
+  vagrant.blueprints.inc      Implements blueprint hook, and various default
+                                functions to build blueprints
   vagrant.drush.inc           Main Drush commanfile
   vagrant.drush.load.inc      Ensures Vagrant is installed & re-writes group
                                 aliases
