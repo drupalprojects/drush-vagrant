@@ -138,9 +138,10 @@ function vagrant_drush_command() {
       'remote-command' => dt('(OPTIONAL) Instead of logging into a VM, run this command in the VM. The command should be quoted if there are parameters. Returns the output of the command.'),
     ),
     'options' => array(
-      'ssh-user' => 'The username to login under.',
-      'ssh-id' => 'The identity file from which the private key is read.',
+      'ssh-user' => 'The username to login under. Defaults to the username in the user-specific config file (~/drushrc.php).',
+      'ssh-id' => 'The identity file from which the private key is read. Defaults to the private key in the user-specific config file (~/drushrc.php).',
       'ssh-connection-string' => 'Instead of running SSH, return the a string of the command that would otherwise be run.',
+      'default-user' => 'Use the default \'vagrant\' user, and ignore other username or identity files, whether specified in the user-specific config file, or on the command line.',
     ),
     'examples' => array(
       'drush vagrant shell' => dt('Log into the VM in a single VM project.'),

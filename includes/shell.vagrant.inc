@@ -12,8 +12,13 @@
 function drush_vagrant_shell() {
   $ssh_config = drush_vagrant_parse_ssh_config();
   $ssh_config['NoHostAuthenticationForLocalhost'] = 'yes';
-  $ssh_config['IdentityFile'] = drush_get_option('ssh-id', $ssh_config['IdentityFile']);
-  $ssh_config['User'] = drush_get_option('ssh-user', $ssh_config['User']);
+  if (!drush_get_option('default-user')) {
+    // Assume that we've included drush-vagrant::user, unless we've specified
+    // that we want to use the default (vagrant) user, but allow overrides
+    // using specific options. 
+    $ssh_config['IdentityFile'] = drush_get_option('ssh-id', drush_get_option('vagrant_ssh_keyspublic', $ssh_config['IdentityFile']));
+    $ssh_config['User'] = drush_get_option('ssh-user', drush_get_option('vagrant_username', $ssh_config['User']));
+  }
   $hostname = $ssh_config['HostName'];
   unset($ssh_config['HostName']);
   unset($ssh_config['Host']);
