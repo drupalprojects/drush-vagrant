@@ -38,7 +38,7 @@ function drush_vagrant_list() {
  */
 function drush_vagrant_projects_info() {
   $projects = array();
-  if ($dir = opendir(PROJECTS_PATH)) {
+  if ($dir = @opendir(PROJECTS_PATH)) {
     while (false !== ($project = readdir($dir))) {
       $project_path = PROJECTS_PATH . $project;
       if (drush_vagrant_check_project($project_path) && file_exists($project_path . '/.config/blueprint.inc')) {
@@ -46,6 +46,9 @@ function drush_vagrant_projects_info() {
       }
     }
     closedir($dir);
+  }
+  else {
+    drush_set_error(dt("PROJECTS_PATH is unknown or does not exist. Have you build a vm already? Try drush vagrant-build"));
   }
   return $projects;
 }
