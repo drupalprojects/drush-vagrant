@@ -80,19 +80,6 @@ function vagrant_default_build_project_dir($build) {
   }
 }
 
-/*
-  // Check for support of 64-bit client OSes
-  drush_shell_exec('egrep \'(vmx|svm)\' /proc/cpuinfo');
-  $output = drush_shell_exec_output();
-  if (!$output) {
-    // Switch to i386 base box
-    $settings_file = file_get_contents($project_path . 'settings.rb');
-    $settings_file = str_replace('debian-LAMP-20', 'debian-LAMP-i386-20', $settings_file);
-    $settings_file = str_replace('debian-LAMP-current.box', 'debian-LAMP-i386-current.box', $settings_file);
-    file_put_contents($project_path . 'settings.rb', $settings_file);
-  }
-*/
-
 function vagrant_default_build_project_setup($build) {
   // Set up the new project
   $target = $build['project_path'] . '/Vagrantfile';
