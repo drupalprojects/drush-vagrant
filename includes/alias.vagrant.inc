@@ -136,13 +136,13 @@ function drush_vagrant_aliases() {
       $vm_vars = $project_vars;
       $vm_vars['vm_alias'] = $vm_name;
       $output = drush_vagrant_exec_and_log(array(
-        'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --vm-name=' . $vm_name . ' "hostname -f"'),
+        'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -f"'),
         'success' => dt("Retrieved the FQDN for the !vm_name VM.", array('!vm_name' => $vm_name)),
         'failure' => dt("The following errors occurred when attempting to retrieve the FQDN for the !vm_name VM.", array('!vm_name' => $vm_name)),
       ));
       $vm_vars['fqdn'] = $output[1];
       $output = drush_vagrant_exec_and_log(array(
-        'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --vm-name=' . $vm_name . ' "hostname -I"'),
+        'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
         'success' => dt("Retrieved the IP address for the !vm_name VM.", array('!vm_name' => $vm_name)),
         'failure' => dt("The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.", array('!vm_name' => $vm_name)),
       ));
