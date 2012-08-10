@@ -86,7 +86,7 @@ function drush_vagrant_user() {
   }
 
   if (!is_dir($user_settings['vagrant_project_root'])) {
-    mkdir($user_settings['vagrant_project_root']);
+    mkdir($user_settings['vagrant_project_root'], 0750, TRUE);
   }
 
   drush_set_context('user', $user_settings);
