@@ -36,9 +36,7 @@ Vagrant::Config.run do |config|
             # Initialize an empty array so we can push onto it
             puppet.module_path = []
             # Merge in project-specific Puppet modules
-            if defined?(Conf::Modules)
-              vm::Modules = Conf::Modules.merge(vm::Modules)
-            end
+            vm::Modules.update(Conf::Modules)
             vm::Modules.each do |name,path|
               # Expand relative paths (such as '~')
               full_path = File.expand_path("#{path}")
