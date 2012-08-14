@@ -246,28 +246,16 @@ function drush_vagrant() {
   }
 }
 
+/**
+ * Implements hook_drush_help_alter().
+ */
 function vagrant_drush_help_alter(&$command) {
-  $args = drush_get_arguments();
-
-  if (array_shift($args) == 'vagrant') {
-    // If we're using a drush vagrant sub-commands, we'll need to redispatch the
-    // full sub-command with the '-', in order to get the proper help-text
-    if (count($args)) {
-      $sub_commands = str_replace('vagrant-', '', array_keys(vagrant_drush_command()));
-      if (in_array($args[0], $sub_commands)) {
-        $vg_command = 'drush vagrant-' . $args[0] . ' --help';
-      }
-      else {
-        $vg_command = strtr("vagrant !sub-commands --help", array('!sub-commands' => implode(' ', $args)));
-        $output[] = dt("Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the '!command' sub-command:\n", array('!command' => implode(' ', $args)));
-      }
-      drush_shell_exec($vg_command);
-      $output[] = implode("\n", drush_shell_exec_output());
-      drush_print(implode("\n", $output));
-      
-      // Remove the 'drush vagrant' options and aliases
-      unset($command['options']);
-      unset($command['aliases']);
+  if ($command['command'] === 'vagrant') {
+    $args = drush_get_arguments();
+    if (isset($args[1])) {
+      // Remove the 'drush vagrant' options and aliases for sub-commands
+      $command['options'] = array();
+      $command['aliases'] = array();
     }
   }
 }
