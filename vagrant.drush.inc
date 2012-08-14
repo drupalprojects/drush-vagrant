@@ -35,6 +35,7 @@ function vagrant_drush_init() {
   }
   define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
   define("VM_NAME", drush_get_option('vm-name', NULL));
+  drush_set_context('vagrant_help_text', _drush_vagrant_help_text());
 }
 
 /**
@@ -44,7 +45,7 @@ function vagrant_drush_command() {
   $items = array();
 
   $items['vagrant'] = array(
-    'description' => _drush_vagrant_help_text(),
+    'description' => drush_get_context('vagrant_help_text', dt('Run a command on your Vagrant projects or VMs.')),
     'options' => array(
       'project-path' => array(
         'description' => dt('The relative or absolute path to the project on which to run the command.'),
