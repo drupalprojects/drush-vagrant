@@ -54,6 +54,7 @@ function vagrant_drush_command() {
         'description' => dt('The name of the Vagrant virtual machine on which to run the command.'),
       ),
     ),
+    'allow-additional-options' => TRUE,
     'aliases' => array('vg'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
@@ -64,6 +65,7 @@ function vagrant_drush_command() {
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate aliases for a project and its VMs.'),
+    'allow-additional-options' => TRUE,
   );
   $items['vagrant-list'] = array(
     'description' => dt('List current Vagrant projects, VMs and statuses.'),
@@ -108,7 +110,8 @@ function vagrant_drush_command() {
       'ip-addr' => array(
         'description' => dt('The IP address of the server or site.')),
       'domains' => array(
-        'description' => dt('A comma-delimited list of domains.')),
+        'description' => dt('A comma-delimited list of domains.'),
+        'required' => TRUE,),
       'remove' => array(
         'description' => dt('Remove an IP address or domain(s).')),
       'purge' => array(
@@ -119,6 +122,7 @@ function vagrant_drush_command() {
       'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain \'bar.com\' from the entry in /etc/hosts for IP address 192.168.22.13.'),
       'drush vh --ip-addr=192.168.22.13 --remove' => dt('Remove the entire entry in /etc/hosts for IP address 192.168.22.13.'),
       ),
+    'allow-additional-options' => TRUE,
     'aliases' => array('vh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
@@ -148,6 +152,7 @@ function vagrant_drush_command() {
       'drush vagrant shell' => dt('Log into the VM in a single VM project.'),
       'drush @example vsh "hostname -f"' => dt('Return the FQDN of the VM/project specified in the @example alias.'),
     ),
+    'allow-additional-options' => TRUE,
     'aliases' => array('vsh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
