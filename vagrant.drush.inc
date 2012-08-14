@@ -206,17 +206,26 @@ function vagrant_drush_command() {
  * Command callback for `drush vagrant`.
  */
 function drush_vagrant() {
+  // hook_drush_command() will pass additional command-line arguments to the
+  // specified hook function, so we can recuperate them here.
   $args = func_get_args();
+  // Since Drush will parse aliases and options itself, the first argument will
+  // be a sub-command
   $command = array_shift($args);
+  // To determine whether we should pass along sub-command to Vagrant, we first
+  // check that there is no such command implemented in Drush.
   $commands = drush_get_commands();
   if (!isset($commands['vagrant-' . $command])) {
+    // If there's no sub-command, provide some guidance (i.e., help text)
     if (empty($command)) {
       drush_shell_exec_interactive('drush vagrant --help');
     }
+    // TODO: does this special-case even make sense anymore?
     elseif ($command == 'init' && !is_dir(PROJECT_PATH)) {
       drush_mkdir(PROJECT_PATH);
     }
     else {
+      // Get the command as passed on the CLI
       $vg_command = drush_get_context('argv');
       if ($key = array_search('vg', $vg_command)) {
         $vg_command[$key] = 'vagrant';
