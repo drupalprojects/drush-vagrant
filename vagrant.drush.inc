@@ -59,11 +59,11 @@ function vagrant_drush_command() {
   );
   $items['vagrant-alias-config'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Convert the output of `vagrant ssh-config` into a Drush remote alias.',
+    'description' => dt('Convert the output of `vagrant ssh-config` into a Drush remote alias.'),
   );
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Generate aliases for a project and its VMs.',
+    'description' => dt('Generate aliases for a project and its VMs.'),
   );
   $items['vagrant-list'] = array(
     'description' => dt('List current Vagrant projects, VMs and statuses.'),
@@ -152,14 +152,14 @@ function vagrant_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-user'] = array(
-    'description' => "Initialize or update user-specific settings for Drush Vagrant.",
+    'description' => dt('Initialize or update user-specific settings for Drush Vagrant.'),
     'aliases' => array('vuser'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   // Drush topics
   $items['docs-vagrant-readme'] = array(
-    'description' => 'Drush Vagrant README.',
+    'description' => dt('Drush Vagrant README.'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -167,7 +167,7 @@ function vagrant_drush_command() {
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/README.md'),
   );
   $items['docs-vagrant-architecture'] = array(
-    'description' => 'Drush Vagrant architecture documentation.',
+    'description' => dt('Drush Vagrant architecture documentation.'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -175,7 +175,7 @@ function vagrant_drush_command() {
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/architecture.md'),
   );
   $items['docs-vagrant-blueprints'] = array(
-    'description' => 'Drush Vagrant blueprints documentation.',
+    'description' => dt('Drush Vagrant blueprints documentation.'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -183,7 +183,7 @@ function vagrant_drush_command() {
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/blueprints.md'),
   );
   $items['docs-vagrant-projects'] = array(
-    'description' => 'Drush Vagrant projects documentation.',
+    'description' => dt('Drush Vagrant projects documentation.'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -191,7 +191,7 @@ function vagrant_drush_command() {
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/docs/projects.md'),
   );
   $items['docs-vagrant-api'] = array(
-    'description' => 'Drush Vagrant API documentation.',
+    'description' => dt('Drush Vagrant API documentation.'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
