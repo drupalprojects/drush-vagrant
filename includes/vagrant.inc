@@ -49,18 +49,51 @@ function drush_vagrant_exec_and_log(array $command) {
  */
 function _drush_vagrant_help_text() {
   $args = drush_get_arguments();
+  if (isset($args[1])) {
+    // Drop the 0th argument, which should always be 'vagrant', but allow for
+    // sub-sub-commands
+    array_shift($args);
+    $current_subcommand = $args;
+  }
+  // Build an array of our drush-vagrant commands
+  $dv_commands = vagrant_drush_command();
+  // Generate a list of drush-vagrant sub-commands
+  $all_subcommands = str_replace('vagrant-', '', array_keys($dv_commands));
+
+  if (!isset($current_subcommand)) {
+    // No sub-command was given, so we'll build our lists of subcommands
+    return _drush_vagrant_full_help_text();
+  }
+  elseif (in_array($current_subcommand[0], $all_subcommands)) {
+    // We've matched one of our sub-commands, so we'll pass along its help-text
+    drush_shell_exec('drush vagrant-' . $current_subcommand[0] . ' --help');
+    return implode("\n", drush_shell_exec_output());
+  }
+  else {
+    // We've either passed a native Vagrant command or a non-existant command
+    // so we'll provide explanatory text, and let Vagrant handle the rest
+    $vg_subcommand = implode(' ', $current_subcommand);
+    $output[] = dt("Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the '!command' sub-command:\n", array('!command' => $vg_subcommand));
+    $vg_command = strtr("vagrant !sub-commands --help", array('!sub-commands' => $vg_subcommand));
+    drush_shell_exec($vg_command);
+    $output[] = implode("\n", drush_shell_exec_output());
+    return implode("\n", $output);
+  }
+}
+
+/**
+ * Generate full help text
+ */
+function _drush_vagrant_full_help_text() {
+  $args = drush_get_arguments();
   $short_help = dt("Run a command on your Vagrant projects or VMs.");
   if ($args[0] == 'help') {
     // We're in a command list
     return $short_help;
   }
-  elseif (isset($args[1])) {
-    // User specified a sub-command
-    return;
-  }
   else {
     $variables = array();
-    $variables["short_help"] =  $short_help . "\n";
+    $variables["short_help"] = $short_help . "\n";
     drush_shell_exec('vagrant');
     $variables["vagrant_commands"] = _drush_vagrant_help_table(array_splice(drush_shell_exec_output(), 6, -2));
     $blueprints = drush_vagrant_blueprint_info();
