@@ -128,10 +128,9 @@ function _drush_vagrant_help_table($list, $cols = 3) {
       $i++;
     }
   }
-  $tmp_file = drush_save_data_to_temp_file('');
-  $handle = fopen($tmp_file, 'w+b');
-  @drush_print_table($table, FALSE, NULL, $tmp_file);
-  return fread($handle, 500);
+  ob_start();
+  drush_print_table($table); //, FALSE, NULL, $tmp_file);
+  return ob_get_clean();
 }
 
 /**
