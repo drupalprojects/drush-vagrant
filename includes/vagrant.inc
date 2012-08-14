@@ -104,9 +104,9 @@ function _drush_vagrant_full_help_text() {
     $sub_commands = array();
     foreach ($drush_commands as $command => $info) {
       if (in_array($info['commandfile'], $extensions)
-          && $info['topic'] != 1
+          && !isset($info['topics'][0])
           && $info['hidden'] != 1
-          && $info['is_alias'] != 1
+          && !isset($info['is_alias'])
           && $command != 'vagrant') {
         $sub_commands[] = '     ' . substr($command, strlen('vagrant-'));
       }
