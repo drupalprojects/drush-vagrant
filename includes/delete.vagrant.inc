@@ -32,9 +32,9 @@ function drush_vagrant_delete() {
 
   if (drush_confirm(dt('Are you certain that you want to proceed?'))) {
     $vms = drush_vagrant_exec_and_log(array(
-      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant list --only-vms'),
+      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant list --vms'),
       'success' => dt('Listed all VMs of the project at !project_path.', array('!project_path' => PROJECT_PATH)),
-      'failure' => dt('The following errors occurred when running "drush vagrant list --only-vms".'),
+      'failure' => dt('The following errors occurred when running "drush vagrant list --vms".'),
     ));
     foreach ($vms as $vm_name) {
       drush_vagrant_exec_and_log(array(

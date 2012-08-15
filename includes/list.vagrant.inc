@@ -17,12 +17,12 @@ function drush_vagrant_list() {
     $projects = array( $project => $projects[$project]);
   }
   foreach ($projects as $project => $vms) {
-    if (!drush_get_option('only-vms', FALSE)) {
+    if (!drush_get_option('vms', FALSE)) {
       drush_print($project);
     }
-    if (!drush_get_option('only-projects'))  {
+    if (!drush_get_option('projects'))  {
       foreach ($vms as $vm_name => $vm) {
-        if (drush_get_option('only-vms', FALSE)) {
+        if (drush_get_option('vms', FALSE)) {
           drush_print($vm_name);
         }
         else {

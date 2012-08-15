@@ -188,7 +188,7 @@ function drush_vagrant_post_vagrant_build() {
   // Add domain to hosts file
   if ($hosts !== FALSE) {
     drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
-    drush_shell_cd_and_exec($project_path, 'drush vagrant list --only-vms');
+    drush_shell_cd_and_exec($project_path, 'drush vagrant list --vms');
     $vms = drush_shell_exec_output();
     $project_name = drush_vagrant_get_project_name($project_path);
     foreach ($vms as $vm) {
@@ -273,7 +273,7 @@ function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
 function _drush_vagrant_next_available_subnet() {
 
   $initial_subnet = 10;
-  drush_shell_exec('drush vagrant list --only-projects');
+  drush_shell_exec('drush vagrant list --all --projects');
   $projects = drush_shell_exec_output();
 
   $subnets = array();

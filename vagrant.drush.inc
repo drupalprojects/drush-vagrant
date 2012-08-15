@@ -66,6 +66,9 @@ function vagrant_drush_command() {
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate aliases for a project and its VMs.'),
+    'options' => array(
+      'delete' => dt('Delete aliases for a project.'),
+      ),
     'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
   );
@@ -73,8 +76,8 @@ function vagrant_drush_command() {
     'description' => dt('List current Vagrant projects, VMs and statuses.'),
     'options' => array(
       'all' => dt('When in a project directory, list all projects instead of just the current one.'),
-      'only-projects' => dt('Only list project names.'),
-      'only-vms' => dt('Only list VM names.'),
+      'projects' => dt('Only list project names.'),
+      'vms' => dt('Only list VM names.'),
       ),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vls'),
