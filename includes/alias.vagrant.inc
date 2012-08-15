@@ -11,8 +11,8 @@
 function drush_vagrant_parse_ssh_config() {
   $output = drush_vagrant_exec_and_log(array(
     'command' => drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . VM_NAME),
-    'success' => dt("Determined the Vagrant SSH configuration."),
-    'failure' => dt("The following errors occurred when running `vagrant ssh-config`. Are you in the directory with the Vagrantfile?"),
+    'success' => dt('Determined the Vagrant SSH configuration.'),
+    'failure' => dt('The following errors occurred when running "vagrant ssh-config". Are you in the directory with the Vagrantfile?'),
   ));
 
   $ssh_options = array();
@@ -51,19 +51,19 @@ function drush_vagrant_alias_config() {
   $variables = array();
   $variables["ssh_options"] = drush_vagrant_render_ssh_options($ssh_options);
 
-  drush_print(dt("Please enter the information about the Drupal site inside the VM."));
-  $variables["alias"] = drush_prompt("Alias", "drush-vagrant");
-  $variables["uri"] = drush_prompt("URI", "http://vagrantvm.dev/");
-  $variables["docroot"] = drush_prompt("Docroot location", "/var/www/html/");
+  drush_print(dt('Please enter the information about the Drupal site inside the VM.'));
+  $variables["alias"] = drush_prompt(dt('Alias'), "drush-vagrant");
+  $variables["uri"] = drush_prompt(dt('URI'), "http://vagrantvm.dev/");
+  $variables["docroot"] = drush_prompt(dt('Docroot location'), "/var/www/html/");
 
-  drush_print(dt("Rendering the remote alias entry."));
+  drush_print(dt('Rendering the remote alias entry.'));
 
   $output = _drush_vagrant_render_template($variables);
   if ($output === NULL) {
-    drush_log(dt("Could not render the remote alias entry."), "error");
+    drush_log(dt('Could not render the remote alias entry.'), "error");
   }
   else {
-    drush_log(dt("The remote alias entry is below. Please paste it into an aliases.drushrc.php file."), "ok");
+    drush_log(dt('The remote alias entry is below. Please paste it into an aliases.drushrc.php file.'), "ok");
     drush_print();
     drush_print($output);
   }
@@ -108,7 +108,7 @@ function drush_vagrant_aliases() {
 
   if ($delete = drush_get_option('delete')) {
     if (is_file($alias_filename)) {
-      if (!drush_confirm('Delete the aliases for this project?')) {
+      if (!drush_confirm(dt('Delete the aliases for this project?'))) {
         return drush_user_abort();
       }
       $status = drush_shell_exec('rm %s', $alias_filename);
@@ -122,7 +122,7 @@ function drush_vagrant_aliases() {
 
     if (is_file($alias_filename)) {
       drush_log(dt('WARNING: There appear to already be aliases for this project.'), 'warning');
-      if (!drush_confirm('Regenerate the aliases for this project?')) {
+      if (!drush_confirm(dt('Regenerate the aliases for this project?'))) {
         return drush_user_abort();
       }
     }
@@ -137,14 +137,14 @@ function drush_vagrant_aliases() {
       $vm_vars['vm_alias'] = $vm_name;
       $output = drush_vagrant_exec_and_log(array(
         'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -f"'),
-        'success' => dt("Retrieved the FQDN for the !vm_name VM.", array('!vm_name' => $vm_name)),
-        'failure' => dt("The following errors occurred when attempting to retrieve the FQDN for the !vm_name VM.", array('!vm_name' => $vm_name)),
+        'success' => dt('Retrieved the FQDN for the !vm_name VM.', array('!vm_name' => $vm_name)),
+        'failure' => dt('The following errors occurred when attempting to retrieve the FQDN for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
       $vm_vars['fqdn'] = $output[1];
       $output = drush_vagrant_exec_and_log(array(
         'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
-        'success' => dt("Retrieved the IP address for the !vm_name VM.", array('!vm_name' => $vm_name)),
-        'failure' => dt("The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.", array('!vm_name' => $vm_name)),
+        'success' => dt('Retrieved the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
+        'failure' => dt('The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
       $vm_vars['ip_addr'] = array_pop(explode(' ', $output[1]));
       $vms[] = _drush_vagrant_render_template($vm_vars, 'vm_alias.tpl.php');
@@ -155,8 +155,8 @@ function drush_vagrant_aliases() {
 
     drush_vagrant_exec_and_log(array(
       'command' => file_put_contents($alias_filename, _drush_vagrant_render_template($project_vars, 'project_alias.tpl.php')),
-      'success' => dt("Wrote project aliases file to !alias_filename.", array('!alias_filename' => $alias_filename)),
-      'failure' => dt("Errors occurred when attempting to write project aliases file to !alias_filename.", array('!alias_filename' => $alias_filename)),
+      'success' => dt('Wrote project aliases file to !alias_filename.', array('!alias_filename' => $alias_filename)),
+      'failure' => dt('Errors occurred when attempting to write project aliases file to !alias_filename.', array('!alias_filename' => $alias_filename)),
     ));
   }
 }

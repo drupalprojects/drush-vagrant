@@ -73,7 +73,7 @@ function _drush_vagrant_help_text() {
     // We've either passed a native Vagrant command or a non-existant command
     // so we'll provide explanatory text, and let Vagrant handle the rest
     $vg_subcommand = implode(' ', $current_subcommand);
-    $output[] = dt("Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the '!command' sub-command:\n", array('!command' => $vg_subcommand));
+    $output[] = dt('Drush Vagrant Integration will pass through native Vagrant commands. However, it allows the use of Drush aliases to run commands on projects and VMs remotely. Here is the help output from Vagrant itself on the "!command" sub-command:\n', array('!command' => $vg_subcommand));
     $vg_command = strtr("vagrant !sub-commands --help", array('!sub-commands' => $vg_subcommand));
     drush_shell_exec($vg_command);
     $output[] = implode("\n", drush_shell_exec_output());
@@ -86,7 +86,7 @@ function _drush_vagrant_help_text() {
  */
 function _drush_vagrant_full_help_text() {
   $args = drush_get_arguments();
-  $short_help = dt("Run a command on your Vagrant projects or VMs.");
+  $short_help = dt('Run a command on your Vagrant projects or VMs.');
   if ($args[0] == 'help') {
     // We're in a command list
     return $short_help;
@@ -139,9 +139,9 @@ function _drush_vagrant_help_table($list, $cols = 3) {
 function _drush_vagrant_check_user_context() {
   $user_settings = drush_get_context('user');
   if (!isset($user_settings['vagrant_username'])) {
-    drush_print('This appears to be your first time running Drush Vagrant or your user settings (~/.drushrc.php) have been deleted.');
-    drush_print('Drush Vagrant Integration requires those settings in order to function properly.');
-    if (drush_confirm('Proceed?')) {
+    drush_print(dt('This appears to be your first time running Drush Vagrant or your user settings (~/.drushrc.php) have been deleted.'));
+    drush_print(dt('Drush Vagrant Integration requires those settings in order to function properly.'));
+    if (drush_confirm(dt('Proceed?'))) {
       drush_shell_exec_interactive('drush vagrant-user');
       drush_shell_exec('echo $HOME');
       // PROJECTS_PATH won't have been defined in hook_drush_init() yet, so we
@@ -162,13 +162,13 @@ function _drush_vagrant_check_user_context() {
 function drush_vagrant_check_project($project_path, $set_error = FALSE) {
   if (!is_dir($project_path)) {
     if ($set_error) {
-      drush_set_error(dt('ERROR: Could not find a project at \'!project\'.', array('!project' => $project_path)));
-      }
+      drush_set_error(dt('ERROR: Could not find a project at "!project".', array('!project' => $project_path)));
+    }
     return FALSE;
   }
   if (!file_exists($project_path . '/Vagrantfile')) {
     if ($set_error) {
-      drush_set_error(dt('ERROR: Could not find a Vagrantfile in \'!project\'.', array('!project' => $project_path)));
+      drush_set_error(dt('ERROR: Could not find a Vagrantfile in "!project".', array('!project' => $project_path)));
     }
     return FALSE;
   }

@@ -58,12 +58,12 @@ function drush_vagrant_hosts() {
     }
 
     if (!($ip_addr = drush_get_option('ip-addr'))) {
-      drush_set_error('ERROR: Could not find an IP address to add. Try specifying one with the \'--ip-addr\' option, or using a VM alias.');
+      drush_set_error('ERROR: Could not find an IP address to add. Try specifying one with the "--ip-addr" option, or using a VM alias.');
       return;
     }
     $remove = drush_get_option('remove', FALSE);
     if (!($domains = drush_get_option_list('domains')) && !($remove)) {
-      drush_set_error('ERROR: Could not find any domains to add. Try specifing one or more with the \'--domains\' option.');
+      drush_set_error('ERROR: Could not find any domains to add. Try specifing one or more with the "--domains" option.');
       return;
     }
 

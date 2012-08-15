@@ -12,8 +12,8 @@
 function vagrant_vagrant_blueprints() {
   $blueprints = array(
     'default' => array(
-      'name' => 'Default',
-      'description' => 'The default blueprint.',
+      'name' => dt('Default'),
+      'description' => dt('The default blueprint.'),
       'path' => 'blueprints/default',
       ),
     );
@@ -67,15 +67,15 @@ function vagrant_default_build_project_dir($build) {
   if ($build['git_repo']) {
     drush_vagrant_exec_and_log(array(
       'command' => drush_shell_exec_interactive('git clone %s %s', $build['git_repo'], $build['project_path']),
-      'success' => dt("Cloned the git repo at !git_repo to !project_path.", array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
-      'failure' => dt("The following errors occurred when running `git clone !git_repo !project_path`.", array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
+      'success' => dt('Cloned the git repo at !git_repo to !project_path.', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
+      'failure' => dt('The following errors occurred when running "git clone !git_repo !project_path".', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
     ));
   }
   else {
     drush_vagrant_exec_and_log(array(
       'command' => drush_copy_dir($build['blueprint_info'][$build['blueprint']]['full_path'], $build['project_path']),
-      'success' => dt("Copied the `!blueprint` blueprint directory to !project_path.", array('!blueprint' => $build['blueprint'], '!project_path' => $build['project_path'])),
-      'failure' => dt("The following errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_dir()`."),
+      'success' => dt('Copied the "!blueprint" blueprint directory to !project_path.', array('!blueprint' => $build['blueprint'], '!project_path' => $build['project_path'])),
+      'failure' => dt('The following errors occurred when running "drush_copy_dir()" in "vagrant_default_build_project_dir()".'),
     ));
   }
 }
@@ -86,16 +86,16 @@ function vagrant_default_build_project_setup($build) {
   if (!file_exists($target)) {
     drush_vagrant_exec_and_log(array(
       'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $target),
-      'success' => dt("Created symlink to Vagrantfile."),
-      'failure' => dt("Errors occurred when running `symlink()` in `!function`.", array('!function' => __FUNCTION__)),
+      'success' => dt('Created symlink to Vagrantfile.'),
+      'failure' => dt('Errors occurred when running "symlink()" in "!function".', array('!function' => __FUNCTION__)),
     ));
   }
   $target = $build['project_path'] . '/.gitignore';
   if (!file_exists($target)) {
     drush_vagrant_exec_and_log(array(
       'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $target),
-      'success' => dt("Created symlink to .gitignore."),
-      'failure' => dt("Errors occurred when running `drush_copy_dir()` in `vagrant_default_build_project_setup()`."),
+      'success' => dt('Created symlink to .gitignore.'),
+      'failure' => dt('Errors occurred when running "drush_copy_dir()" in "vagrant_default_build_project_setup()".'),
     ));
   }
 }
@@ -104,8 +104,8 @@ function vagrant_default_build_config_dir(&$build) {
   $build['config_path'] = $build['project_path'] . '/.config';
   drush_vagrant_exec_and_log(array(
     'command' => drush_mkdir($build['config_path']),
-    'success' => dt("Created the `.config` directory in !project_path.", array('!project_path' => $build['project_path'])),
-    'failure' => dt("Errors occurred when running `drush_mkdir()` in `!function`.", array('!function' => __FUNCTION__)),
+    'success' => dt('Created the ".config" directory in !project_path.', array('!project_path' => $build['project_path'])),
+    'failure' => dt('Errors occurred when running "drush_mkdir()" in "!function".', array('!function' => __FUNCTION__)),
   ));
 }
 
@@ -117,8 +117,8 @@ function vagrant_default_build_record_blueprint($build) {
     $blueprint_file = _drush_vagrant_render_template($blueprint_vars, "blueprint.tpl.php");
     drush_vagrant_exec_and_log(array(
       'command' => file_put_contents($build['config_path'] . '/blueprint.inc', $blueprint_file),
-      'success' => dt("Wrote `blueprint.inc` to !config_path.", array('!config_path' => $build['config_path'])),
-      'failure' => dt("Errors occurred when running `file_put_contents()` in `!function`.", array('!function' => __FUNCTION__)),
+      'success' => dt('Wrote "blueprint.inc" to !config_path.', array('!config_path' => $build['config_path'])),
+      'failure' => dt('Errors occurred when running "file_put_contents()" in "!function".', array('!function' => __FUNCTION__)),
     ));
   }
 }

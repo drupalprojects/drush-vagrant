@@ -26,7 +26,7 @@ function drush_vagrant_build_validate() {
   // Check that we're using a valid blueprint
   if ($blueprint = drush_get_option('blueprint')) {
     if (!array_key_exists($blueprint, drush_vagrant_blueprint_info())) {
-      drush_log(dt("Could not find the '!blueprint' blueprint.", array('!blueprint' => $blueprint)), "error");
+      drush_log(dt('Could not find the "!blueprint" blueprint.', array('!blueprint' => $blueprint)), "error");
     }
   }
 }
@@ -58,8 +58,8 @@ function drush_vagrant_build() {
 
   // Begin building our final confirmation prompt
   $actions = array();
-  $actions[] = dt("You are about to:");
-  $actions[] = dt("  * Create a new project called '!project_name' at '!project_path'.", array('!project_name' => $project_name, '!project_path' => $project_path));
+  $actions[] = dt('You are about to:');
+  $actions[] = dt('  * Create a new project called "!project_name" at "!project_path".', array('!project_name' => $project_name, '!project_path' => $project_path));
 
   $blueprint = drush_get_option('blueprint', NULL);
 
@@ -82,8 +82,7 @@ function drush_vagrant_build() {
     foreach ($blueprint_info as $name => $data) {
       $choice[$name] = $data['name'] . ': ' . $data['description'] ;
     }
-    $prompt = dt('Which blueprint would you like to use?');
-    $blueprint = drush_choice($choice, $prompt);
+    $blueprint = drush_choice($choice, dt('Which blueprint would you like to use?'));
     if ($blueprint == '') {
       // User chose 'cancel'
       return drush_user_abort();
@@ -97,7 +96,7 @@ function drush_vagrant_build() {
     if ($hosts !== FALSE) {
       // Save the new option
       drush_set_option('hosts', TRUE);
-      $actions[] = dt("  * Add entries for the VMs' FQDNs to /etc/hosts. (You will be prompted for your sudo password.)");
+      $actions[] = dt('  * Add entries for the FQDNs of the VMs to /etc/hosts. (You will be prompted for your sudo password.)');
       // --hosts assumes --aliases
       drush_set_option('aliases', TRUE);
     }
@@ -113,13 +112,13 @@ function drush_vagrant_build() {
     if ($aliases !== FALSE) {
       // Save the new option
       drush_set_option('aliases', TRUE);
-      $actions[] = dt("  * Generate Drush aliases for the project and VMs.");
+      $actions[] = dt('  * Generate Drush aliases for the project and VMs.');
       // --aliases assumes --up
       drush_set_option('up', TRUE);
     }
   }
   else {
-    $actions[] = dt("  * Generate Drush aliases for the project and VMs.");
+    $actions[] = dt('  * Generate Drush aliases for the project and VMs.');
     // --aliases assumes --up
     drush_set_option('up', TRUE);
   }
@@ -130,18 +129,18 @@ function drush_vagrant_build() {
     if ($up !== FALSE) {
       // Save the new option
       drush_set_option('up', TRUE);
-      $actions[] = dt("  * Launch the project's VMs immediately.");
+      $actions[] = dt('  * Launch the project VMs immediately.');
     }
   }
   else {
-    $actions[] = dt("  * Launch the project's VMs immediately.");
+    $actions[] = dt('  * Launch the project VMs immediately.');
   }
 
   if (isset($git_repo)) {
-    $actions[] = dt("  * Build the project from the Git repository at: !git-repo", array('!git-repo' => $git_repo));
+    $actions[] = dt('  * Build the project from the Git repository at: !git-repo', array('!git-repo' => $git_repo));
   }
   else {
-    $actions[] = dt("  * Build the project using the '!blueprint' blueprint from the '!extension' extension.",
+    $actions[] = dt('  * Build the project using the "!blueprint" blueprint from the "!extension" extension.',
       array('!blueprint' => $blueprint, '!extension' => $blueprint_info[$blueprint]['extension'])
     );
   }
@@ -201,9 +200,9 @@ function drush_vagrant_post_vagrant_build() {
   }
 
   drush_print(dt('Your project was successfully initialized.'));
-  drush_print(dt('The root for your project is \'!project_path\'', array('!project_path' => $project_path)));
+  drush_print(dt('The root for your project is "!project_path"', array('!project_path' => $project_path)));
   drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!subnet' => $subnet)));
-  drush_print(dt('You can now: * Alter your project\'s behaviour by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
+  drush_print(dt('You can now: * Alter the behaviour of your project by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
   drush_print(dt('             * Redefine the VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!project_path' => $project_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !project_path/modules.', array('!project_path' => $project_path)));
 
@@ -215,7 +214,7 @@ function drush_vagrant_post_vagrant_build() {
 function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
   // Check whether a project with this name already exists.
   if (is_dir(PROJECTS_PATH . $project_name)) {
-    $error_msg = dt('ERROR: There is already a project called \'!project\'.', array('!project' => $project_name));
+    $error_msg = dt('ERROR: There is already a project called "!project".', array('!project' => $project_name));
     if ($set_error) {
       drush_set_error($error_msg);
     }
@@ -227,7 +226,7 @@ function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
   // Check that the project name can safely be used in a URL.
   $regex = '/^([a-z0-9][a-z0-9.-]*[a-z0-9])$/';
   if (preg_match($regex, $project_name) < 1) {
-    $error_msg = dt('ERROR: the name of your project (!project) should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they don\'t come at the beginning or end of the name.',
+    $error_msg = dt('ERROR: the name of your project (!project) should only contain lower-case letters and numbers. It can also contain hyphens (-) and dots (.), so long as they do not come at the beginning or end of the name.',
       array('!project' => $project_name)
     );
     if ($set_error) {
@@ -248,7 +247,7 @@ function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
   if ($set_error) {
     $status = drush_shell_exec('which git');
     if ($status == FALSE) {
-      drush_set_error(dt("ERROR: You have specified a Git repository from which to build a project, but Git does not appear to be installed.\nPlease install Git before continuing.\n\n"));
+      drush_set_error(dt('ERROR: You have specified a Git repository from which to build a project, but Git does not appear to be installed.\nPlease install Git before continuing.\n\n'));
     }
   }
 
@@ -256,7 +255,7 @@ function _drush_vagrant_check_git_repo($git_repo, $set_error = FALSE) {
   $status = drush_shell_exec('git ls-remote ' . $git_repo);
   if ($status == FALSE) {
     $output = drush_shell_exec_output();
-    $error_msg = dt("There was a problem accessing the Git repository. The output of 'git ls-remote' is:\n   ") . implode("\n   ", $output);
+    $error_msg = dt('There was a problem accessing the Git repository. The output of "git ls-remote" is:\n   ') . implode("\n   ", $output);
     if ($set_error) {
       drush_set_error(dt('ERROR:') . $error_msg);
     }
@@ -296,6 +295,6 @@ function _drush_vagrant_next_available_subnet() {
   }
 
   // If we've reached here, then no subnets are available
-  drush_set_error(dt('ERROR: We\'ve run out of Subnets!'));
+  drush_set_error(dt('ERROR: We have run out of Subnets!'));
 }
 

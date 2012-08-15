@@ -19,7 +19,7 @@ include_once('vagrant.blueprints.inc');
 function vagrant_drush_help($section) {
   switch ($section) {
     case 'meta:vagrant:title':
-      return dt("Vagrant integration");
+      return dt('Vagrant integration');
     case 'meta:vagrant:summary':
       return dt('Manage Vagrant-based networks of VMs.');
   }
@@ -99,7 +99,7 @@ function vagrant_drush_command() {
         'description' => dt('Start up the Vagrant project VM(s) immediately.')),
     ),
     'examples' => array(
-      'drush vb --project-name=project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the \'aegir\' blueprint.'),
+      'drush vb --project-name=project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the "aegir" blueprint.'),
     ),
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -118,8 +118,8 @@ function vagrant_drush_command() {
         'description' => dt('Remove all entries in /etc/hosts made by Drush Vagrant.')),
     ),
     'examples' => array(
-      'drush @machine1 vh --domains=foo.com,bar.net' => dt('Add and entry to /etc/hosts, so that foo.com and bar.net both point to the IP address of the Vagrant VM aliased as \'machine1\'.'),
-      'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain \'bar.com\' from the entry in /etc/hosts for IP address 192.168.22.13.'),
+      'drush @machine1 vh --domains=foo.com,bar.net' => dt('Add and entry to /etc/hosts, so that foo.com and bar.net both point to the IP address of the Vagrant VM aliased as "machine1".'),
+      'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain "bar.com" from the entry in /etc/hosts for IP address 192.168.22.13.'),
       'drush vh --ip-addr=192.168.22.13 --remove' => dt('Remove the entire entry in /etc/hosts for IP address 192.168.22.13.'),
       ),
     'allow-additional-options' => TRUE,
@@ -132,7 +132,7 @@ function vagrant_drush_command() {
       'project' => dt('The project to delete.'),
     ),
     'examples' => array(
-      'drush vagrant-delete project1' => dt('Delete the \'project1\' project.'),
+      'drush vagrant-delete project1' => dt('Delete the "project1" project.'),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('vdl'),
@@ -146,7 +146,7 @@ function vagrant_drush_command() {
       'ssh-user' => 'The username to login under. Defaults to the username in the user-specific config file (~/drushrc.php).',
       'ssh-id' => 'The identity file from which the private key is read. Defaults to the private key in the user-specific config file (~/drushrc.php).',
       'ssh-connection-string' => 'Instead of running SSH, return the a string of the command that would otherwise be run.',
-      'default-user' => 'Use the default \'vagrant\' user, and ignore other username or identity files, whether specified in the user-specific config file, or on the command line.',
+      'default-user' => 'Use the default "vagrant" user, and ignore other username or identity files, whether specified in the user-specific config file, or on the command line.',
     ),
     'examples' => array(
       'drush vagrant shell' => dt('Log into the VM in a single VM project.'),
