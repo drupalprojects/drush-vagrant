@@ -129,7 +129,7 @@ function _drush_vagrant_help_table($list, $cols = 3) {
     }
   }
   ob_start();
-  drush_print_table($table); //, FALSE, NULL, $tmp_file);
+  drush_print_table($table);
   return ob_get_clean();
 }
 
