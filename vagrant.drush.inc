@@ -108,6 +108,7 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vb --project-name=project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the "aegir" blueprint.'),
     ),
+    'drush dependencies' => array('hosts'),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -120,6 +121,7 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vagrant-delete project1' => dt('Delete the "project1" project.'),
     ),
+    'drush dependencies' => array('hosts'),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vdl'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
