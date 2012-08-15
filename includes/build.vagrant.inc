@@ -195,7 +195,7 @@ function drush_vagrant_post_vagrant_build() {
       $vm_alias = '@' . $project_name . '.' . $vm;
       $domain = drush_sitealias_get_record($vm_alias);
       $domain = $domain['fqdn'];
-      drush_shell_exec_interactive("drush %s vagrant hosts --domains=%s", $vm_alias, $domain);
+      drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain);
     }
   }
 

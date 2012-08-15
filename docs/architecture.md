@@ -20,7 +20,6 @@ STRUCTURE
     blueprints.vagrant.inc    Functions to list blueprints & invoke hook
     build.vagrant.inc         Functions to build a project
     delete.vagrant.inc        Functions to delete a project
-    hosts.vagrant.inc         Functions to modify /etc/hosts
     list.vagrant.inc          Functions to list projects, VMs, and their status
     shell.vagrant.inc         Functions to connect to a VM via SSH
     user.vagrant.inc          Generate user-specific alias and settings

@@ -109,29 +109,6 @@ function vagrant_drush_command() {
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-  $items['vagrant-hosts'] = array(
-    'description' => dt('Manage entries in /etc/hosts. (Requires sudo password)'),
-    'options' => array(
-      'ip-addr' => array(
-        'description' => dt('The IP address of the server or site.')),
-      'domains' => array(
-        'description' => dt('A comma-delimited list of domains.'),
-        'required' => TRUE,),
-      'remove' => array(
-        'description' => dt('Remove an IP address or domain(s).')),
-      'purge' => array(
-        'description' => dt('Remove all entries in /etc/hosts made by Drush Vagrant.')),
-    ),
-    'examples' => array(
-      'drush @machine1 vh --domains=foo.com,bar.net' => dt('Add and entry to /etc/hosts, so that foo.com and bar.net both point to the IP address of the Vagrant VM aliased as "machine1".'),
-      'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain "bar.com" from the entry in /etc/hosts for IP address 192.168.22.13.'),
-      'drush vh --ip-addr=192.168.22.13 --remove' => dt('Remove the entire entry in /etc/hosts for IP address 192.168.22.13.'),
-      ),
-    'strict-option-handling' => TRUE,  
-    'allow-additional-options' => TRUE,
-    'aliases' => array('vh'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-  );
   $items['vagrant-delete'] = array(
     'description' => dt('Delete a Vagrant project.'),
     'arguments' => array(

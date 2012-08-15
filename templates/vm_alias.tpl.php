@@ -13,5 +13,5 @@ $aliases['<?php print $vm_alias; ?>'] = array(
   'type' => 'vm',
   'vm-name' => '<?php print $vm_alias; ?>',
   'fqdn' => '<?php print $fqdn; ?>',
-  'ip-addr' => '<?php print $ip_addr; ?>',
+  'ip' => '<?php print $ip_addr; ?>',
 );
