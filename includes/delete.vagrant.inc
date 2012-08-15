@@ -51,7 +51,7 @@ function drush_vagrant_delete() {
     // Check that the VMs were destroyed
     if (!is_file(PROJECT_PATH . '/.vagrant')) {
       drush_vagrant_exec_and_log(array(
-        'command'  => drush_shell_exec_interactive('cd %s && drush vagrant aliases --delete --yes', PROJECT_PATH),
+        'command'  => drush_shell_exec_interactive('cd %s && drush vagrant aliases --delete', PROJECT_PATH),
         'success' => dt('Deleted all aliases for the project at !project_path.', array('!project_path' => PROJECT_PATH)),
         'failure' => dt('The following errors occurred when running "drush vagrant aliases --delete".'),
       ));
