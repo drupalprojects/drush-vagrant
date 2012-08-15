@@ -95,9 +95,15 @@ function _drush_vagrant_full_help_text() {
     $variables = array();
     $variables["short_help"] = $short_help . "\n";
     drush_shell_exec('vagrant');
-    $variables["vagrant_commands"] = _drush_vagrant_help_table(array_splice(drush_shell_exec_output(), 6, -2));
+    $output = drush_shell_exec_output();
+    if ($output) {
+      // Drop first 6 lines and last 2 as those are not needed
+      $output = array_splice($output, 6, -2);
+      $variables["vagrant_commands"] = _drush_vagrant_help_table($output);
+    }
     $blueprints = drush_vagrant_blueprint_info();
     foreach ($blueprints as $blueprint => $info) {
+      // TODO: check this
       $extensions[] = $info['extension'];
     }
     $drush_commands = drush_get_context('DRUSH_COMMANDS');
@@ -105,7 +111,7 @@ function _drush_vagrant_full_help_text() {
     foreach ($drush_commands as $command => $info) {
       if (in_array($info['commandfile'], $extensions)
           && !isset($info['topics'][0])
-          && $info['hidden'] != 1
+          && !isset($info['hidden'])
           && !isset($info['is_alias'])
           && $command != 'vagrant') {
         $sub_commands[] = '     ' . substr($command, strlen('vagrant-'));
@@ -119,12 +125,13 @@ function _drush_vagrant_full_help_text() {
 }
 
 function _drush_vagrant_help_table($list, $cols = 3) {
+  if (!count($list)) return '';
   sort($list, SORT_STRING);
   $rows = ceil(count($list)/$cols);
   $i = 0;
   for ($col = 0; $col < $cols; $col++) {
     for ($row = 0; $row < $rows; $row++) {
-      $table[$row][$col] = $list[$i];
+      $table[$row][$col] = isset($list[$i]) ? $list[$i] : '';
       $i++;
     }
   }

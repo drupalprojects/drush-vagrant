@@ -54,6 +54,7 @@ function vagrant_drush_command() {
         'description' => dt('The name of the Vagrant virtual machine on which to run the command.'),
       ),
     ),
+    'strict-option-handling' => TRUE,
     'allow-additional-options' => TRUE,
     'aliases' => array('vg'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -65,6 +66,7 @@ function vagrant_drush_command() {
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate aliases for a project and its VMs.'),
+    'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
   );
   $items['vagrant-list'] = array(
@@ -74,11 +76,13 @@ function vagrant_drush_command() {
       'only-projects' => dt('Only list project names.'),
       'only-vms' => dt('Only list VM names.'),
       ),
+    'strict-option-handling' => TRUE,  
     'aliases' => array('vls'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-blueprints'] = array(
     'description' => dt('List all blueprints.'),
+    'strict-option-handling' => TRUE,  
     'aliases' => array('vbl'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
@@ -101,6 +105,7 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vb --project-name=project1 --blueprint=aegir' => dt('Initialize a new Vagrant project using the "aegir" blueprint.'),
     ),
+    'strict-option-handling' => TRUE,  
     'aliases' => array('vb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
@@ -122,6 +127,7 @@ function vagrant_drush_command() {
       'drush vh --ip-addr=192.168.22.13 --domains=bar.com --remove' => dt('Remove the domain "bar.com" from the entry in /etc/hosts for IP address 192.168.22.13.'),
       'drush vh --ip-addr=192.168.22.13 --remove' => dt('Remove the entire entry in /etc/hosts for IP address 192.168.22.13.'),
       ),
+    'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
     'aliases' => array('vh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -134,8 +140,9 @@ function vagrant_drush_command() {
     'examples' => array(
       'drush vagrant-delete project1' => dt('Delete the "project1" project.'),
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'strict-option-handling' => TRUE,  
     'aliases' => array('vdl'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-shell'] = array(
     'description' => dt('Log into a Drush Vagrant VM via SSH.'),
@@ -152,12 +159,14 @@ function vagrant_drush_command() {
       'drush vagrant shell' => dt('Log into the VM in a single VM project.'),
       'drush @example vsh "hostname -f"' => dt('Return the FQDN of the VM/project specified in the @example alias.'),
     ),
+    'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
     'aliases' => array('vsh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-user'] = array(
     'description' => dt('Initialize or update user-specific settings for Drush Vagrant.'),
+    'strict-option-handling' => TRUE,  
     'aliases' => array('vuser'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
