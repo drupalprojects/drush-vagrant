@@ -255,8 +255,7 @@ function drush_vagrant() {
     }
   }
   else {
-    $command = $commands['vagrant-' . $command];
-    drush_dispatch($command, $args);
+    drush_shell_exec_interactive('drush vagrant-' . implode(' ', drush_get_original_cli_args_and_options()));
   }
 }
 
