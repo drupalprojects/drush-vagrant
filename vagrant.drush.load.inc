@@ -15,6 +15,7 @@ function vagrant_drush_load() {
     drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
   }
   else {
+    /*
     $alias = drush_get_context('alias');
     // Ensure we're using a group alias
     if (isset($alias['#name']) && !isset($alias['type'])) {
@@ -23,6 +24,7 @@ function vagrant_drush_load() {
         drush_set_context('alias', $alias);
       }
     }
+    */
     return TRUE;
   }
 }
