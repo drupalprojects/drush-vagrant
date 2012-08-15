@@ -25,11 +25,8 @@ function drush_vagrant_shell() {
 
   $command = sprintf('ssh %s %s', $hostname, drush_vagrant_render_ssh_options($ssh_config));
 
-  $args = drush_get_arguments();
-  $last_arg = $args[count($args) - 1 ];
-  if ($last_arg != 'shell' && $last_arg != 'vsh') {
-    $command .= ' "' . $last_arg . '"';
-  }
+  $args = drush_get_original_cli_args_and_options();
+  $command .= ' "' . implode(' ', $args) . '"';
   if (drush_get_option('ssh-connection-string', FALSE)) {
     drush_print($command);
   }
