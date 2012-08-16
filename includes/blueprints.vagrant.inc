@@ -10,17 +10,23 @@
  */
 function drush_vagrant_blueprints() {
   $blueprints = drush_vagrant_blueprint_info();
-  foreach ($blueprints as $machine_name => $info) {
-    drush_print('BLUEPRINT: ' . $machine_name);
-    if (!drush_get_option('all', FALSE)) {
-      unset($info['path']);
-      unset($info['full_path']);
-      unset($info['build_callback']);
-      unset($info['update_callback']);
+  $args = drush_get_context('DRUSH_COMMAND_ARGS');
+    
+  if (in_array('--all', $args)) {
+    foreach ($blueprints as $machine_name => $info) {
+      foreach ($info as $label => $value) {
+        drush_print('   ' . $label . ': ' . $value);
+      }
+      drush_print('  -------------------------');
     }
-    foreach ($info as $label => $value) {
-      drush_print('   ' . $label . ': ' . $value);
+  }
+  else {
+    $rows = array();
+    $rows[] = array('NAME', 'EXTENSION', 'DESCRIPTION');
+    foreach ($blueprints as $machine_name => $info) {
+      $rows[] = array($info['name'], $info['extension'], $info['description']);
     }
+    drush_print_table($rows, TRUE);
   }
 }
 
