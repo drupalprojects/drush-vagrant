@@ -38,7 +38,7 @@ function drush_vagrant_delete() {
     ));
     foreach ($vms as $vm_name) {
       drush_vagrant_exec_and_log(array(
-        'command' => drush_shell_exec_interactive('drush %s.%s hosts --remove', str_replace('.project', '', $project_alias) , $vm_name),
+        'command' => drush_shell_exec_interactive('drush @%s.%s hosts --remove', str_replace('.project', '', $project_alias) , $vm_name),
         'success' => dt('Removed the entry in /etc/hosts for "!vm_name".', array('!vm_name' => $vm_name)),
         'failure' => dt('The following errors occurred when running "drush vagrant hosts --remove".'),
       ));
