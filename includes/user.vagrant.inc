@@ -16,11 +16,17 @@ function drush_vagrant_user() {
   // Environment variables
   // @todo: allow other env vars to be passed through an option or hook?
   $data['vagrant_username'] = array( 'command' => 'whoami', 'label' => 'username');
-  $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
-  $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
-  $data['vagrant_project_root'] = array( 'command' => 'echo $HOME/vagrant/projects', 'label' => 'Projects directory');
-  $data['vagrant_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
-  $data['vagrant_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
+  if (!drush_is_windows()) {
+    $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
+    $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
+  }
+  drush_shell_exec('git --version');
+  $result = drush_shell_exec_output();
+  $result = explode(' ', $result[0]);
+  if ($result[0] == 'git' && $result[1] == 'version') {
+    $data['vagrant_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
+    $data['vagrant_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
+  }
   // Get env var defaults
   foreach ($data as $key => $datum) {
     drush_shell_exec($datum['command']);
@@ -28,8 +34,8 @@ function drush_vagrant_user() {
     $data[$key]['default'] = $default[0];
   }
   
-  $data['vagrant_home']['label'] = "User's home directory";
-  $data['vagrant_home']['default'] = drush_server_home();
+  $data['vagrant_home'] = array('default' => drush_server_home(), 'label' => "User's home directory");
+  $data['vagrant_project_root'] = array( 'default' => $data['vagrant_home']['default'] . '/vagrant/project', 'label' => 'Projects directory');
 
   // Files
   // @todo: allow other files & filesets to be passed through an option or hook?
