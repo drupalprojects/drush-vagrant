@@ -41,7 +41,7 @@ function drush_vagrant_projects_info() {
   if ($dir = opendir(PROJECTS_PATH)) {
     while (false !== ($project = readdir($dir))) {
       $project_path = PROJECTS_PATH . $project;
-      if (drush_vagrant_check_project($project_path)) {
+      if (drush_vagrant_check_project($project_path) && file_exists($project_path . '/.config/blueprint.inc')) {
         $projects[$project] = drush_vagrant_vms_info($project_path);
       }
     }
