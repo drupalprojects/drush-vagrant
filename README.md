@@ -101,13 +101,15 @@ More detailed usage information is provided by running:
   drush <command> --help
 
 
+
 NEXT STEPS
 ----------
 
-By itself, Drush-vagrant will only provide a 'default' blueprint. You'll probably be interested in checking out:
+By itself, Drush-vagrant will only provide a 'default' blueprint. You'll proba-
+bly be interested in checking out these blueprints:
 
-http://drupal.org/project/drupal-up
-http://drupal.org/project/aegir-up
+http://drupal.org/project/drupal-up  (drush dl drupal-up)
+http://drupal.org/project/aegir-up   (drush dl aegir-up)
 
 OTHER DOCS & HELP
 -----------------
