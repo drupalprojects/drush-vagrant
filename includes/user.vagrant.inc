@@ -16,7 +16,6 @@ function drush_vagrant_user() {
   // Environment variables
   // @todo: allow other env vars to be passed through an option or hook?
   $data['vagrant_username'] = array( 'command' => 'whoami', 'label' => 'username');
-  $data['vagrant_home'] = array( 'command' => 'echo $HOME', 'label' => 'home directory');
   $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
   $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
   $data['vagrant_project_root'] = array( 'command' => 'echo $HOME/vagrant/projects', 'label' => 'Projects directory');
@@ -28,6 +27,9 @@ function drush_vagrant_user() {
     $default = drush_shell_exec_output();
     $data[$key]['default'] = $default[0];
   }
+  
+  $data['vagrant_home']['label'] = "User's home directory";
+  $data['vagrant_home']['default'] = drush_server_home();
 
   // Files
   // @todo: allow other files & filesets to be passed through an option or hook?
