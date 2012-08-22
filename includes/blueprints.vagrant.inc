@@ -22,9 +22,9 @@ function drush_vagrant_blueprints() {
   }
   else {
     $rows = array();
-    $rows[] = array('NAME', 'EXTENSION', 'DESCRIPTION');
+    $rows[] = array('NAME', 'MACHINENAME', 'EXTENSION', 'DESCRIPTION');
     foreach ($blueprints as $machine_name => $info) {
-      $rows[] = array($info['name'], $info['extension'], $info['description']);
+      $rows[] = array($info['name'], $machine_name, $info['extension'], $info['description']);
     }
     drush_print_table($rows, TRUE);
   }
