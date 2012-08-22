@@ -25,7 +25,7 @@ turn depends on VirtualBox, and possibly Ruby and RubyGems). Some features also
 require an NFS server.
 
 Vagrant 1.0+ is required, and installation instructions can be found at:
-http://vagrantup.com/docs/getting-started/index.html
+http://vagrantup.com/v1/docs/getting-started/index.html
 
 A recent version of VirtualBox (4.0+) is required by Vagrant, and can be
 downloaded from: https://www.virtualbox.org/wiki/Downloads.
