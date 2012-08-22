@@ -62,7 +62,7 @@ INSTALLATION
 
 Installation should be as simple as:
 
-  drush dl drush-vagrant
+  drush dl drush-vagrant drush-hosts
 
 This should create a folder at ~/.drush/drush-vagrant, but might also be
 installed to /path/to/drush/commands/drush-vagrant, depending on how Drush was
@@ -71,13 +71,13 @@ itself installed.
 Permission issues during installation can be overcome by running the command as
 root:
 
-  sudo drush dl drush-vagrant
+  sudo drush dl drush-vagrant drush-hosts
 
 Or downloading it to your personal .drush folder:
 
   cd ~
   mkdir .drush
-  drush dl drush-vagrant --destination=./.drush
+  drush dl drush-vagrant drush-hosts --destination=./.drush
 
 When a Drush Vagrant project is first initialized, user settings are
 automatically saved to ~/.drushrc.php. By default, it will use the Vagrant
@@ -100,6 +100,14 @@ More detailed usage information is provided by running:
 
   drush <command> --help
 
+
+NEXT STEPS
+----------
+
+By itself, Drush-vagrant will only provide a 'default' blueprint. You'll probably be interested in checking out:
+
+http://drupal.org/project/drupal-up
+http://drupal.org/project/aegir-up
 
 OTHER DOCS & HELP
 -----------------
