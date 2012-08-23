@@ -174,10 +174,9 @@ function drush_vagrant_aliases() {
 
   if ($delete = drush_get_option('delete')) {
     if (is_file($alias_filename)) {
-      // '--yes' doesn't appear to work with strict-options
-      //if (!drush_confirm(dt('Delete the aliases for this project?'))) {
-      //  return drush_user_abort();
-      //}
+      if (!drush_confirm(dt('Delete the aliases for this project?'))) {
+        return drush_user_abort();
+      }
       $status = drush_shell_exec('rm %s', $alias_filename);
       return $status;
     }
