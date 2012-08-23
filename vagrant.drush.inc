@@ -69,6 +69,20 @@ function vagrant_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Convert the output of `vagrant ssh-config` into a Drush remote alias.'),
   );
+  $items['vagrant-alias'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => dt('Generate an alias for a site running in a VM.'),
+    'options' => array(
+      'alias' => dt('Alias.'),
+      'uri' => dt('URI.'),
+      'docroot' => dt('Docroot location.'),
+      'vm-name' => dt('Name of the VM.'),
+    ),
+    'strict-option-handling' => TRUE,
+    'allow-additional-options' => TRUE,
+    'aliases' => array('val'),
+
+  );
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate aliases for a project and its VMs.'),

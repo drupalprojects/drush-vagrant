@@ -70,6 +70,72 @@ function drush_vagrant_alias_config() {
 }
 
 /**
+ * Command callback for `drush vagrant-alias`.
+ */
+function drush_vagrant_alias() {
+  $drush_home = drush_server_home() . '/.drush/';
+  if (!is_dir($drush_home)) {
+    drush_mkdir($drush_home);
+  }
+
+  // Set up variables to send to the template.
+  $variables = array();
+
+  drush_print(dt('Please enter the information about the Drupal site inside the VM.'));
+  if (!($variables["alias"] = drush_get_option('alias'))) {
+    $variables["alias"] = drush_prompt(dt('Alias'), "drush-vagrant");
+  }
+  if (!($variables["uri"] = drush_get_option('uri'))) {
+    $variables["uri"] = drush_prompt(dt('URI'), drush_get_option('fqdn', "http://vagrantvm.dev/"));
+  }
+  if (!($variables["docroot"] = drush_get_option('docroot'))) {
+    $variables["docroot"] = drush_prompt(dt('Docroot location'), "/var/www/html/");
+  }
+  if (!($vm_name = drush_get_option('vm-name'))) {
+    $vm_name = drush_prompt(dt('Name of the VM'), "default");
+  }
+  $ssh_options = drush_vagrant_parse_ssh_config();
+  if (!($ssh_options["HostName"] = drush_get_option('ip'))) {
+    $output = drush_vagrant_exec_and_log(array(
+      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
+      'success' => dt('Retrieved the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
+      'failure' => dt('The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
+    ));
+    $ssh_options["HostName"] = array_pop(explode(' ', $output[1]));
+  }
+
+  // These do not need to go into $alias['ssh-options'].
+  unset($ssh_options["User"]);
+  unset($ssh_options["Host"]);
+  unset($ssh_options["Port"]);
+
+  $variables["ssh_options"] = drush_vagrant_render_ssh_options($ssh_options);
+
+  drush_print(dt('Rendering the remote alias entry.'));
+
+  $output = _drush_vagrant_render_template($variables);
+  if ($output === NULL) {
+    drush_log(dt('Could not render the remote alias entry.'), "error");
+  }
+  else {
+
+    $alias_filename = $drush_home . $variables['alias'] . '.alias.drushrc.php';
+
+    if (!file_exists($alias_filename)) {
+      drush_vagrant_exec_and_log(array(
+        'command' => file_put_contents($alias_filename, _drush_vagrant_render_template($variables, 'alias.tpl.php')),
+        'success' => dt('Wrote project aliases file to !alias_filename.', array('!alias_filename' => $alias_filename)),
+        'failure' => dt('Errors occurred when attempting to write project aliases file to !alias_filename.', array('!alias_filename' => $alias_filename)),
+      ));
+    }
+    else {
+      drush_log(dt('There appears to already be an alias at !alias_name.', array('!alias_name' => $alias_filename)), "error");
+    }
+
+  }
+}
+
+/**
  * Reduce the ssh options to one long line.
  */
 function _drush_vagrant_join_ssh_commands($x, $acc) {
