@@ -35,6 +35,11 @@ function vagrant_drush_help($section) {
  * Implements hook_drush_init().
  */
 function vagrant_drush_init() {
+  // Check if Vagrant is installed
+  $status = drush_shell_exec('which vagrant');
+  if ($status == FALSE) {
+    drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
+  }
   $user_settings = drush_get_context('user');
   if (isset($user_settings['vagrant_project_root'])) {
     define("PROJECTS_PATH", $user_settings['vagrant_project_root'] . '/');
