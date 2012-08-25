@@ -83,21 +83,16 @@ function drush_vagrant_build() {
     drush_set_option('blueprint', $blueprint);
   }
 
-  $hosts = drush_get_option('hosts', FALSE);
-  if ($hosts === FALSE) {
+  $hosts = drush_get_option('hosts', 'unset');
+  if ($hosts === 'unset' ) {
     $hosts = drush_confirm(dt('Would you like to generate entries in /etc/hosts for the VMs in your project?'));
-    if ($hosts !== FALSE) {
-      // Save the new option
-      drush_set_option('hosts', TRUE);
-      $actions[] = dt('  * Add entries for the FQDNs of the VMs to /etc/hosts. (You will be prompted for your sudo password.)');
-      // --hosts assumes --aliases
-      drush_set_option('aliases', TRUE);
-    }
   }
-  else {
+  if ((bool)$hosts === TRUE) {
+    $actions[] = dt('  * Add entries for the FQDNs of the VMs to /etc/hosts. (You will be prompted for your sudo password.)');
     // --hosts assumes --aliases
     drush_set_option('aliases', TRUE);
   }
+  drush_set_option('hosts', (bool)$hosts);
 
   $aliases = drush_get_option('aliases', FALSE);
   if ($aliases === FALSE) {
