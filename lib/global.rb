@@ -16,6 +16,7 @@ class Vm                                 # default virtual machine settings
   Debug     = false                      # output debug info?
   Options   = ""                         # options to pass to Puppet
   Facts     = {}                         # hash of Factor facts
+  SSH_tries = 5                          # How quickly to fail should Vagrant hang
 end
 
 class Global

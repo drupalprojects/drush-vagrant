@@ -13,6 +13,7 @@ Vagrant::Config.run do |config|
 
       config.vm.define "#{vm::Shortname}#{index}" do |vm_config|
 
+        vm_config.ssh.max_tries = vm::SSH_tries
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
         vm_config.vm.auto_port_range = Conf::SSH_range
