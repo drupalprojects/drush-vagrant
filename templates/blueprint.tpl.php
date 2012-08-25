@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- * Template to generate a file to record the blueprint used for a project.
+ * Template to generate .config/blueprint.inc, a file to record the blueprint
+ * used for a project, and possibly other arbitrary data.
  *
  * Variables:
  * - $extension: The Drush extension that provides the blueprint.

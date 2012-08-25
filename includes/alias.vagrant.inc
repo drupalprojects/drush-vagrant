@@ -78,6 +78,8 @@ function drush_vagrant_alias() {
     drush_mkdir($drush_home);
   }
 
+  // TODO: Check for a '--delete' option as in 'vals'
+
   // Set up variables to send to the template.
   $variables = array();
 
@@ -88,6 +90,7 @@ function drush_vagrant_alias() {
   if (!($variables["uri"] = drush_get_option('uri'))) {
     $variables["uri"] = drush_prompt(dt('URI'), drush_get_option('fqdn', "http://vagrantvm.dev/"));
   }
+  // TODO: Validate that this is a valid FQDN
   if (!($variables["docroot"] = drush_get_option('docroot'))) {
     $variables["docroot"] = drush_prompt(dt('Docroot location'), "/var/www/html/");
   }
@@ -97,10 +100,13 @@ function drush_vagrant_alias() {
   $ssh_options = drush_vagrant_parse_ssh_config();
   if (!($ssh_options["HostName"] = drush_get_option('ip'))) {
     $output = drush_vagrant_exec_and_log(array(
+      # TODO: Does this need further processing to get the 2nd IP address?
+      # Like: $vm_vars['ip_addr'] = array_pop(explode(' ', $output[1]));
       'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
       'success' => dt('Retrieved the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
       'failure' => dt('The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
     ));
+    // TODO: Validate that this is a valid IP address
     $ssh_options["HostName"] = array_pop(explode(' ', $output[1]));
   }
 
@@ -129,6 +135,7 @@ function drush_vagrant_alias() {
       ));
     }
     else {
+      # TODO: Check for this as soon as we have an alias, rather than wait for the end. And prompt to continue.
       drush_log(dt('There appears to already be an alias at !alias_name.', array('!alias_name' => $alias_filename)), "error");
     }
 
@@ -206,12 +213,14 @@ function drush_vagrant_aliases() {
         'success' => dt('Retrieved the FQDN for the !vm_name VM.', array('!vm_name' => $vm_name)),
         'failure' => dt('The following errors occurred when attempting to retrieve the FQDN for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
+      // TODO: Validate that this is a valid FQDN
       $vm_vars['fqdn'] = $output[1];
       $output = drush_vagrant_exec_and_log(array(
         'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
         'success' => dt('Retrieved the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
         'failure' => dt('The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
+      // TODO: Validate that this is a valid IP address
       $vm_vars['ip_addr'] = array_pop(explode(' ', $output[1]));
       $vms[] = _drush_vagrant_render_template($vm_vars, 'vm_alias.tpl.php');
     }

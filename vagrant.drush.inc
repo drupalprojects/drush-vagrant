@@ -86,7 +86,6 @@ function vagrant_drush_command() {
     'strict-option-handling' => TRUE,
     'allow-additional-options' => TRUE,
     'aliases' => array('val'),
-
   );
   $items['vagrant-aliases'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,

@@ -134,9 +134,14 @@ function _drush_vagrant_full_help_text() {
 }
 
 function _drush_vagrant_help_table($list, $cols = 3) {
+  // If we aren't passed anything, just return.
   if (!count($list)) return '';
+  // Sort alphabetically
   sort($list, SORT_STRING);
+  // Calculate the number of rows
   $rows = ceil(count($list)/$cols);
+  // Re-arrange the list for presentation in column that run alphabetically
+  // down, rather than across.
   $i = 0;
   for ($col = 0; $col < $cols; $col++) {
     for ($row = 0; $row < $rows; $row++) {
@@ -144,6 +149,8 @@ function _drush_vagrant_help_table($list, $cols = 3) {
       $i++;
     }
   }
+  // Since drush_print_table() actually calls drush_print(), grab the output,
+  // rather than sending it to the terminal
   ob_start();
   drush_print_table($table);
   return ob_get_clean();
@@ -195,6 +202,7 @@ function drush_vagrant_check_project($project_path, $set_error = FALSE) {
  * Validate and return the current project's path.
  */
 function drush_vagrant_get_project_path() {
+  // TODO: Maybe look up the file tree?
   if ($project_path = drush_get_option('project-path', getcwd())) {
     if (drush_vagrant_check_project($project_path, TRUE)) {
       return $project_path;

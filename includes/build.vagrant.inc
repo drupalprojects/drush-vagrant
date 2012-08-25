@@ -290,4 +290,3 @@ function _drush_vagrant_next_available_subnet() {
   // If we've reached here, then no subnets are available
   drush_set_error(dt('ERROR: We have run out of Subnets!'));
 }
-
