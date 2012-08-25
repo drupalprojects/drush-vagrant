@@ -35,7 +35,7 @@ function drush_vagrant_user() {
   }
   
   $data['vagrant_home'] = array('default' => drush_server_home(), 'label' => "User's home directory");
-  $data['vagrant_project_root'] = array( 'default' => $data['vagrant_home']['default'] . '/vagrant/project', 'label' => 'Projects directory');
+  $data['vagrant_project_root'] = array( 'default' => $data['vagrant_home']['default'] . '/vagrant/projects', 'label' => 'Projects directory');
 
   // Files
   // @todo: allow other files & filesets to be passed through an option or hook?
