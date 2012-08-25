@@ -95,6 +95,7 @@ function vagrant_drush_command() {
       ),
     'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
+    'aliases' => array('vals'),
   );
   $items['vagrant-list'] = array(
     'description' => dt('List current Vagrant projects, VMs and statuses.'),
