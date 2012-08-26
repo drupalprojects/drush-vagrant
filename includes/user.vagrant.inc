@@ -95,7 +95,9 @@ function drush_vagrant_user() {
   }
 
   if (!is_dir($user_settings['vagrant_project_root'])) {
-    mkdir($user_settings['vagrant_project_root'], 0750, TRUE);
+    if (drush_prompt(dt('The directory you specified for your projects (!dir) does not appear to exist. Create it now?', array('!dir' => $user_settings['vagrant_project_root'])))) {
+      drush_mkdir($user_settings['vagrant_project_root']);
+    }
   }
 
   drush_set_context('user', $user_settings);
