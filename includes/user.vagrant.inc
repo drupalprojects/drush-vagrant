@@ -14,12 +14,13 @@ function drush_vagrant_user() {
   $data = array();
 
   // Environment variables
-  // @todo: allow other env vars to be passed through an option or hook?
+  // TODO: allow other env vars to be passed through an option or hook?
   $data['vagrant_username'] = array( 'command' => 'whoami', 'label' => 'username');
   if (!drush_is_windows()) {
     $data['vagrant_uid'] = array( 'command' => 'id -u', 'label' => 'user id');
     $data['vagrant_gid'] = array( 'command' => 'id -g', 'label' => 'group id');
   }
+  // TODO: else {provide some default} ?
   drush_shell_exec('git --version');
   $result = drush_shell_exec_output();
   $result = explode(' ', $result[0]);
@@ -27,7 +28,7 @@ function drush_vagrant_user() {
     $data['vagrant_git_name'] = array( 'command' => 'git config --global --get user.name', 'label' => 'Git username');
     $data['vagrant_git_email'] = array( 'command' => 'git config --global --get user.email', 'label' => 'Git email');
   }
-  // Get env var defaults
+  // Iterate over our list of commands, and get their output.
   foreach ($data as $key => $datum) {
     drush_shell_exec($datum['command']);
     $default = drush_shell_exec_output();
@@ -38,7 +39,7 @@ function drush_vagrant_user() {
   $data['vagrant_project_root'] = array( 'default' => $data['vagrant_home']['default'] . '/vagrant/projects', 'label' => 'Projects directory');
 
   // Files
-  // @todo: allow other files & filesets to be passed through an option or hook?
+  // TODO: allow other files & filesets to be passed through an option or hook?
   $file_sets = array('dotfiles', 'ssh_keys' );
   $dotfiles = array('.profile', '.bashrc', '.bash_aliases', '.vimrc', );
   if (file_exists($data['vagrant_home']['default'] . '/.ssh/id_rsa')) {
