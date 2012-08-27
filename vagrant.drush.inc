@@ -173,6 +173,9 @@ function vagrant_drush_command() {
   );
   $items['vagrant-user'] = array(
     'description' => dt('Initialize or update user-specific settings for Drush Vagrant.'),
+    'options' => array(
+      'reset' => 'Reset user settings to defaults.',
+    ),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vuser'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,

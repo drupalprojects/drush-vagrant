@@ -10,35 +10,50 @@
  */
 function drush_vagrant_user() {
 
-  $user_settings = array();
-  $data = _drush_vagrant_generate_user_settings();
+  $user_settings = drush_get_context('user', array());
+  // Build new settings if there aren't any saved yet, or we explicitely want
+  // to reset them to defaults.
+  if (count($user_settings['vagrant']) == 0 || drush_get_option('reset')) {
+    $data = _drush_vagrant_generate_user_settings();
 
-  // Build our confirmation prompt
-  $defaults = "The following settings will be added to your ~/.drushrc.php:\n";
-  $defaults .= _drush_vagrant_format_user_settings($data);
-  $defaults .= 'Are these settings correct?';
-  $correct = drush_confirm($defaults);
+    // Build our confirmation prompt
+    $defaults = "The following settings will be added to your ~/.drushrc.php:\n";
+    $defaults .= _drush_vagrant_format_user_settings($data);
+    $defaults .= 'Are these settings correct?';
+    $correct = drush_confirm($defaults);
 
-  // Build our user context
-  if ($correct) {
-    foreach ($data as $key => $datum) {
-      $user_settings['vagrant'][$key] = $datum['default'];
+    // Build our user context
+    if ($correct) {
+      foreach ($data as $key => $datum) {
+        $user_settings['vagrant'][$key] = $datum['default'];
+      }
+    }
+    // Or prompt for everything
+    else {
+      $prompt = 'What !label would you like to use? ';
+      foreach ($data as $key => $datum) {
+        $user_settings['vagrant'][$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
+      }
     }
   }
-  // Or prompt for everything
   else {
-    $prompt = 'What !label would you like to use? ';
-    foreach ($data as $key => $datum) {
-      $user_settings['vagrant'][$key] = drush_prompt(dt($prompt, array( '!label' => $datum['label'])), $datum['default']);
-    }
+    // Just list the current settings
+    drush_print(_drush_vagrant_format_user_settings($user_settings['vagrant']));
+    return;
   }
 
+  // Prompt to create project-root, if it doesn't already exist
   if (!is_dir($user_settings['vagrant']['project_root'])) {
     if (drush_prompt(dt('The directory you specified for your projects (!dir) does not appear to exist. Create it now?', array('!dir' => $user_settings['vagrant']['project_root'])))) {
       drush_mkdir($user_settings['vagrant']['project_root']);
     }
   }
 
+  // Unset global user-settings
+  unset($user_setting['config-file']);
+  unset($user_setting['context-path']);
+  
+  //Save our settings
   drush_set_context('user', $user_settings);
   drush_save_config('user');
 }
@@ -103,24 +118,34 @@ function _drush_vagrant_generate_user_settings() {
 
   return $data;
 }
-
+ 
 /**
  * Format list of user settings
  */
 function _drush_vagrant_format_user_settings($data) {
+  $output = array();
+  // Normalize generated and saved data
+  foreach ($data as $key => $value) {
+    if (isset($value['label'])) {
+      $output[$value['label']] = $value['default'];
+    }
+    else {
+      $output[$key] = $value;
+    }
+  }
 
   // find the longest label so we can align values
   $i = 0;
-  foreach ($data as $datum) {
-    if (strlen($datum['label']) > $i) {
-      $i = strlen($datum['label']);
+  foreach ($output as $key => $value) {
+    if (strlen($key) > $i) {
+      $i = strlen($key);
     }
   }
 
   // Build our list
   $list = '';
-  foreach ($data as $key => $datum) {
-    $list .= '  ' . $datum['label'] . ' ' . str_repeat('.', $i + 1 - strlen($datum['label'])) . ' ' . $datum['default'] . "\n";
+  foreach ($output as $key => $value) {
+    $list .= '  ' . $key . ' ' . str_repeat('.', $i + 1 - strlen($key)) . ' ' . $value . "\n";
   }
 
   return $list;
