@@ -13,19 +13,9 @@ function drush_vagrant_user() {
   $user_settings = array();
   $data = _drush_vagrant_generate_user_settings();
 
-  // find the longest label so we can align values
-  $i = 0;
-  foreach ($data as $datum) {
-    if (strlen($datum['label']) > $i) {
-      $i = strlen($datum['label']);
-    }
-  }
-
   // Build our confirmation prompt
   $defaults = "The following settings will be added to your ~/.drushrc.php:\n";
-  foreach ($data as $key => $datum) {
-    $defaults .= '  ' . $datum['label'] . ' ' . str_repeat('.', $i + 1 - strlen($datum['label'])) . ' ' . $datum['default'] . "\n";
-  }
+  $defaults .= _drush_vagrant_format_user_settings($data);
   $defaults .= 'Are these settings correct?';
   $correct = drush_confirm($defaults);
 
@@ -112,4 +102,26 @@ function _drush_vagrant_generate_user_settings() {
   }
 
   return $data;
+}
+
+/**
+ * Format list of user settings
+ */
+function _drush_vagrant_format_user_settings($data) {
+
+  // find the longest label so we can align values
+  $i = 0;
+  foreach ($data as $datum) {
+    if (strlen($datum['label']) > $i) {
+      $i = strlen($datum['label']);
+    }
+  }
+
+  // Build our list
+  $list = '';
+  foreach ($data as $key => $datum) {
+    $list .= '  ' . $datum['label'] . ' ' . str_repeat('.', $i + 1 - strlen($datum['label'])) . ' ' . $datum['default'] . "\n";
+  }
+
+  return $list;
 }
