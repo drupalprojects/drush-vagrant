@@ -153,20 +153,41 @@ function vagrant_default_build_user_data($build) {
     }
   }
   $config_file = _drush_vagrant_render_template($config_vars, $template = "config.tpl.php");
-  file_put_contents($build['config_path'] . '/config.rb', $config_file);
+  if (file_put_contents($build['config_path'] . '/config.rb', $config_file)) {
+    drush_log(dt('Successfully wrote config.rb'), 'ok');
+  }
+  else {
+    drush_log(dt('Error writing config.rb'), 'error');
+  }
 }
 
 function vagrant_default_build_user_dotfiles($build) {
-  $user_settings = drush_get_context('user');
-
-  // TODO: check for existence of these vars & files
+  // Create a directory to contain our files, if it doesn't already exist
   $dotfiles_dir = $build['config_path'] . '/files';
-  drush_mkdir($dotfiles_dir);
+  if (!is_dir($dotfiles_dir)) {
+    drush_mkdir($dotfiles_dir);
+  }
+  // Iterate over our list of files, ensure they exist, and copy them
+  $user_settings = drush_get_context('user');
   foreach ($user_settings['vagrant'] as $key => $dotfile_source) {
-    if (strpos($key, 'dotfiles')) {
-      $path = explode('/', $dotfile_source);
-      $dotfile = $path[count($path) - 1];
-      copy($dotfile_source, $dotfiles_dir . '/' . $dotfile);
+    if (strpos($key, 'dotfiles') !== FALSE) {
+      if (is_file($dotfile_source)) {
+        if (copy($dotfile_source, $dotfiles_dir . '/' . basename($dotfile_source))) {
+          drush_log(dt('Copied your !dotfile into the project', array('!dotfile' => basename($dotfile_source))), 'ok');
+        }
+        else {
+          drush_log(dt('Error copying !dotfile to !dir in !function.',
+            array(
+              '!dotfile' => $dotfile_source,
+              '!dir' => $dotfiles_dir,
+              '!function' => __FUNCTION__,
+            )), 'warning');
+        }
+      }
+      else {
+        drush_log(dt('Tried to copy !dotfile to your project, as found in your drushrc.php, but it does not appear to be a file.',
+          array('!dotfile' => $dotfile_source)), 'warning');
+      }
     }
   }
   if (isset($user_settings['vagrant']['ssh_keyspublic'])) {
