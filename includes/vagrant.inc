@@ -161,7 +161,7 @@ function _drush_vagrant_help_table($list, $cols = 3) {
  */
 function _drush_vagrant_check_user_context() {
   $user_settings = drush_get_context('user');
-  if (!isset($user_settings['vagrant_username'])) {
+  if (!isset($user_settings['vagrant']['username'])) {
     drush_print(dt('This appears to be your first time running Drush Vagrant or your user settings (~/.drushrc.php) have been deleted.'));
     drush_print(dt('Drush Vagrant Integration requires those settings in order to function properly.'));
     if (drush_confirm(dt('Proceed?'))) {
@@ -170,7 +170,7 @@ function _drush_vagrant_check_user_context() {
       // have to do it here for the first run of vagrant-build
       $home = getenv('HOME');
       include_once($home . '/.drushrc.php');
-      define("PROJECTS_PATH", $options['vagrant_project_root'] . '/');
+      define("PROJECTS_PATH", $options['vagrant']['project_root'] . '/');
     }
     else {
       drush_user_abort();

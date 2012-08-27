@@ -31,8 +31,8 @@ function drush_vagrant_pre_vagrant_shell() {
     $user_settings = drush_get_context('user');
     // TODO: 'vsh' is already defaulting to the user's user, so this is now useless. vsh probably shouldn't though.
     // TODO: It would be cool for aegir-up to use this technique to become 'aegir' user on login.
-    drush_set_option('ssh-user', drush_get_option('ssh-user', $user_settings['vagrant_username']));
-    drush_set_option('ssh-id', drush_get_option('ssh-id', $user_settings['vagrant_ssh_keysprivate']));
+    drush_set_option('ssh-user', drush_get_option('ssh-user', $user_settings['vagrant']['username']));
+    drush_set_option('ssh-id', drush_get_option('ssh-id', $user_settings['vagrant']['ssh_keysprivate']));
   }
 }
 
@@ -134,11 +134,11 @@ function vagrant_default_build_user_data($build) {
   $config_vars["subnet"] = drush_get_option('next_subnet', '10');
   # Factor facts
   $config_vars["facts"]["fqdn"] = '$hostname';
-  $config_vars["facts"]["username"] = '"' . $user_settings['vagrant_username'] . '"';
-  $config_vars["facts"]["git_name"] = '"' . $user_settings['vagrant_git_name'] . '"';
-  $config_vars["facts"]["git_email"] = '"' . $user_settings['vagrant_git_email'] . '"';
-  $config_vars["facts"]["uid"] = '"' . $user_settings['vagrant_uid'] . '"';
-  $config_vars["facts"]["gid"] = '"' . $user_settings['vagrant_gid'] . '"';
+  $config_vars["facts"]["username"] = '"' . $user_settings['vagrant']['username'] . '"';
+  $config_vars["facts"]["git_name"] = '"' . $user_settings['vagrant']['git_name'] . '"';
+  $config_vars["facts"]["git_email"] = '"' . $user_settings['vagrant']['git_email'] . '"';
+  $config_vars["facts"]["uid"] = '"' . $user_settings['vagrant']['uid'] . '"';
+  $config_vars["facts"]["gid"] = '"' . $user_settings['vagrant']['gid'] . '"';
   if (isset($build["facts"])) {
     foreach ($build["facts"] as $name => $fact) {
       $config_vars["facts"][$name] = $fact;
@@ -162,15 +162,15 @@ function vagrant_default_build_user_dotfiles($build) {
   // TODO: check for existence of these vars & files
   $dotfiles_dir = $build['config_path'] . '/files';
   drush_mkdir($dotfiles_dir);
-  foreach ($user_settings as $key => $dotfile_source) {
+  foreach ($user_settings['vagrant'] as $key => $dotfile_source) {
     if (strpos($key, 'dotfiles')) {
       $path = explode('/', $dotfile_source);
       $dotfile = $path[count($path) - 1];
       copy($dotfile_source, $dotfiles_dir . '/' . $dotfile);
     }
   }
-  if (isset($user_settings['vagrant_ssh_keyspublic'])) {
-    copy($user_settings['vagrant_ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
+  if (isset($user_settings['vagrant']['ssh_keyspublic'])) {
+    copy($user_settings['vagrant']['ssh_keyspublic'], $dotfiles_dir . '/authorized_keys');
   }
 }
 
