@@ -177,6 +177,15 @@ function vagrant_drush_command() {
     'aliases' => array('vuser'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['vagrant-rebuild'] = array(
+    'description' => dt('Re-build a Vagrant VM.'),
+    'examples' => array(
+      'drush vrb' => dt('Destroy the VM and re-build it'),
+    ),
+    'strict-option-handling' => TRUE,
+    'aliases' => array('vrb'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
 
   // Drush topics
   $items['docs-vagrant-readme'] = array(
