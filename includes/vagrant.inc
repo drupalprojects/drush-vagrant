@@ -169,7 +169,9 @@ function _drush_vagrant_check_user_context() {
       // PROJECTS_PATH won't have been defined in hook_drush_init() yet, so we
       // have to do it here for the first run of vagrant-build
       $home = getenv('HOME');
-      include_once($home . '/.drushrc.php');
+
+      // Re-include the updated .drushrc.php file
+      include($home . '/.drushrc.php');
       define("PROJECTS_PATH", $options['vagrant']['project_root'] . '/');
     }
     else {
