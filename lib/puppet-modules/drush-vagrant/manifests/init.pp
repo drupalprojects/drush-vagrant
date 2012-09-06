@@ -22,19 +22,19 @@ class drush-vagrant::user {
            before => File['.ssh/authorized_keys'];
          ".profile":
            source => ["/vagrant/.config/files/.profile",
-                      "puppet:///drush-vagrant/files/profile.example"],
+                      "puppet:///modules/drush-vagrant/profile.example"],
            path   => "/home/${username}/.profile";
          ".bashrc":
            source => ["/vagrant/.config/files/.bashrc",
-                      "puppet:///drush-vagrant/files/bashrc.example"],
+                      "puppet:///modules/drush-vagrant/bashrc.example"],
            path   => "/home/${username}/.bashrc";
          ".bash_aliases":
            source => ["/vagrant/.config/files/.bash_aliases",
-                      "puppet:///drush-vagrant/files/bash_aliases.example"],
+                      "puppet:///modules/drush-vagrant/bash_aliases.example"],
            path   => "/home/${username}/.bash_aliases";
          ".vimrc":
            source => ["/vagrant/.config/files/.vimrc",
-                      "puppet:///drush-vagrant/files/vimrc.example"],
+                      "puppet:///modules/drush-vagrant/vimrc.example"],
            path   => "/home/${username}/.vimrc";
          ".ssh/authorized_keys":
            source => "/vagrant/.config/files/authorized_keys",

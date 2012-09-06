@@ -41,8 +41,8 @@ function vagrant_drush_init() {
     drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
   }
   $user_settings = drush_get_context('user');
-  if (isset($user_settings['vagrant_project_root'])) {
-    define("PROJECTS_PATH", $user_settings['vagrant_project_root'] . '/');
+  if (isset($user_settings['vagrant']['project_root'])) {
+    define("PROJECTS_PATH", $user_settings['vagrant']['project_root'] . '/');
   }
   define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
   define("VM_NAME", drush_get_option('vm-name', NULL));
@@ -173,6 +173,9 @@ function vagrant_drush_command() {
   );
   $items['vagrant-user'] = array(
     'description' => dt('Initialize or update user-specific settings for Drush Vagrant.'),
+    'options' => array(
+      'reset' => 'Reset user settings to defaults.',
+    ),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vuser'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
