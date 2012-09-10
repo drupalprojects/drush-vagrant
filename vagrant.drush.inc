@@ -191,6 +191,9 @@ function vagrant_drush_command() {
   );
   $items['vagrant-root'] = array(
     'description' => dt('Print the path to a Vagrant VM.'),
+    'options' => array(
+      'root' => 'Print the root projects path.',
+    ),
     'examples' => array(
       'drush @project-alias vr' => dt('Print the path to the project represented by @project-alias.'),
     ),
