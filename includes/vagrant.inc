@@ -92,42 +92,51 @@ function _drush_vagrant_full_help_text() {
     return $short_help;
   }
   else {
-    $variables = array();
-    $variables["short_help"] = $short_help . "\n";
-
-    // Generate a list of native Vagrant commands.
-    drush_shell_exec('vagrant');
-    $output = drush_shell_exec_output();
-    if ($output) {
-      // Drop first 6 lines and last 2 as those are not needed.
-      $output = array_splice($output, 6, -2);
-      $variables["vagrant_commands"] = _drush_vagrant_help_table($output);
-    }
-
-    // Generate a list of commands from Drush extensions that implement a
-    // blueprint.
-    $blueprints = drush_vagrant_blueprint_info();
-    foreach ($blueprints as $blueprint => $info) {
-      $extensions[] = $info['extension'];
-    }
-    $drush_commands = drush_get_context('DRUSH_COMMANDS');
-    $sub_commands = array();
-    foreach ($drush_commands as $command => $info) {
-      if (in_array($info['commandfile'], $extensions)
-          && !isset($info['topics'][0])
-          && (isset($info['hidden']) ? $info['hidden'] != 1 : TRUE)
-          && !isset($info['is_alias'])
-          && $command != 'vagrant') {
-        $vg_prefix = 'vagrant-';
-        if (substr($command, 0, strlen($vg_prefix)) == $vg_prefix) {
-          $command = substr($command, strlen($vg_prefix));
-        }
-        $sub_commands[] = '     ' . $command;
+    $cache = drush_cache_get('help_text');
+    // Check for cached help text
+    if (!isset($cache->data)) {
+      // Generate help text
+      $variables = array();
+      $variables["short_help"] = $short_help . "\n";
+      // Generate a list of native Vagrant commands.
+      drush_shell_exec('vagrant');
+      $output = drush_shell_exec_output();
+      if ($output) {
+        // Drop first 6 lines and last 2 as those are not needed.
+        $output = array_splice($output, 6, -2);
+        $variables["vagrant_commands"] = _drush_vagrant_help_table($output);
       }
-    }
-    $variables["sub_commands"] = _drush_vagrant_help_table($sub_commands, 2);
 
-    $help_text = _drush_vagrant_render_template($variables, $template = "help.tpl.php");
+      // Generate a list of commands from Drush extensions that implement a
+      // blueprint.
+      $blueprints = drush_vagrant_blueprint_info();
+      foreach ($blueprints as $blueprint => $info) {
+        $extensions[] = $info['extension'];
+      }
+      $drush_commands = drush_get_context('DRUSH_COMMANDS');
+      $sub_commands = array();
+      foreach ($drush_commands as $command => $info) {
+        if (in_array($info['commandfile'], $extensions)
+            && !isset($info['topics'][0])
+            && (isset($info['hidden']) ? $info['hidden'] != 1 : TRUE)
+            && !isset($info['is_alias'])
+            && $command != 'vagrant') {
+          $vg_prefix = 'vagrant-';
+          if (substr($command, 0, strlen($vg_prefix)) == $vg_prefix) {
+            $command = substr($command, strlen($vg_prefix));
+          }
+          $sub_commands[] = '     ' . $command;
+        }
+      }
+      $variables["sub_commands"] = _drush_vagrant_help_table($sub_commands, 2);
+
+      $help_text = _drush_vagrant_render_template($variables, $template = "help.tpl.php");
+
+      // Save our generated help text to the cache
+      drush_cache_set('help_text', $help_text, 'default', DRUSH_CACHE_TEMPORARY);
+    }
+
+    $help_text = isset($cache->data) ? $cache->data : $help_text;
 
     return $help_text;
   }

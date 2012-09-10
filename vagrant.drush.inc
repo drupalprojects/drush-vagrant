@@ -37,19 +37,40 @@ function vagrant_drush_help($section) {
 function vagrant_drush_init() {
   $command = drush_get_command();
   if (isset($command['requires_vagrant'])) {
+    // Load our cached data
+    $cache_ids = array('vagrant_path', 'project_root');
+    $cache = drush_cache_get_multiple($cache_ids);
+
     // Check if Vagrant is installed
-    $status = drush_shell_exec('which vagrant');
-    if ($status == FALSE) {
-      drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
+    if (!isset($cache['vagrant_path'])) {
+      $vagrant_path = drush_shell_exec_output(drush_shell_exec('which vagrant'));
+      drush_cache_set('vagrant_path', $vagrant_path[0], 'default', DRUSH_CACHE_TEMPORARY);
     }
-    $user_settings = drush_get_context('user');
-    if (isset($user_settings['vagrant']['project_root'])) {
-      define("PROJECTS_PATH", $user_settings['vagrant']['project_root'] . '/');
+    if (!isset($cache['vagrant_path']->data) && !isset($vagrant_path)) {
+      drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed.
+*** Please install Vagrant (http://vagrantup.com/) before continuing.
+'), 'warning');
+    }
+
+    // Set our defines, which provide context for commands
+    if (!isset($cache['project_root'])) {
+      $user_settings = drush_get_context('user');
+      if (isset($user_settings['vagrant']['project_root'])) {
+        $project_root = $user_settings['vagrant']['project_root'];
+        drush_cache_set('project_root', $project_root, 'default', DRUSH_CACHE_TEMPORARY);
+      }
+    }
+    if (isset($cache['project_root']->data) || isset($project_root)) {
+      $project_root = isset($cache['project_root']->data) ? $cache['project_root']->data : $project_root;
+      define("PROJECTS_PATH", $project_root . '/');
     }
     define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
     define("VM_NAME", drush_get_option('vm-name', NULL));
-    drush_set_context('vagrant_help_text', _drush_vagrant_help_text());
   }
+
+  // Set our help text
+  drush_set_context('vagrant_help_text', _drush_vagrant_help_text());
+
 }
 
 /**
