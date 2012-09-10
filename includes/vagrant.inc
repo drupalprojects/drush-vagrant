@@ -92,7 +92,7 @@ function _drush_vagrant_full_help_text() {
     return $short_help;
   }
   else {
-    $cache = drush_cache_get('help_text');
+    $cache = drush_cache_get('help_text', 'vagrant');
     // Check for cached help text
     if (!isset($cache->data)) {
       // Generate help text
@@ -133,7 +133,7 @@ function _drush_vagrant_full_help_text() {
       $help_text = _drush_vagrant_render_template($variables, $template = "help.tpl.php");
 
       // Save our generated help text to the cache
-      drush_cache_set('help_text', $help_text, 'default', DRUSH_CACHE_TEMPORARY);
+      drush_cache_set('help_text', $help_text, 'vagrant', DRUSH_CACHE_TEMPORARY);
     }
 
     $help_text = isset($cache->data) ? $cache->data : $help_text;
@@ -267,4 +267,11 @@ function _drush_vagrant_get_subnet($project_path) {
   else {
     drush_set_error(dt('ERROR: Could not parse !config_file in _drush_vagrant_get_subnet().', array('!config_file' => $config_file)));
   }
+}
+
+/**
+ * Clear caches internal to drush-vagrant.
+ */
+function vagrant_cache_clear_all() {
+  drush_cache_clear_all(NULL, 'vagrant');
 }

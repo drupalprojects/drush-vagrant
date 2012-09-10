@@ -39,12 +39,12 @@ function vagrant_drush_init() {
   if (isset($command['requires_vagrant'])) {
     // Load our cached data
     $cache_ids = array('vagrant_path', 'project_root');
-    $cache = drush_cache_get_multiple($cache_ids);
+    $cache = drush_cache_get_multiple($cache_ids, 'vagrant');
 
     // Check if Vagrant is installed
     if (!isset($cache['vagrant_path'])) {
       $vagrant_path = drush_shell_exec_output(drush_shell_exec('which vagrant'));
-      drush_cache_set('vagrant_path', $vagrant_path[0], 'default', DRUSH_CACHE_TEMPORARY);
+      drush_cache_set('vagrant_path', $vagrant_path[0], 'vagrant', DRUSH_CACHE_TEMPORARY);
     }
     if (!isset($cache['vagrant_path']->data) && !isset($vagrant_path)) {
       drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed.
@@ -57,7 +57,7 @@ function vagrant_drush_init() {
       $user_settings = drush_get_context('user');
       if (isset($user_settings['vagrant']['project_root'])) {
         $project_root = $user_settings['vagrant']['project_root'];
-        drush_cache_set('project_root', $project_root, 'default', DRUSH_CACHE_TEMPORARY);
+        drush_cache_set('project_root', $project_root, 'vagrant', DRUSH_CACHE_TEMPORARY);
       }
     }
     if (isset($cache['project_root']->data) || isset($project_root)) {
@@ -354,4 +354,11 @@ function drush_vagrant_extension_info() {
   }
 
   return $extensions;
+}
+
+/**
+ * Implements hook_drush_cache_clear().
+ */
+function vagrant_drush_cache_clear(&$types) {
+    $types['vagrant'] = 'vagrant_cache_clear_all';
 }
