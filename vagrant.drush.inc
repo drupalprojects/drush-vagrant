@@ -35,18 +35,21 @@ function vagrant_drush_help($section) {
  * Implements hook_drush_init().
  */
 function vagrant_drush_init() {
-  // Check if Vagrant is installed
-  $status = drush_shell_exec('which vagrant');
-  if ($status == FALSE) {
-    drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
+  $command = drush_get_command();
+  if (isset($command['requires_vagrant'])) {
+    // Check if Vagrant is installed
+    $status = drush_shell_exec('which vagrant');
+    if ($status == FALSE) {
+      drush_log(dt('*** You have installed Drush Vagrant Integration, but Vagrant does not appear to be installed. *** \nPlease install Vagrant (http://vagrantup.com/) before continuing.\n\n'), 'warning');
+    }
+    $user_settings = drush_get_context('user');
+    if (isset($user_settings['vagrant']['project_root'])) {
+      define("PROJECTS_PATH", $user_settings['vagrant']['project_root'] . '/');
+    }
+    define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
+    define("VM_NAME", drush_get_option('vm-name', NULL));
+    drush_set_context('vagrant_help_text', _drush_vagrant_help_text());
   }
-  $user_settings = drush_get_context('user');
-  if (isset($user_settings['vagrant']['project_root'])) {
-    define("PROJECTS_PATH", $user_settings['vagrant']['project_root'] . '/');
-  }
-  define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
-  define("VM_NAME", drush_get_option('vm-name', NULL));
-  drush_set_context('vagrant_help_text', _drush_vagrant_help_text());
 }
 
 /**
@@ -68,14 +71,15 @@ function vagrant_drush_command() {
     'strict-option-handling' => TRUE,
     'allow-additional-options' => TRUE,
     'aliases' => array('vg'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-alias-config'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Convert the output of `vagrant ssh-config` into a Drush remote alias.'),
+    'requires_vagrant' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-alias'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate an alias for a site running in a VM.'),
     'options' => array(
       'alias' => dt('Alias.'),
@@ -86,9 +90,10 @@ function vagrant_drush_command() {
     'strict-option-handling' => TRUE,
     'allow-additional-options' => TRUE,
     'aliases' => array('val'),
+    'requires_vagrant' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-aliases'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => dt('Generate aliases for a project and its VMs.'),
     'options' => array(
       'delete' => dt('Delete aliases for a project.'),
@@ -96,6 +101,8 @@ function vagrant_drush_command() {
     'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
     'aliases' => array('vals'),
+    'requires_vagrant' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-list'] = array(
     'description' => dt('List current Vagrant projects, VMs and statuses.'),
@@ -106,12 +113,14 @@ function vagrant_drush_command() {
       ),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vls'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-blueprints'] = array(
     'description' => dt('List all blueprints.'),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vbl'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-build'] = array(
@@ -136,6 +145,7 @@ function vagrant_drush_command() {
     'drush dependencies' => array('hosts'),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vb'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-delete'] = array(
@@ -149,6 +159,7 @@ function vagrant_drush_command() {
     'drush dependencies' => array('hosts'),
     'strict-option-handling' => TRUE,  
     'aliases' => array('vdl'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-shell'] = array(
@@ -169,6 +180,7 @@ function vagrant_drush_command() {
     'strict-option-handling' => TRUE,  
     'allow-additional-options' => TRUE,
     'aliases' => array('vsh'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-user'] = array(
@@ -187,6 +199,7 @@ function vagrant_drush_command() {
     ),
     'strict-option-handling' => TRUE,
     'aliases' => array('vrb'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-root'] = array(
@@ -199,6 +212,7 @@ function vagrant_drush_command() {
     ),
     'strict-option-handling' => TRUE,
     'aliases' => array('vr'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
