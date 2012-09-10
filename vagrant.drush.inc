@@ -189,6 +189,15 @@ function vagrant_drush_command() {
     'aliases' => array('vrb'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['vagrant-root'] = array(
+    'description' => dt('Print the path to a Vagrant VM.'),
+    'examples' => array(
+      'drush @project-alias vr' => dt('Print the path to the project represented by @project-alias.'),
+    ),
+    'strict-option-handling' => TRUE,
+    'aliases' => array('vr'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
 
   // Drush topics
   $items['docs-vagrant-readme'] = array(
