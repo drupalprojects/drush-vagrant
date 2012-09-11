@@ -58,7 +58,7 @@ function drush_vagrant_build() {
     drush_set_option('project-name', $project_name);
   }
   // Determine the project's path from its name
-  $project_path = PROJECTS_PATH . $project_name;
+  $project_path = PROJECTS_PATH . '/' . $project_name;
   drush_set_option('project-path', $project_path);
 
   // Begin building our final confirmation prompt
@@ -201,7 +201,7 @@ function drush_vagrant_post_vagrant_build() {
  */
 function _drush_vagrant_check_project_name($project_name, $set_error = FALSE) {
   // Check whether a project with this name already exists.
-  if (is_dir(PROJECTS_PATH . $project_name)) {
+  if (is_dir(PROJECTS_PATH . '/' . $project_name)) {
     $error_msg = dt('ERROR: There is already a project called "!project".', array('!project' => $project_name));
     if ($set_error) {
       drush_set_error($error_msg);
@@ -266,7 +266,7 @@ function _drush_vagrant_next_available_subnet() {
 
   $subnets = array();
   foreach ($projects as $project) {
-    $subnets[$project] = _drush_vagrant_get_subnet(PROJECTS_PATH . $project);
+    $subnets[$project] = _drush_vagrant_get_subnet(PROJECTS_PATH . '/' . $project);
   }
 
   // If there aren't any projects yet, use the default

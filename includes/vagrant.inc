@@ -181,7 +181,7 @@ function _drush_vagrant_check_user_context() {
 
       // Re-include the updated .drushrc.php file
       include($home . '/.drushrc.php');
-      define("PROJECTS_PATH", $options['vagrant']['project_root'] . '/');
+      define("PROJECTS_PATH", $options['vagrant']['project_root']);
     }
     else {
       drush_user_abort();

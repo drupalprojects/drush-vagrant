@@ -62,7 +62,7 @@ function vagrant_drush_init() {
     }
     if (isset($cache['project_root']->data) || isset($project_root)) {
       $project_root = isset($cache['project_root']->data) ? $cache['project_root']->data : $project_root;
-      define("PROJECTS_PATH", $project_root . '/');
+      define("PROJECTS_PATH", $project_root);
     }
     define("PROJECT_PATH", drush_get_option('project-path', getcwd()));
     define("VM_NAME", drush_get_option('vm-name', NULL));
