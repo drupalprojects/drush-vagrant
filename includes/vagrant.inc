@@ -213,14 +213,25 @@ function drush_vagrant_check_project($project_path, $set_error = FALSE) {
  * Validate and return the current project's path.
  */
 function drush_vagrant_get_project_path() {
-  // TODO: Maybe look up the file tree?
   if ($project_path = drush_get_option('project-path', getcwd())) {
-    if (drush_vagrant_check_project($project_path, TRUE)) {
-      return $project_path;
-    }
-    else {
-      return FALSE;
-    }
+    return _drush_vagrant_get_project_path($project_path);
+  }
+}
+
+/**
+ * Return the validated root of a project path
+ */
+function _drush_vagrant_get_project_path($project_path = PROJECT_PATH) {
+  $projects_path_array = explode(DIRECTORY_SEPARATOR, PROJECTS_PATH);
+  $project_path_array = explode(DIRECTORY_SEPARATOR, $project_path);
+  // Remove everything from the project_path more than one level deeper than our projects_root
+  array_splice($project_path_array, count($projects_path_array) + 1);
+  $project_path = implode(DIRECTORY_SEPARATOR, $project_path_array);
+  if (drush_vagrant_check_project($project_path, TRUE)) {
+    return $project_path;
+  }
+  else {
+    return FALSE;
   }
 }
 
@@ -231,7 +242,8 @@ function drush_vagrant_get_project_path() {
  *   The absolute path to a project directory.
  */
 function drush_vagrant_get_project_name($project_path) {
-  return basename($project_path);
+  $project_path_root = _drush_vagrant_get_project_path($project_path);
+  return basename($project_path_root);
 }
 
 
