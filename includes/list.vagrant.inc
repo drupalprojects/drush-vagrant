@@ -61,7 +61,7 @@ function drush_vagrant_projects_info() {
  */
 function drush_vagrant_vms_info($project_path) {
   $vms = array();
-  drush_shell_cd_and_exec($project_path, 'drush vagrant status');
+  drush_shell_cd_and_exec($project_path, 'vagrant status');
   $output = drush_shell_exec_output();
   $blanks = array();
   foreach ($output as $key => $line) {

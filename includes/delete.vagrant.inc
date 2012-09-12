@@ -32,9 +32,9 @@ function drush_vagrant_delete() {
 
   if (drush_confirm(dt('Are you certain that you want to proceed?'))) {
     $vms = drush_vagrant_exec_and_log(array(
-      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant list --vms'),
+      'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant-list --vms'),
       'success' => dt('Listed all VMs of the project at !project_path.', array('!project_path' => PROJECT_PATH)),
-      'failure' => dt('The following errors occurred when running "drush vagrant list --vms".'),
+      'failure' => dt('The following errors occurred when running "drush vagrant-list --vms".'),
     ));
     foreach ($vms as $vm_name) {
       drush_vagrant_exec_and_log(array(
@@ -53,7 +53,7 @@ function drush_vagrant_delete() {
       drush_vagrant_exec_and_log(array(
         'command'  => drush_shell_exec_interactive('cd %s && drush -y vagrant-aliases --delete', PROJECT_PATH),
         'success' => dt('Deleted all aliases for the project at !project_path.', array('!project_path' => PROJECT_PATH)),
-        'failure' => dt('The following errors occurred when running "drush vagrant aliases --delete".'),
+        'failure' => dt('The following errors occurred when running "drush vagrant-aliases --delete".'),
       ));
       drush_vagrant_exec_and_log(array(
         'command'  => drush_shell_exec('rm -rf %s', PROJECT_PATH),
