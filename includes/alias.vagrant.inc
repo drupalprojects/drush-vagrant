@@ -8,9 +8,9 @@
 /**
  * Parse the output of 'vagrant ssh-config'
  */
-function drush_vagrant_parse_ssh_config() {
+function drush_vagrant_parse_ssh_config($vm_name = VM_NAME) {
   $output = drush_vagrant_exec_and_log(array(
-    'command' => drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . VM_NAME),
+    'command' => drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . $vm_name),
     'success' => dt('Determined the Vagrant SSH configuration.'),
     'failure' => dt('The following errors occurred when running "vagrant ssh-config". Are you in the directory with the Vagrantfile?'),
   ));
