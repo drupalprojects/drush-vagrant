@@ -12,7 +12,7 @@ practices. Projects can easily be cloned and shared via Git, or even bundled
 into blueprints that others can use as templates for their own development
 environments.
 
-While initially developed (via the Aegir-up project) as a Drupal and Aegir 
+While initially developed (via the Aegir-up project) as a Drupal and Aegir
 development tool, Drush Vagrant itself is not Drupal-specific. It provides
 generally useful wrappers around Vagrant, and can thus assist in building and
 testing non-Drupal projects, such as Puppet modules.
@@ -130,4 +130,5 @@ CREDITS
 -------
 
 Originally developed by Steven Merrill <http://www.stevenwmerrill.com/>
-The 2.x branch is developed and maintained by Christopher Gervais <http://ergonlogic.com/>
+The 2.x branch was developed by Christopher Gervais <http://ergonlogic.com/>
+and is maintained by Christopher Gervais and Herman Van Rink (helmo)

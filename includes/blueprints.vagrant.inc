@@ -11,7 +11,7 @@
 function drush_vagrant_blueprints() {
   $blueprints = drush_vagrant_blueprint_info();
   $args = drush_get_context('DRUSH_COMMAND_ARGS');
-    
+
   if (in_array('--all', $args)) {
     foreach ($blueprints as $machine_name => $info) {
       foreach ($info as $label => $value) {

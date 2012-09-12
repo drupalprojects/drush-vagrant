@@ -52,7 +52,7 @@ function drush_vagrant_user() {
   // Unset global user-settings
   unset($user_setting['config-file']);
   unset($user_setting['context-path']);
-  
+
   //Save our settings
   drush_set_context('user', $user_settings);
   drush_save_config('user');
@@ -86,7 +86,7 @@ function _drush_vagrant_generate_user_settings() {
     $default = drush_shell_exec_output();
     $data[$key]['default'] = $default[0];
   }
-  
+
   $data['home'] = array('default' => drush_server_home(), 'label' => "User's home directory");
   $data['project_root'] = array( 'default' => $data['home']['default'] . '/vagrant/projects', 'label' => 'Projects directory');
 
@@ -99,7 +99,7 @@ function _drush_vagrant_generate_user_settings() {
   }
   elseif (file_exists($data['home']['default'] . '/.ssh/id_dsa')) {
     $ssh_keys = array('public' => '.ssh/id_dsa.pub', 'private' => '.ssh/id_dsa');
-  } 
+  }
 
   // Get file defaults
   foreach ($file_sets as $set) {
@@ -118,7 +118,7 @@ function _drush_vagrant_generate_user_settings() {
 
   return $data;
 }
- 
+
 /**
  * Format list of user settings
  */
