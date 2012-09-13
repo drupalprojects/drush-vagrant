@@ -64,18 +64,19 @@ function vagrant_drush_init() {
       $project_root = isset($cache['project_root']->data) ? $cache['project_root']->data : $project_root;
       define("PROJECTS_PATH", $project_root);
     }
+    define("VM_NAME", drush_get_option('vm-name', NULL));
     define("PROJECT_PATH", drush_vagrant_get_project_path());
 
-    // Load an alias for the current project if one exists
-    $project_name = drush_vagrant_get_project_name(PROJECT_PATH);
-    if (!drush_get_context('alias', FALSE)) {
+    // Load an alias if none was provided, but we're in a project for which
+    // one exists.
+    if (!drush_get_context('alias', FALSE) && drush_vagrant_check_project(PROJECT_PATH)) {
+      $project_name = drush_vagrant_get_project_name(PROJECT_PATH);
       if (file_exists(drush_server_home() . '/.drush/' . $project_name . '.aliases.drushrc.php')) {
         $alias = drush_sitealias_get_record('@' . $project_name);
         drush_set_context('alias', $alias);
       }
     }
 
-    define("VM_NAME", drush_get_option('vm-name', NULL));
   }
 
   // Set our help text

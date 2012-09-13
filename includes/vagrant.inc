@@ -206,7 +206,7 @@ function drush_vagrant_check_project($project_path, $set_error = FALSE) {
     }
     return FALSE;
   }
-  return TRUE;
+  return $project_path;
 }
 
 /**
@@ -222,16 +222,27 @@ function drush_vagrant_get_project_path() {
  * Return the validated root of a project path
  */
 function _drush_vagrant_get_project_path($project_path = PROJECT_PATH) {
-  $projects_path_array = explode(DIRECTORY_SEPARATOR, PROJECTS_PATH);
-  $project_path_array = explode(DIRECTORY_SEPARATOR, $project_path);
-  // Remove everything from the project_path more than one level deeper than our projects_root
-  array_splice($project_path_array, count($projects_path_array) + 1);
-  $project_path = implode(DIRECTORY_SEPARATOR, $project_path_array);
-  if (drush_vagrant_check_project($project_path, TRUE)) {
-    return $project_path;
+  // Turn our paths into arrays for easier comparison
+  $root = explode(DIRECTORY_SEPARATOR, PROJECTS_PATH);
+  $project = explode(DIRECTORY_SEPARATOR, $project_path);
+  // Check if our $project_path is under PROJECTS_PATH
+  if ($root === array_slice($project, 0, count($root), TRUE)) {
+    // We're somewhere under PROJECTS_PATH, so trim the project_path to one
+    // level deeper than that, so we can check if we're in a project or not
+    array_splice($project, count($root) + 1);
+    $new_project_path = implode(DIRECTORY_SEPARATOR, $project);
+    if (drush_vagrant_check_project($new_project_path)) {
+      // Yep, it's a project
+      return $new_project_path;
+    }
+    else {
+      // Nope, it's not a project, so return our original path
+      return $project_path;
+    }
   }
   else {
-    return FALSE;
+    // We aren't under PROJECTS_PATH, so return our original path
+    return $project_path;
   }
 }
 
