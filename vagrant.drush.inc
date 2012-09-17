@@ -5,13 +5,7 @@
  *   Vagrant family of Drush commands for managing Vagrant-based VMs.
  */
 
-// TODO: Remove this check when Drush 4.x support is dropped
-if (function_exists('drush_normalize_path')) {
-  define("DRUSH_VAGRANT_ROOT", drush_normalize_path(dirname(__FILE__)));
-}
-else {
-  define("DRUSH_VAGRANT_ROOT", dirname(__FILE__));
-}
+define("DRUSH_VAGRANT_ROOT", drush_normalize_path(dirname(__FILE__)));
 
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
