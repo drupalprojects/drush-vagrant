@@ -60,6 +60,9 @@ function drush_vagrant_delete() {
         'success' => dt('Removed the project directory at !project_path.', array('!project_path' => PROJECT_PATH)),
         'failure' => dt('The following errors occurred when running "rm -rf".'),
       ));
+      if (getcwd() === FALSE) {
+        drush_print(dt("Your current working directory was deleted, please cd into another directory. E.g. 'cd ..'"));
+      }
     }
     else {
       drush_set_error(dt('Failure during "vagrant destroy"'));
