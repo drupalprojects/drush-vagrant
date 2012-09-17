@@ -30,8 +30,8 @@ http://vagrantup.com/v1/docs/getting-started/index.html
 A recent version of VirtualBox (4.0+) is required by Vagrant, and can be
 downloaded from: https://www.virtualbox.org/wiki/Downloads.
 
-Drush 4.x or greater is required, but Drush 5.x is recommended. Drush can be
-installed in a number of ways, as detailed here:
+Drush 5.x or greater is required. Drush can be installed in a number of ways,
+as detailed here:
 http://drupalcode.org/project/drush.git/blob/HEAD:/README.txt#l30. Drush Hosts
 (http://drupal.org/project/drush-hosts) is also required in order to manage
 entries in /etc/hosts during project builds and deletion.
