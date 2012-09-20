@@ -175,16 +175,7 @@ function drush_vagrant_post_vagrant_build() {
 
   // Add domain to hosts file
   if ($hosts !== FALSE) {
-    drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
-    drush_shell_cd_and_exec($project_path, 'drush vagrant-list --vms');
-    $vms = drush_shell_exec_output();
-    $project_name = drush_vagrant_get_project_name($project_path);
-    foreach ($vms as $vm) {
-      $vm_alias = '@' . $project_name . '.' . $vm;
-      $sitealias = drush_sitealias_get_record($vm_alias);
-      $domain = $sitealias['fqdn'];
-      drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain);
-    }
+    _drush_vagrant_add_hosts_entries_for_vm($project_path);
   }
 
   drush_print(dt('Your project was successfully initialized.'));
@@ -194,6 +185,22 @@ function drush_vagrant_post_vagrant_build() {
   drush_print(dt('             * Redefine the VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!project_path' => $project_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !project_path/modules.', array('!project_path' => $project_path)));
 
+}
+
+/**
+ * Add hostname -> IP mappings to the /etc/hosts file for this project.
+ */
+function _drush_vagrant_add_hosts_entries_for_vm($project_path) {
+  drush_shell_cd_and_exec($project_path, 'drush vagrant-list --vms');
+  $vms = drush_shell_exec_output();
+  $project_name = drush_vagrant_get_project_name($project_path);
+  drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
+  foreach ($vms as $vm) {
+    $vm_alias = '@' . $project_name . '.' . $vm;
+    $sitealias = drush_sitealias_get_record($vm_alias);
+    $domain = $sitealias['fqdn'];
+    drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain);
+  }
 }
 
 /**
