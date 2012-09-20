@@ -94,6 +94,9 @@ function drush_vagrant_alias() {
   if (!($variables["docroot"] = drush_get_option('docroot'))) {
     $variables["docroot"] = drush_prompt(dt('Docroot location'), "/var/www/html/");
   }
+
+  // TODO: Instead of "default" we could prefill the name of an actual vm...
+  //       maybe skip the question if there is only one in the current project
   if (!($vm_name = drush_get_option('vm-name'))) {
     $vm_name = drush_prompt(dt('Name of the VM'), "default");
   }
