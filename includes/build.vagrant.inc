@@ -73,7 +73,7 @@ function drush_vagrant_build() {
   // Prompt for choice of blueprint, if one wasn't passed as an option, and we aren't building from a Git repo.
   if (!isset($blueprint) && !isset($git_repo)) {
     foreach ($blueprint_info as $name => $data) {
-      $choice[$name] = $data['name'] . ': ' . $data['description'] ;
+      $choice[$name] = $data['name'] . ' (' . $name . ')' . ': ' . $data['description'] ;
     }
     $blueprint = drush_choice($choice, dt('Which blueprint would you like to use?'));
     if ($blueprint == '') {
