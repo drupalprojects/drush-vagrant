@@ -194,7 +194,6 @@ function _drush_vagrant_add_hosts_entries_for_vm($project_path) {
   drush_shell_cd_and_exec($project_path, 'drush vagrant-list --vms');
   $vms = drush_shell_exec_output();
   $project_name = drush_vagrant_get_project_name($project_path);
-  drush_print(dt('Enter your password to add entries for the VMs in your project to your /etc/hosts file.'));
   foreach ($vms as $vm) {
     $vm_alias = '@' . $project_name . '.' . $vm;
     $sitealias = drush_sitealias_get_record($vm_alias);
