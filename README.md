@@ -101,6 +101,18 @@ More detailed usage information is provided by running:
   drush <command> --help
 
 
+QUICK START
+-----------
+
+Build a new VM:
+  drush vagrant-build
+
+Change into the new vagrant project directory:
+  cd ~/vagrant/project/new-vagrant-project
+
+SSH into the new VM:
+  drush vagrant-shell
+
 
 NEXT STEPS
 ----------
