@@ -156,7 +156,6 @@ function vagrant_drush_command() {
     'description' => dt('List all blueprints.'),
     'strict-option-handling' => TRUE,
     'aliases' => array('vbl'),
-    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-build'] = array(
