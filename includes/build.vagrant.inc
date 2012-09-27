@@ -31,7 +31,7 @@ function drush_vagrant_build_validate() {
   }
 
   if ($blueprint && $git_repo) {
-    drush_set_error('You appear to have specified both a blueprint and a git-repo from which to build your project. These ioptions are mutually exclusive. Please choose one or the other.');
+    drush_set_error('You appear to have specified both a blueprint and a git-repo from which to build your project. These options are mutually exclusive. Please choose one or the other.');
   }
 
 }
