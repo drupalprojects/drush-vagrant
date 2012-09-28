@@ -125,7 +125,7 @@ function drush_vagrant_build() {
   }
 
   if (isset($git_repo)) {
-    $actions[] = dt('  * Build the project from the Git repository at: !git-repo', array('!git-repo' => $git_repo));
+    $actions[] = dt('  * Build the project from the Git repository at: !git-repo, with branch !git-branch' , array('!git-repo' => $git_repo,'!git-branch' => drush_get_option('git-branch', 'master')));
   }
   else {
     $actions[] = dt('  * Build the project using the "!blueprint" blueprint from the "!extension" extension.',

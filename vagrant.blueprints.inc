@@ -50,6 +50,7 @@ function vagrant_default_build_vars() {
   $build['blueprint'] = drush_get_option('blueprint');
   $build['blueprint_info'] = drush_vagrant_blueprint_info();
   $build['git_repo'] = drush_get_option('git-repo');
+  $build['git_branch'] = drush_get_option('git-branch', 'master');
 
   return $build;
 }
@@ -67,11 +68,12 @@ function vagrant_default_build_steps($build) {
 function vagrant_default_build_project_dir($build) {
   // Create the project directory from the blueprint, or the git repo
   if ($build['git_repo']) {
-    drush_vagrant_exec_and_log(array(
-      'command' => drush_shell_exec_interactive('git clone %s %s', $build['git_repo'], $build['project_path']),
-      'success' => dt('Cloned the git repo at !git_repo to !project_path.', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
-      'failure' => dt('The following errors occurred when running "git clone !git_repo !project_path".', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])),
-    ));
+    if (drush_shell_exec_interactive('git clone --branch %s %s %s', $build['git_branch'], $build['git_repo'], $build['project_path'])) {
+      drush_print(dt('Cloned the git repo at !git_repo to !project_path.', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])));
+    }
+    else {
+      drush_print(dt('An error occurred when running "git clone !git_repo !project_path".', array('!git_repo' => $build['git_repo'], '!project_path' => $build['project_path'])));
+    }
   }
   else {
     drush_vagrant_exec_and_log(array(

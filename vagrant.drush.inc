@@ -167,6 +167,8 @@ function vagrant_drush_command() {
         'description' => dt('Specify the blueprint to use.')),
       'git-repo' => array(
         'description' => dt('Clone a Git repo, instead of using a blueprint.')),
+      'git-branch' => array(
+        'description' => dt('The branch of the git-repo, defaults to \'master\'.')),
       'aliases' => array(
         'description' => dt('Generate aliases for the project and its VMs.')),
       'hosts' => array(
