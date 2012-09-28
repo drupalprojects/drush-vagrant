@@ -44,14 +44,14 @@ function drush_vagrant_delete() {
       ));
     }
     drush_vagrant_exec_and_log(array(
-      'command'  => drush_shell_exec_interactive('cd %s && vagrant destroy --force', PROJECT_PATH),
+      'command'  => drush_vagrant_shell_cd_and_exec_interactive(PROJECT_PATH, 'vagrant destroy --force'),
       'success' => dt('Destroyed all VMs of the project at !project_path.', array('!project_path' => PROJECT_PATH)),
       'failure' => dt('The following errors occurred when running "vagrant destroy --force".'),
     ));
     // Check that the VMs were destroyed
     if (!is_file(PROJECT_PATH . '/.vagrant')) {
       drush_vagrant_exec_and_log(array(
-        'command'  => drush_shell_exec_interactive('cd %s && drush -y vagrant-aliases --delete', PROJECT_PATH),
+        'command'  => drush_vagrant_shell_cd_and_exec_interactive(PROJECT_PATH, 'drush -y vagrant-aliases --delete'),
         'success' => dt('Deleted all aliases for the project at !project_path.', array('!project_path' => PROJECT_PATH)),
         'failure' => dt('The following errors occurred when running "drush vagrant-aliases --delete".'),
       ));

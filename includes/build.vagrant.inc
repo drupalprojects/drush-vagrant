@@ -165,12 +165,12 @@ function drush_vagrant_post_vagrant_build() {
 
   // Launch the VMs
   if ($up !== FALSE) {
-    drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
+    drush_vagrant_shell_cd_and_exec_interactive($project_path, "vagrant up");
   }
 
   // Generate aliases for the new project
   if ($aliases !== FALSE) {
-    drush_shell_exec_interactive("cd %s && drush vagrant-aliases", $project_path);
+    drush_vagrant_shell_cd_and_exec_interactive($project_path, "drush vagrant-aliases", $project_path);
   }
 
   // Add domain to hosts file

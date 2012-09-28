@@ -199,7 +199,7 @@ function vagrant_default_build_user_dotfiles($build) {
 
 function vagrant_default_build_git_init($build) {
   if (!file_exists($build['project_path'] . '/.git')) {
-    drush_shell_exec_interactive("cd %s && git init && git add . && git commit -m'Initial commit.'", $build['project_path']);
+    drush_vagrant_shell_cd_and_exec_interactive($build['project_path'], "git init && git add . && git commit -m'Initial commit.'");
   }
 }
 
