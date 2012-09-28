@@ -113,7 +113,7 @@ function drush_vagrant_build() {
 
   $up = drush_get_option('up', FALSE);
   if ($up === FALSE) {
-    drush_confirm(dt('Would you like to launch the VMs immediately?'));
+    $up = drush_confirm(dt('Would you like to launch the VMs immediately?'));
     if ($up !== FALSE) {
       // Save the new option
       drush_set_option('up', TRUE);
