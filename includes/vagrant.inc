@@ -43,6 +43,32 @@ function drush_vagrant_exec_and_log(array $command) {
   // Return our output, in case it's needed
   return $command['output'];
 }
+/**
+ * Executes a shell command at a new working directory in interactive mode.
+ * The old cwd is restored on exit.
+ *
+ * TODO: Follow http://drupal.org/node/1793694 to see if this gets added to Drush core.
+ *
+ * @param $effective_wd
+ *   The new working directory to execute the shell command at.
+ * @param $cmd
+ *   The command to execute. May include placeholders used for sprintf.
+ * @param ...
+ *   Values for the placeholders specified in $cmd. Each of these will be passed
+ *   through escapeshellarg() to ensure they are safe to use on the command line.
+ * @return
+ *   TRUE on success, FALSE on failure
+ */
+function drush_vagrant_shell_cd_and_exec_interactive($effective_wd, $cmd) {
+  $args = func_get_args();
+
+  $effective_wd = array_shift($args);
+  $cwd = getcwd();
+  drush_op('chdir', $effective_wd);
+  $result = call_user_func_array('drush_shell_exec_interactive', $args);
+  drush_op('chdir', $cwd);
+  return $result;
+}
 
 /**
  * Generate help text
