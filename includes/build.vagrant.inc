@@ -47,6 +47,9 @@ function drush_vagrant_build() {
   if (!($project_name = drush_get_option('project-name'))) {
     drush_print(dt('The name of your project may be used in URLs, and so should only contain lower-case letters and numbers.'));
     drush_print(dt('It may also contain hyphens (-) and dots (.), so long as they do not come at the beginning or end of the name.'));
+
+    $error_msg = NULL;
+
     // Only accept a valid project name.
     while ($error_msg !== TRUE) {
       $project_name = drush_prompt(dt('What would you like to call your project?'));
