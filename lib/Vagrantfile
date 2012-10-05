@@ -47,8 +47,8 @@ Vagrant::Config.run do |config|
             vm::Modules.each do |name,path|
               # Expand relative paths (such as '~')
               full_path = File.expand_path("#{path}")
-              # Cull directories that don't exist
-              # TODO: Figure out what we're doing here, and why
+              # Cull directories that don't exist, since Puppet will
+              # throw errors if passed a module_path that doesn't exist
               if File::directory?("#{full_path}")
                 puppet.module_path.push("#{full_path}")
               end
