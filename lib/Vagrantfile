@@ -22,9 +22,14 @@ Vagrant::Config.run do |config|
         vm_config.vm.host_name = hostname
         vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname}#{formatted_count}(#{hostname})"]
         vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
-        if defined?(vm::NFS_shares)
+        if defined?(vm::NFS_shares) # Deprecated, as NFS is now supported directly in Dir_shares
           vm::NFS_shares.each do |name, path|
             vm_config.vm.share_folder(name, path, "./#{name}", { :nfs => true, :create => true, :remount => true })
+          end
+        end
+        if defined?(vm::Dir_shares)
+          vm::Dir_shares.each do |name, share|
+            vm_config.vm.share_folder(name, share["guest_path"], share["host_path"], share["nfs"])
           end
         end
         if vm::Gui == true
