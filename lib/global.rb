@@ -17,6 +17,7 @@ class Vm                                 # default virtual machine settings
   Options   = ""                         # options to pass to Puppet
   Facts     = {}                         # hash of Factor facts
   SSH_tries = 5                          # How quickly to fail should Vagrant hang
+  SSH_forward_agent = false              # Whether to forward SSH agent
 end
 
 class Global

@@ -2,7 +2,7 @@ class Default < Vm             # VM-specific overrides of default settings
   Shortname  = "default"       # Vagrant name
   Longname   = "Default"       # VirtualBox name
 
-  #count     = 1                          # number of VMs to create
+  #Count     = 1                          # number of VMs to create
   #Basebox   = "lucid32"                  # default basebox
   #Box_url   = "http://files.vagrantup.com/lucid32.box"
   #Memory    = 512                        # default VM memory
@@ -16,4 +16,5 @@ class Default < Vm             # VM-specific overrides of default settings
   #Options   = ""                         # options to pass to Puppet
   #Facts     = {}                         # hash of Factor facts
 
+  #NFS_shares = { "www" => "/var/www", } # one or more NFS shares {"local-dir" => vm-dir", }
 end

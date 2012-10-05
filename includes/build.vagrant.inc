@@ -31,7 +31,7 @@ function drush_vagrant_build_validate() {
   }
 
   if ($blueprint && $git_repo) {
-    drush_set_error('You appear to have specified both a blueprint and a git-repo from which to build your project. These ioptions are mutually exclusive. Please choose one or the other.');
+    drush_set_error('You appear to have specified both a blueprint and a git-repo from which to build your project. These options are mutually exclusive. Please choose one or the other.');
   }
 
 }
@@ -113,7 +113,7 @@ function drush_vagrant_build() {
 
   $up = drush_get_option('up', FALSE);
   if ($up === FALSE) {
-    drush_confirm(dt('Would you like to launch the VMs immediately?'));
+    $up = drush_confirm(dt('Would you like to launch the VMs immediately?'));
     if ($up !== FALSE) {
       // Save the new option
       drush_set_option('up', TRUE);
@@ -125,7 +125,7 @@ function drush_vagrant_build() {
   }
 
   if (isset($git_repo)) {
-    $actions[] = dt('  * Build the project from the Git repository at: !git-repo', array('!git-repo' => $git_repo));
+    $actions[] = dt('  * Build the project from the Git repository at: !git-repo, with branch !git-branch' , array('!git-repo' => $git_repo,'!git-branch' => drush_get_option('git-branch', 'master')));
   }
   else {
     $actions[] = dt('  * Build the project using the "!blueprint" blueprint from the "!extension" extension.',
@@ -165,12 +165,12 @@ function drush_vagrant_post_vagrant_build() {
 
   // Launch the VMs
   if ($up !== FALSE) {
-    drush_shell_exec_interactive("cd %s && vagrant up", $project_path);
+    drush_vagrant_shell_cd_and_exec_interactive($project_path, "vagrant up");
   }
 
   // Generate aliases for the new project
   if ($aliases !== FALSE) {
-    drush_shell_exec_interactive("cd %s && drush vagrant-aliases", $project_path);
+    drush_vagrant_shell_cd_and_exec_interactive($project_path, "drush vagrant-aliases", $project_path);
   }
 
   // Add domain to hosts file
