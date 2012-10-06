@@ -48,7 +48,7 @@ function drush_vagrant_projects_info() {
     closedir($dir);
   }
   else {
-    drush_set_error(dt("PROJECTS_PATH is unknown or does not exist. Have you build a vm already? Try drush vagrant-build"));
+    drush_set_error(dt("PROJECTS_PATH is unknown or does not exist. Have you built a vm already? Try drush vagrant-build"));
   }
   return $projects;
 }
