@@ -105,6 +105,7 @@ function vagrant_drush_command() {
     'allow-additional-options' => TRUE,
     'aliases' => array('vg'),
     'requires_vagrant' => TRUE,
+    'requires_vagrant_project' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-alias-config'] = array(
