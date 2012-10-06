@@ -11,9 +11,9 @@
 function drush_vagrant_list() {
   $projects = drush_vagrant_projects_info();
 
-  if (drush_vagrant_check_project(PROJECT_PATH) && !drush_get_option('all', FALSE)) {
+  if (drush_vagrant_check_project(drush_vagrant_get_project_path()) && !drush_get_option('all', FALSE)) {
     // We're in a project, so only list its VMs, unless we're told otherwise
-    $project = drush_vagrant_get_project_name(PROJECT_PATH);
+    $project = drush_vagrant_get_project_name(drush_vagrant_get_project_path());
     $projects = array( $project => $projects[$project]);
   }
   foreach ($projects as $project => $vms) {
