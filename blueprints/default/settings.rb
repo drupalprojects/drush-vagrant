@@ -3,8 +3,8 @@ class Default < Vm             # VM-specific overrides of default settings
   Longname   = "Default"       # VirtualBox name
 
   #Count     = 1                          # number of VMs to create
-  #Basebox   = "lucid32"                  # default basebox
-  #Box_url   = "http://files.vagrantup.com/lucid32.box"
+  #Basebox   = "debian-LAMP-2012-03-29"   # default 64-bit basebox
+  #Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-current.box"
   #Memory    = 512                        # default VM memory
   #Domain    = "local"                    # default domain
   #Manifests = "manifests"                # puppet manifests folder name
