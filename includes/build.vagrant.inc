@@ -165,12 +165,20 @@ function drush_vagrant_post_vagrant_build() {
 
   // Launch the VMs
   if ($up !== FALSE) {
-    drush_vagrant_shell_cd_and_exec_interactive($project_path, "vagrant up");
+    drush_vagrant_exec_and_log(array(
+      'command' => drush_vagrant_shell_cd_and_exec_interactive($project_path, "vagrant up"),
+      'success' => dt('Successfully launched the VM(s).'),
+      'failure' => dt('The following errors occurred when running "vagrant up":'),
+    ));
   }
 
   // Generate aliases for the new project
   if ($aliases !== FALSE) {
-    drush_vagrant_shell_cd_and_exec_interactive($project_path, "drush vagrant-aliases", $project_path);
+    drush_vagrant_exec_and_log(array(
+      'command' => drush_vagrant_shell_cd_and_exec_interactive($project_path, "drush vagrant-aliases", $project_path),
+      'success' => dt('Successfully generated aliases for the project and its VM(s).'),
+      'failure' => dt('The following errors occurred when running "drush vagrant-aliases":'),
+    ));
   }
 
   // Add domain to hosts file
@@ -180,7 +188,7 @@ function drush_vagrant_post_vagrant_build() {
 
   drush_print(dt('Your project was successfully initialized.'));
   drush_print(dt('The root for your project is "!project_path"', array('!project_path' => $project_path)));
-  drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0, and an initial entry in your /etc/hosts file written.', array('!subnet' => $subnet)));
+  drush_print(dt('The subnet for your project has been set to 192.168.!subnet.0.', array('!subnet' => $subnet)));
   drush_print(dt('You can now: * Alter the behaviour of your project by editing !project_path/settings.rb.', array('!project_path' => $project_path)));
   drush_print(dt('             * Redefine the VM(s) by editing the Puppet manifest(s) in !project_path/manifests.', array('!project_path' => $project_path)));
   drush_print(dt('             * Add additional Puppet modules by copying them to !project_path/modules.', array('!project_path' => $project_path)));
@@ -198,7 +206,12 @@ function _drush_vagrant_add_hosts_entries_for_vm($project_path) {
     $vm_alias = '@' . $project_name . '.' . $vm;
     $sitealias = drush_sitealias_get_record($vm_alias);
     $domain = $sitealias['fqdn'];
-    drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain);
+    drush_vagrant_exec_and_log(array(
+      'command' => drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain),
+      'success' => dt("Successfully added entries for the project's VMs in /etc/hosts."),
+      'failure' => dt('The following errors occurred when running "drush !vm_alias hosts --fqdn=!domain":',
+        array('!vm_alias' => $vm_alias, '!domain' => $domain)),
+    ));
   }
 }
 
