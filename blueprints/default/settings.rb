@@ -16,5 +16,15 @@ class Default < Vm             # VM-specific overrides of default settings
   #Options   = ""                         # options to pass to Puppet
   #Facts     = {}                         # hash of Factor facts
 
-  #NFS_shares = { "www" => "/var/www", } # one or more NFS shares {"local-dir" => vm-dir", }
+  #Dir_shares = {                         # mount shared directories
+  #  "client_repo"  => {                  # name visible during vagrant up, &c.
+  #    "guest_path" => "/var/aegir",      # path in the VM, required
+  #    "host_path"  => "./aegir",         # path on the host, required
+  #    "nfs"        => { :nfs => true,    # NFS options, optional
+  #                      :create => true,
+  #                      :remount => true
+  #                    }
+  #  },
+  #             }
+
 end
