@@ -9,6 +9,17 @@
  * Parse the output of 'vagrant ssh-config'
  */
 function drush_vagrant_parse_ssh_config($vm_name = VM_NAME) {
+  // 'vagrant ssh-config' will fail if passed a VM name in a single VM project.
+  // So we have to count the VMs, and unset $vm_name if there's only one.
+  $output = drush_vagrant_exec_and_log(array(
+    'command' => drush_shell_cd_and_exec(PROJECT_PATH, "drush vagrant-list --vms"),
+    'success' => dt('Listed VMs in this project.'),
+    'failure' => dt('The following errors occurred when running "drush vagrant-list --vms":'),
+  ));
+  if (count($output) == 1) {
+    unset($vm_name);
+  }
+
   $output = drush_vagrant_exec_and_log(array(
     'command' => drush_shell_cd_and_exec(PROJECT_PATH, "vagrant ssh-config " . $vm_name),
     'success' => dt('Determined the Vagrant SSH configuration.'),
@@ -217,14 +228,14 @@ function drush_vagrant_aliases() {
         'failure' => dt('The following errors occurred when attempting to retrieve the FQDN for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
       // TODO: Validate that this is a valid FQDN
-      $vm_vars['fqdn'] = $output[1];
+      $vm_vars['fqdn'] = $output[2];
       $output = drush_vagrant_exec_and_log(array(
         'command' => drush_shell_cd_and_exec(PROJECT_PATH, 'drush vagrant-shell --default-user --vm-name=' . $vm_name . ' "hostname -I"'),
         'success' => dt('Retrieved the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
         'failure' => dt('The following errors occurred when attempting to retrieve the IP address for the !vm_name VM.', array('!vm_name' => $vm_name)),
       ));
       // TODO: Validate that this is a valid IP address
-      $vm_vars['ip_addr'] = array_pop(explode(' ', $output[1]));
+      $vm_vars['ip_addr'] = array_pop(explode(' ', $output[2]));
       $vms[] = _drush_vagrant_render_template($vm_vars, 'vm_alias.tpl.php');
     }
     $project_vars["vms"] = $vms;
