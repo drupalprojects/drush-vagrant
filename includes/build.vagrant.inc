@@ -199,18 +199,22 @@ function drush_vagrant_post_vagrant_build() {
  * Add hostname -> IP mappings to the /etc/hosts file for this project.
  */
 function _drush_vagrant_add_hosts_entries_for_vm($project_path) {
-  drush_shell_cd_and_exec($project_path, 'drush vagrant-list --vms');
-  $vms = drush_shell_exec_output();
+  $vms = drush_vagrant_exec_and_log(array(
+    'command' => drush_shell_cd_and_exec($project_path, 'drush vagrant-list --vms'),
+    'success' => dt('Listed all VMs of the project at !project_path.', array('!project_path' => $project_path)),
+    'failure' => dt('The following errors occurred when running "drush vagrant-list --vms".'),
+  ));
   $project_name = drush_vagrant_get_project_name($project_path);
   foreach ($vms as $vm) {
     $vm_alias = '@' . $project_name . '.' . $vm;
     $sitealias = drush_sitealias_get_record($vm_alias);
+    $ip_addr = $sitealias['ip'];
     $domain = $sitealias['fqdn'];
     drush_vagrant_exec_and_log(array(
-      'command' => drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain),
+      'command' => drush_shell_exec_interactive("drush hosts-add --ip=%s --fqdn=%s", $ip_addr, $domain),
       'success' => dt("Successfully added entries for the project's VMs in /etc/hosts."),
-      'failure' => dt('The following errors occurred when running "drush !vm_alias hosts --fqdn=!domain":',
-        array('!vm_alias' => $vm_alias, '!domain' => $domain)),
+      'failure' => dt('The following errors occurred when running "drush hosts-add --ip=!ip_addr --fqdn=!domain":',
+        array('!ip_addr' => $ip_addr, '!domain' => $domain)),
     ));
   }
 }

@@ -37,10 +37,15 @@ function drush_vagrant_delete() {
       'failure' => dt('The following errors occurred when running "drush vagrant-list --vms".'),
     ));
     foreach ($vms as $vm_name) {
+      $vm_alias = '@' . $project_alias . '.' . $vm_name;
+      $sitealias = drush_sitealias_get_record($vm_alias);
+      $ip_addr = $sitealias['ip'];
+      $domain = $sitealias['fqdn'];
       drush_vagrant_exec_and_log(array(
-        'command' => drush_shell_exec_interactive('drush @%s.%s hosts --remove', str_replace('.project', '', $project_alias) , $vm_name),
+        'command' => drush_shell_exec_interactive("drush hosts-remove --ip=$ip_addr --fqdn=$domain"),
         'success' => dt('Removed the entry in /etc/hosts for "!vm_name".', array('!vm_name' => $vm_name)),
-        'failure' => dt('The following errors occurred when running "drush [alias] hosts --remove".'),
+        'failure' => dt('The following errors occurred when running "drush hosts-remove --ip=!ip_addr --fqdn=!domain":',
+          array('!ip_addr' => $ip_addr, '!domain' => $domain)),
       ));
     }
     drush_vagrant_exec_and_log(array(
