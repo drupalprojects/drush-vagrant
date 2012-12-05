@@ -41,12 +41,14 @@ function drush_vagrant_delete() {
       $sitealias = drush_sitealias_get_record($vm_alias);
       $ip_addr = $sitealias['ip'];
       $domain = $sitealias['fqdn'];
-      drush_vagrant_exec_and_log(array(
-        'command' => drush_shell_exec_interactive("drush hosts-remove --ip=$ip_addr --fqdn=$domain"),
-        'success' => dt('Removed the entry in /etc/hosts for "!vm_name".', array('!vm_name' => $vm_name)),
-        'failure' => dt('The following errors occurred when running "drush hosts-remove --ip=!ip_addr --fqdn=!domain":',
-          array('!ip_addr' => $ip_addr, '!domain' => $domain)),
-      ));
+      if ($ip_addr && $domain) {
+        drush_vagrant_exec_and_log(array(
+          'command' => drush_shell_exec_interactive("drush hosts-remove --ip=$ip_addr --fqdn=$domain"),
+          'success' => dt('Removed the entry in /etc/hosts for "!vm_name".', array('!vm_name' => $vm_name)),
+          'failure' => dt('The following errors occurred when running "drush hosts-remove --ip=!ip_addr --fqdn=!domain":',
+            array('!ip_addr' => $ip_addr, '!domain' => $domain)),
+        ));
+      }
     }
     drush_vagrant_exec_and_log(array(
       'command'  => drush_vagrant_shell_cd_and_exec_interactive(PROJECT_PATH, 'vagrant destroy --force'),
