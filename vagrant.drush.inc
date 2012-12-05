@@ -112,6 +112,7 @@ function vagrant_drush_command() {
     'description' => dt('Convert the output of `vagrant ssh-config` into a Drush remote alias.'),
     'requires_vagrant' => TRUE,
     'requires_vagrant_project' => TRUE,
+    'hidden' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['vagrant-alias'] = array(

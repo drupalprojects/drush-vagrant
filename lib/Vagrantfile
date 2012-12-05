@@ -7,11 +7,13 @@ Vagrant::Config.run do |config|
       count = ""
       formatted_count = ""
       if vm::Count > 1
-        count = "#{index}"
-        formatted_count = "(#{index}of#{vm::Count})"
+        if index > 1
+          count = index - 1
+        end
+        formatted_count = "(#{index} of #{vm::Count})"
       end
 
-      config.vm.define "#{vm::Shortname}#{index}" do |vm_config|
+      config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
 
         vm_config.ssh.max_tries = vm::SSH_tries
         vm_config.ssh.forward_agent = vm::SSH_forward_agent
@@ -21,7 +23,7 @@ Vagrant::Config.run do |config|
         vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
         vm_config.vm.host_name = hostname
-        vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname}#{formatted_count}(#{hostname})"]
+        vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname} #{formatted_count} (#{hostname})"]
         vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
         if defined?(vm::NFS_shares) # Deprecated, as NFS is now supported directly in Dir_shares
           vm::NFS_shares.each do |name, path|

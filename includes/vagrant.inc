@@ -15,6 +15,12 @@ foreach ($includes as $key => $file) {
 
 /**
  * Run a command, log the result and return the output
+ *
+ * @param array $command('command'=>func, 'success'=>string, 'failure'=>string)
+ *   An array where 'command' is the function you wish to run, and 'success'
+ *   and 'failure' are the (translatable) string to send as log output.
+ * @return
+ *   The output of 'command' on success, esentially crash Drush on failure
  */
 function drush_vagrant_exec_and_log(array $command) {
   // Default to output of drush_exec
@@ -43,6 +49,7 @@ function drush_vagrant_exec_and_log(array $command) {
   // Return our output, in case it's needed
   return $command['output'];
 }
+
 /**
  * Executes a shell command at a new working directory in interactive mode.
  * The old cwd is restored on exit.
