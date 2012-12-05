@@ -43,6 +43,7 @@ Veewee::Definition.declare({
     "ruby.sh",
     "puppet.sh",
 #    "chef.sh",
+    "debian-LAMP-config.sh"
     "cleanup-virtualbox.sh",
     "cleanup.sh",
     "zerodisk.sh"

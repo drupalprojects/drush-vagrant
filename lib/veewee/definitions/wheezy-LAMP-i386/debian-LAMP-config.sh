@@ -1,13 +1,10 @@
-# Install git
-apt-get install git-core -y
-
-# Download Aegir-up locally
-git clone http://git.drupal.org/project/aegir-up.git
+# Download our LAMP Puppet manifest locally
+wget http://drupalcode.org/project/drush-vagrant.git/blob_plain/refs/heads/7.x-3.x:/lib/veewee/definitions/wheezy-LAMP-i386/debian-LAMP.pp
 
 # Install LAMP stack
-puppet apply ./aegir-up/definitions/debian-LAMP/debian-LAMP.pp --modulepath="./aegir-up/modules"
+puppet apply ./debian-LAMP.pp
 
 # Clean up
-rm -rf ./aegir-up
+rm ./debian-LAMP.pp
 
 exit
