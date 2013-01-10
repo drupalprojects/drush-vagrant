@@ -20,7 +20,17 @@ Vagrant::Config.run do |config|
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
         vm_config.vm.auto_port_range = Conf::SSH_range
-        vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
+
+        # Allow VMs to define a static IP to assign. This helps with multi-vm
+        # scenarios where we want to ensure that IPs to various boxes are
+        # consistent across reboots.
+        if defined?(vm::Host_IP)
+          ip = vm::Host_IP
+        else
+          ip = "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
+        end
+        vm_config.vm.network :hostonly, ip
+
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
         vm_config.vm.host_name = hostname
         vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname} #{formatted_count} (#{hostname})"]
