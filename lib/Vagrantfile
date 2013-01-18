@@ -49,6 +49,15 @@ Vagrant::Config.run do |config|
           vm_config.vm.boot_mode = :gui
         end
 
+        # We can speed up subsequent rebuilds by caching the apt cache directories
+        # on the host machine.
+        current_dir = File.dirname(__FILE__)
+        apt_cache = "#{current_dir}/tmp/apt/cache"
+        require "fileutils"
+        # We seem to need to create the partial directory.
+        FileUtils.mkdir_p("#{apt_cache}/partial")
+        vm_config.vm.share_folder "apt-cache", "/var/cache/apt/archives", apt_cache
+
         if File::exists?("#{vm::Manifests}/#{vm::Site}.pp")
           vm_config.vm.provision :puppet do |puppet|
             puppet.manifest_file = "#{vm::Site}.pp"
