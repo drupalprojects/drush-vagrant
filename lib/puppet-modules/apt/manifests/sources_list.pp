@@ -17,6 +17,12 @@ define apt::sources_list (
     notify => Exec['update_apt'];
   }
 
+  exec { "/bin/true $name":
+    refreshonly => true,
+    require => Exec['update_apt'];
+  }
+
+  # this singleton is there to make sure we run apt-get update after we install the list file
   if $source {
     File["/etc/apt/sources.list.d/${name}.list"] {
       source => $source,
@@ -28,4 +34,3 @@ define apt::sources_list (
     }
   }
 }
-

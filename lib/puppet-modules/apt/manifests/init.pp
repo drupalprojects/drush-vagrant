@@ -27,22 +27,13 @@ class apt {
 		}
 	}
 
-	class default_sources_list {
-		config_file {
-			# include main, security and backports
-			# additional sources could be included via an array
-			"/etc/apt/sources.list":
-				content => template("apt/sources.list.erb");
-		}
-	}
-
 	config_file {
 		# this just pins unstable and testing to very low values
 		"/etc/apt/preferences":
-			source => "puppet://$servername/modules/apt/preferences",
+			source => "puppet://$servername/apt/preferences",
 			# use File[apt_config] to reference a completed configuration
 			# See "The Puppet Semaphor" 2007-06-25 on the puppet-users ML
-			alias => apt_config,
+			alias => 'apt_config',
 			# only update together
 			require => File["/etc/apt/sources.list"];
 	}
@@ -54,7 +45,7 @@ class apt {
 	config_file {
 		# little default settings which keep the system sane
 		"/etc/apt/apt.conf.d/from_puppet":
-			content => "APT::Get::Show-Upgraded true;\nDSelect::Clean $real_apt_clean;\nAPT::Cache-Limit 42582912;\nAPT::Get::force-yes true;\nAcquire::PDiffs false;\n",
+			content => "APT::Get::Show-Upgraded true;\nDSelect::Clean $real_apt_clean;\nAPT::Cache-Limit 142582912;\nAPT::Get::force-yes true;\nAcquire::PDiffs false;\n",
 			before => Config_file[apt_config];
 	}
 
@@ -87,19 +78,3 @@ class apt {
 	}
 }
 
-class apt::backports inherits apt {
-  # backwards compatibility, remove when everyone is on squeeze
-  $custom_sources_list = template("apt/sources.list+backports.erb")
-  apt::sources_list { "${lsbdistcodename}-backports":    content => "deb http://backports.debian.org/debian-backports ${lsbdistcodename}-backports main"; }
-}
-
-class dselect {
-	# suppress annoying help texts of dselect
-	line { dselect_expert:
-		file => "/etc/dpkg/dselect.cfg",
-		line => "expert",
-		ensure => present,
-	}
-
-	package { dselect: ensure => installed }
-}

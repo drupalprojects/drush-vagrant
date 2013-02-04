@@ -268,6 +268,14 @@ function vagrant_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/README.md'),
   );
+  $items['docs-vagrant-install'] = array(
+    'description' => dt('Drush Vagrant INSTALL.'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(DRUSH_VAGRANT_ROOT . '/INSTALL.md'),
+  );
   $items['docs-vagrant-architecture'] = array(
     'description' => dt('Drush Vagrant architecture documentation.'),
     'hidden' => TRUE,

@@ -1,3 +1,6 @@
 [submodule "lib/puppet-modules/drush"]
 	path = lib/puppet-modules/drush
 	url = http://git.drupal.org/project/puppet-drush.git
+[submodule "lib/puppet-modules/apt"]
+	path = lib/puppet-modules/apt
+	url = git://git.koumbit.net/puppet-apt.git
