@@ -4,3 +4,9 @@
 [submodule "lib/puppet-modules/apt"]
 	path = lib/puppet-modules/apt
 	url = git://git.koumbit.net/puppet-apt.git
+[submodule "lib/Symfony/Component/Yaml"]
+	path = lib/Symfony/Component/Yaml
+	url = git://github.com/symfony/Yaml.git
+[submodule "lib/Symfony/Component/ClassLoader"]
+	path = lib/Symfony/Component/ClassLoader
+	url = git://github.com/symfony/ClassLoader.git

@@ -7,6 +7,14 @@
 
 define("DRUSH_VAGRANT_ROOT", drush_normalize_path(dirname(__FILE__)));
 
+// Use Symfony's autoloader
+require_once __DIR__.'/lib/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+
+$loader = new UniversalClassLoader();
+$loader->registerNamespace('Symfony', __DIR__.'/lib/');
+$loader->register();
+
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
 
@@ -258,6 +266,20 @@ function vagrant_drush_command() {
     'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['vagrant-update'] = array(
+    'description' => dt('Update Git submodules provided by blueprints.'),
+/*    'options' => array(
+      'root' => 'Print the root projects path.',
+    ),
+    'examples' => array(
+      'drush @project-alias vr' => dt('Print the path to the project represented by @project-alias.'),
+    ),*/
+    'strict-option-handling' => TRUE,
+    'aliases' => array('vu'),
+    'requires_vagrant' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
+
 
   // Drush topics
   $items['docs-vagrant-readme'] = array(
