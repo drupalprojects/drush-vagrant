@@ -266,7 +266,7 @@ function vagrant_drush_command() {
     'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-  $items['vagrant-update'] = array(
+  $items['vagrant-update-submodules'] = array(
     'description' => dt('Update Git submodules provided by blueprints.'),
 /*    'options' => array(
       'root' => 'Print the root projects path.',
@@ -275,8 +275,8 @@ function vagrant_drush_command() {
       'drush @project-alias vr' => dt('Print the path to the project represented by @project-alias.'),
     ),*/
     'strict-option-handling' => TRUE,
-    'aliases' => array('vu'),
-    'requires_vagrant' => TRUE,
+    'aliases' => array('vus'),
+    'requires_vagrant_project' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
