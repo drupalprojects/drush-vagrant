@@ -63,6 +63,7 @@ function vagrant_default_build_steps($build) {
   vagrant_default_build_user_data($build);
   vagrant_default_build_user_dotfiles($build);
   vagrant_default_build_git_init($build);
+  vagrant_default_build_add_submodules($build);
 }
 
 function vagrant_default_build_project_dir($build) {
@@ -201,6 +202,13 @@ function vagrant_default_build_git_init($build) {
   if (!file_exists($build['project_path'] . '/.git')) {
     drush_vagrant_shell_cd_and_exec_interactive($build['project_path'], "git init && git add . && git commit -m'Initial commit.'");
   }
+}
+
+
+function vagrant_default_build_add_submodules($build) {
+
+  drush_vagrant_shell_cd_and_exec_interactive($build['project_path'], "drush vagrant-update-submodules");
+
 }
 
 

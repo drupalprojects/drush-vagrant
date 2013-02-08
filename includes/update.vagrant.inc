@@ -30,7 +30,7 @@ function drush_vagrant_update_submodules() {
           $blueprints = call_user_func($command . '_vagrant_blueprints');
 
           $blueprint_path = $command_path . '/' . $blueprints[$blueprint]['path'];
-          $source = $blueprint_path . '/submodules.yml';
+          $source = $blueprint_path . '/config/submodules.yml';
           $destination = PROJECT_PATH . '/config/submodules/' . $blueprint . '.yml';
 
           if (file_exists($source)) {
