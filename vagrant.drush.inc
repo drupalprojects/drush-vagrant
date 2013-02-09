@@ -368,7 +368,7 @@ function drush_vagrant() {
         '!command' => $vg_command,
         )
       );
-
+      // Pass the command on to Vagrant
       drush_shell_exec_interactive($vg_command);
     }
   }

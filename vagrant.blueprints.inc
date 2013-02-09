@@ -56,6 +56,9 @@ function vagrant_default_build_vars() {
 }
 
 function vagrant_default_build_steps($build) {
+  // TODO: These should be turned into individual commands, so that we can use
+  // them to update/fix existing projects. This would also provide us with pre-
+  // and post- hooks for each, making extending and over-riding easier.
   vagrant_default_build_project_dir($build);
   vagrant_default_build_project_setup($build);
   vagrant_default_build_config_dir($build);
@@ -77,6 +80,8 @@ function vagrant_default_build_project_dir($build) {
     }
   }
   else {
+    // TODO: Switch to running 'vagrant yaml init', and then copying the
+    // blueprint dirs into config/blueprints/ (?) 
     drush_vagrant_exec_and_log(array(
       'command' => drush_copy_dir($build['blueprint_info'][$build['blueprint']]['full_path'], $build['project_path']),
       'success' => dt('Copied the "!blueprint" blueprint directory to !project_path.', array('!blueprint' => $build['blueprint'], '!project_path' => $build['project_path'])),
@@ -88,6 +93,9 @@ function vagrant_default_build_project_dir($build) {
 function vagrant_default_build_project_setup($build) {
   // Set up the new project
   $target = $build['project_path'] . '/Vagrantfile';
+  // TODO: We can remove this, as 'vagrant yaml init' provides us with a
+  // Vagrantfile. Blueprints wishing to provide their own Vagrantfile will
+  // likely need to overwrite this one.
   if (!file_exists($target)) {
     drush_vagrant_exec_and_log(array(
       'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/Vagrantfile', $target),
@@ -96,6 +104,7 @@ function vagrant_default_build_project_setup($build) {
     ));
   }
   $target = $build['project_path'] . '/.gitignore';
+  // TODO: review our default '.gitignore' as we want to include as much as possible now, especially the Vagrantfile.
   if (!file_exists($target)) {
     drush_vagrant_exec_and_log(array(
       'command' => symlink(DRUSH_VAGRANT_ROOT . '/lib/gitignore', $target),
@@ -106,6 +115,7 @@ function vagrant_default_build_project_setup($build) {
 }
 
 function vagrant_default_build_config_dir(&$build) {
+  // TODO: This should be unhidden as config/, but it also may make sense in vagrant-yaml
   $build['config_path'] = $build['project_path'] . '/.config';
   drush_vagrant_exec_and_log(array(
     'command' => drush_mkdir($build['config_path']),
@@ -117,6 +127,7 @@ function vagrant_default_build_config_dir(&$build) {
 function vagrant_default_build_record_blueprint($build) {
   if (!isset($build['git_repo'])) {
     // Record the blueprint that was used
+    // TODO: This should create in config/landscape.yaml instead
     $blueprint_vars['extension'] = $build['blueprint_info'][$build['blueprint']]['extension'];
     $blueprint_vars['blueprint'] = $build['blueprint'];
     $blueprint_file = _drush_vagrant_render_template($blueprint_vars, "blueprint.tpl.php");
@@ -129,6 +140,10 @@ function vagrant_default_build_record_blueprint($build) {
 }
 
 function vagrant_default_build_user_data($build) {
+  // TODO: We need to remove this almost entirely. Puppet modules should be
+  // added as git sub-modules, and recorded in config/submodules/<blueprint>.yaml,
+  // or something. Facts moved to some other Yaml config file, or tacked onto
+  // <vm>.yaml's
   $user_settings = drush_get_context('user');
 
   $config_vars = array();

@@ -73,6 +73,7 @@ function drush_vagrant_build() {
   $git_repo = drush_get_option('git-repo', NULL);
 
   $blueprint_info = drush_vagrant_blueprint_info();
+  // TODO: Switch to drush_choice_multiple, and allow for a list of blueprints to be passed in
   // Prompt for choice of blueprint, if one wasn't passed as an option, and we aren't building from a Git repo.
   if (!isset($blueprint) && !isset($git_repo)) {
     foreach ($blueprint_info as $name => $data) {
@@ -86,6 +87,7 @@ function drush_vagrant_build() {
     drush_set_option('blueprint', $blueprint);
   }
 
+  // TODO: Skip if Drush Hosts isn't installed. Also, only add the cli option if d-h is installed.
   $hosts = drush_get_option('hosts', 'unset');
   if ($hosts === 'unset' ) {
     $hosts = drush_confirm(dt('Would you like to generate entries in /etc/hosts for the VMs in your project?'));
@@ -126,11 +128,12 @@ function drush_vagrant_build() {
   else {
     $actions[] = dt('  * Launch the project VMs immediately.');
   }
-
+  // TODO: Ensure '--git-branch' is documented in help text.
   if (isset($git_repo)) {
     $actions[] = dt('  * Build the project from the Git repository at: !git-repo, with branch !git-branch' , array('!git-repo' => $git_repo,'!git-branch' => drush_get_option('git-branch', 'master')));
   }
   else {
+    // TODO: List blueprints here once we support building from multiple
     $actions[] = dt('  * Build the project using the "!blueprint" blueprint from the "!extension" extension.',
       array('!blueprint' => $blueprint, '!extension' => $blueprint_info[$blueprint]['extension'])
     );
