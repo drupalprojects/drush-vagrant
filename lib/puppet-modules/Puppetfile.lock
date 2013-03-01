@@ -1,0 +1,10 @@
+GIT
+  remote: http://git.drupal.org/project/puppet-drush.git
+  ref: master
+  sha: 7132b516421e8c8035383ce39fdd786d752eb31a
+  specs:
+    drush (0.0.1)
+
+DEPENDENCIES
+  drush (>= 0)
+
