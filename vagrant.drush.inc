@@ -7,13 +7,8 @@
 
 define("DRUSH_VAGRANT_ROOT", drush_normalize_path(dirname(__FILE__)));
 
-// Use Symfony's autoloader
-require_once __DIR__.'/lib/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-
-$loader = new UniversalClassLoader();
-$loader->registerNamespace('Symfony', __DIR__.'/lib/');
-$loader->register();
+// Use Composer's autoloader
+require_once __DIR__ . '/vendor/autoload.php';
 
 // Include all command and helper functions
 include_once('includes/vagrant.inc');
