@@ -10,6 +10,7 @@ class Default < Vm             # VM-specific overrides of default settings
   #Manifests = "manifests"                # puppet manifests folder name
   #Modules   = {}                         # hash of puppet module folder names
   #Site      = "site"                     # name of manifest to apply
+  #Script    = "shell.sh"                 # shell script to run for provisioning
   #Gui       = true                       # start VM with GUI?
   #Verbose   = true                       # make output verbose?
   #Debug     = true                       # output debug info?

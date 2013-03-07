@@ -85,6 +85,12 @@ Vagrant::Config.run do |config|
           end
         end
 
+        if defined?(vm::Script)
+          if File::exists?(vm::Script)
+            vm_config.vm.provision :shell, :path => vm::Script
+          end
+        end
+
       end
 
     end
