@@ -1,48 +1,49 @@
-class drush-vagrant::user ($user = [
-  {'name' => $username, 'home_dir' => "/home/$username"},
-  {'name' => 'root',    'home_dir' => '/root'},
-  {'name' => 'vagrant', 'home_dir' => '/home/vagrant'},
-  {'name' => 'aegir',   'home_dir' => '/var/aegir'},
-  ]) {
+class drush-vagrant::users {
 
   group { 'puppet': ensure => present, }
 
-  drush-vagrant::user_account {$user[0]['name']:
-    username => $user[0]['name'],
-    home_dir => $user[0]['home_dir'],
-  }
-  drush-vagrant::user_account {$user[1]['name']:
-    username => $user[1]['name'],
-    home_dir => $user[1]['home_dir'],
-  }
-  drush-vagrant::user_account {$user[2]['name']:
-    username => $user[2]['name'],
-    home_dir => $user[2]['home_dir'],
-  }
-  drush-vagrant::user_account {$user[3]['name']:
-    username => $user[3]['name'],
-    home_dir => $user[3]['home_dir'],
+  drush-vagrant::user { [$username, 'vagrant']: }
+  drush-vagrant::user {'root':
+    home_dir => '/root',
   }
 
 }
 
-define drush-vagrant::user_account ($username, $home_dir = "/home/$username") {
+define drush-vagrant::user ($home_dir = '') {
+  # We can't retrieve the resource name in the paramaters themselves to define
+  # a default parameter. That is, the following doesn't work, despite indica-
+  # tions that it should in the Puppet docs:
+  # define drush-vagrant::user ($home_dir = "/home/$name")
+  # define drush-vagrant::user ($home_dir = "/home/$title")
+  # ... So, we use a wrapper definition, and then pass along the $name in the home_dir, if required.
+  if ($home_dir == '') {
+    $home = "/home/${name}"
+  }
+  else {
+    $home = $home_dir
+  }
+  drush-vagrant::user_account {$name:
+    home_dir => $home,
+  }
+}
+
+define drush-vagrant::user_account ($home_dir) {
 
   User { ensure => present,
          groups => 'sudo',
          shell  => '/bin/bash',
   }
 
-  if !defined(User[$username]) {
-    user {$username:
+  if !defined(User[$name]) {
+    user {$name:
       home   => $home_dir,
     }
   }
 
   # Various dotfiles
   File { ensure => present,
-         owner  => "${username}",
-         group  => "${username}",
+         owner  => $name,
+         group  => $name,
   }
   if !defined(File[$home_dir]) {
     file { $home_dir:
@@ -72,7 +73,7 @@ define drush-vagrant::user_account ($username, $home_dir = "/home/$username") {
                       "puppet:///modules/drush-vagrant/vimrc.example"];
   }
 
-  if $username != 'vagrant' {
+  if $name != 'vagrant' {
     file { "${home_dir}/.ssh/authorized_keys":
              source  => "/vagrant/.config/files/authorized_keys",
              require => File["${home_dir}/.ssh"];
@@ -82,19 +83,19 @@ define drush-vagrant::user_account ($username, $home_dir = "/home/$username") {
   #git username & email
   include git
 
-  Exec { user        => $username,
-         group       => $username,
+  Exec { user        => $name,
+         group       => $name,
          environment => "HOME=${home_dir}",
          path        => '/usr/bin',
          require     => Class['git'],
   }
   if $git_name {
-    exec {"git user.name config for $username":
+    exec {"git user.name config for ${name}":
       command => "git config --global user.name '${git_name}'",
     }
   }
   if $git_email {
-    exec {"git user.email config for $username":
+    exec {"git user.email config for ${name}":
       command => "git config --global user.email ${git_email}",
     }
   }
