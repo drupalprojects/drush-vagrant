@@ -57,9 +57,12 @@ define drush-vagrant::user_account ($home_dir) {
              ];
     }
   }
-  file { "${home_dir}/.ssh":
-           ensure => directory;
-         "${home_dir}/.profile":
+  if !defined(File["${home_dir}/.ssh"]) {
+    file { "${home_dir}/.ssh":
+      ensure => directory;
+    }
+  }
+  file { "${home_dir}/.profile":
            source => ["/vagrant/.config/files/.profile",
                       "puppet:///modules/drush-vagrant/profile.example"];
          "${home_dir}/.bashrc":
