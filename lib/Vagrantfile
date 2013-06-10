@@ -26,10 +26,17 @@ Vagrant::Config.run do |config|
         # consistent across reboots.
         if defined?(vm::Host_IP)
           ip = vm::Host_IP
+          if ip.kind_of?(Array)
+            ip.each do |addr|
+              vm_config.vm.network :hostonly, addr
+            end
+          else
+            vm_config.vm.network :hostonly, ip
+          end
         else
           ip = "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
+          vm_config.vm.network :hostonly, ip
         end
-        vm_config.vm.network :hostonly, ip
 
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
         vm_config.vm.host_name = hostname
