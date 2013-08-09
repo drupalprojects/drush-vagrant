@@ -47,12 +47,12 @@ Vagrant.configure("2") do |config|
         end
         if defined?(vm::NFS_shares) # Deprecated, as NFS is now supported directly in Dir_shares
           vm::NFS_shares.each do |name, path|
-            vm_config.vm.synced_folder path, "./#{name}", { :nfs => true, :create => true, :remount => true }
+            vm_config.vm.synced_folder "./#{name}", path, { :nfs => true, :create => true, :remount => true }
           end
         end
         if defined?(vm::Dir_shares)
           vm::Dir_shares.each do |name, share|
-            vm_config.vm.synced_folder share["guest_path"], share["host_path"], share["nfs"]
+            vm_config.vm.synced_folder share["host_path"], share["guest_path"], share["nfs"]
           end
         end
         if vm::Gui == true
@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
         require "fileutils"
         # We seem to need to create the partial directory.
         FileUtils.mkdir_p("#{apt_cache}/partial")
-        vm_config.vm.synced_folder "/var/cache/apt/archives", apt_cache
+        vm_config.vm.synced_folder apt_cache, "/var/cache/apt/archives"
 
         if File::exists?("#{vm::Manifests}/#{vm::Site}.pp")
           vm_config.vm.provision :puppet do |puppet|
