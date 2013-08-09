@@ -1,4 +1,4 @@
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   require "./.config/config"
 
   Vm.descendants.each_with_index do |vm,count_vms|
@@ -7,35 +7,66 @@ Vagrant::Config.run do |config|
       count = ""
       formatted_count = ""
       if vm::Count > 1
-        count = "#{index}"
-        formatted_count = "(#{index}of#{vm::Count})"
+        if index > 1
+          count = index - 1
+        end
+        formatted_count = "(#{index} of #{vm::Count})"
       end
 
-      config.vm.define "#{vm::Shortname}#{index}" do |vm_config|
+      config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
 
         vm_config.ssh.max_tries = vm::SSH_tries
         vm_config.ssh.forward_agent = vm::SSH_forward_agent
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
-        vm_config.vm.auto_port_range = Conf::SSH_range
-        vm_config.vm.network :hostonly, "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
+        vm_config.vm.usable_port_range = Conf::SSH_range
+
+        # Allow VMs to define a static IP to assign. This helps with multi-vm
+        # scenarios where we want to ensure that IPs to various boxes are
+        # consistent across reboots.
+        if defined?(vm::Host_IP)
+          ip = vm::Host_IP
+          if ip.kind_of?(Array)
+            ip.each do |addr|
+              vm_config.vm.network :private_network, ip: addr
+            end
+          else
+            vm_config.vm.network :private_network, ip: ip
+          end
+        else
+          ip = "#{Conf::Network}.#{Conf::Subnet}.#{Conf::Host_IP + ((count_vms) * 10) + index - 1}"
+          vm_config.vm.network :private_network, ip: ip
+        end
+
         hostname = "#{vm::Shortname}#{count}.#{Conf::Project}.#{vm::Domain}"
-        vm_config.vm.host_name = hostname
-        vm_config.vm.customize ["modifyvm", :id, "--name", "#{vm::Longname}#{formatted_count}(#{hostname})"]
-        vm_config.vm.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
+        vm_config.vm.hostname = hostname
+
+        vm_config.vm.provider :virtualbox do |vb|
+          vb.customize ["modifyvm", :id, "--name", "#{vm::Longname} #{formatted_count} (#{hostname})"]
+          vb.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
+        end
         if defined?(vm::NFS_shares) # Deprecated, as NFS is now supported directly in Dir_shares
           vm::NFS_shares.each do |name, path|
-            vm_config.vm.share_folder(name, path, "./#{name}", { :nfs => true, :create => true, :remount => true })
+            vm_config.vm.synced_folder path, "./#{name}", { :nfs => true, :create => true, :remount => true }
           end
         end
         if defined?(vm::Dir_shares)
           vm::Dir_shares.each do |name, share|
-            vm_config.vm.share_folder(name, share["guest_path"], share["host_path"], share["nfs"])
+            vm_config.vm.synced_folder share["guest_path"], share["host_path"], share["nfs"]
           end
         end
         if vm::Gui == true
           vm_config.vm.boot_mode = :gui
         end
+
+        # We can speed up subsequent rebuilds by caching the apt cache directories
+        # on the host machine.
+        current_dir = File.dirname(__FILE__)
+        apt_cache = "#{current_dir}/tmp/apt/cache"
+        require "fileutils"
+        # We seem to need to create the partial directory.
+        FileUtils.mkdir_p("#{apt_cache}/partial")
+        vm_config.vm.synced_folder "/var/cache/apt/archives", apt_cache
 
         if File::exists?("#{vm::Manifests}/#{vm::Site}.pp")
           vm_config.vm.provision :puppet do |puppet|
@@ -61,6 +92,12 @@ Vagrant::Config.run do |config|
             if vm::Verbose == true
               puppet.options = puppet.options + " --verbose"
             end
+          end
+        end
+
+        if defined?(vm::Script)
+          if File::exists?(vm::Script)
+            vm_config.vm.provision :shell, :path => vm::Script
           end
         end
 
