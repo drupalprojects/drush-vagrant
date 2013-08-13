@@ -25,7 +25,11 @@ define drush-vagrant::user ($home_dir = '') {
   }
 }
 
-define drush-vagrant::user_account ($home_dir) {
+define drush-vagrant::user_account (
+  $home_dir,
+  $git_name = undef,
+  $git_email = undef
+  ) {
 
   User { ensure => present,
          groups => 'sudo',
@@ -92,14 +96,22 @@ define drush-vagrant::user_account ($home_dir) {
          path        => '/usr/bin',
          require     => Package['git'],
   }
-  if $git_name {
-    exec {"git user.name config for ${name}":
-      command => "git config --global user.name \"${git_name}\"",
+
+  if $git_name { $real_git_name = $git_name }
+  elsif $::git_name { $real_git_name = $::git_name }
+  else { $real_git_name = false }
+  if $real_git_name {
+    exec { "git user.name config for ${name}" :
+      command => "git config --global user.name \"${real_git_name}\"",
     }
   }
-  if $git_email {
-    exec {"git user.email config for ${name}":
-      command => "git config --global user.email ${git_email}",
+
+  if $git_email { $real_git_email = $git_email }
+  elsif $::git_email { $real_git_email = $::git_email }
+  else { $real_git_email = false }
+  if $real_git_email {
+    exec { "git user.email config for ${name}" :
+      command => "git config --global user.email ${real_git_email}",
     }
   }
 
