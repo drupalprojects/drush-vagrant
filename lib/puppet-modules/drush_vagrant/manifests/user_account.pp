@@ -1,4 +1,4 @@
-define drush-vagrant::user_account (
+define drush_vagrant::user_account (
   $home_dir,
   $git_name = undef,
   $git_email = undef
@@ -39,16 +39,16 @@ define drush-vagrant::user_account (
   }
   file { "${home_dir}/.profile":
            source => ["/vagrant/.config/files/.profile",
-                      "puppet:///modules/drush-vagrant/profile.example"];
+                      "puppet:///modules/drush_vagrant/profile.example"];
          "${home_dir}/.bashrc":
            source => ["/vagrant/.config/files/.bashrc",
-                      "puppet:///modules/drush-vagrant/bashrc.example"];
+                      "puppet:///modules/drush_vagrant/bashrc.example"];
          "${home_dir}/.bash_aliases":
            source => ["/vagrant/.config/files/.bash_aliases",
-                      "puppet:///modules/drush-vagrant/bash_aliases.example"];
+                      "puppet:///modules/drush_vagrant/bash_aliases.example"];
          "${home_dir}/.vimrc":
            source => ["/vagrant/.config/files/.vimrc",
-                      "puppet:///modules/drush-vagrant/vimrc.example"];
+                      "puppet:///modules/drush_vagrant/vimrc.example"];
   }
 
   if $name != 'vagrant' {
