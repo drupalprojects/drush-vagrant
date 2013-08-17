@@ -1,7 +1,7 @@
 GIT
   remote: http://git.drupal.org/project/puppet-drush.git
   ref: new
-  sha: b6a70a67aeb6f8611ff46902171abc58b2fe4260
+  sha: eef2db30e44ceaadc28ea5e63ec12d3215b31bae
   specs:
     drush (0.0.1)
 
