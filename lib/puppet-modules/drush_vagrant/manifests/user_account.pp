@@ -53,7 +53,8 @@ define drush_vagrant::user_account (
 
   if $name != 'vagrant' {
     file { "${home_dir}/.ssh/authorized_keys":
-             source  => "/vagrant/.config/files/authorized_keys",
+             source  => ["/vagrant/.config/files/authorized_keys",
+                         "puppet:///modules/drush_vagrant/authorized_keys.example"],
              require => File["${home_dir}/.ssh"];
     }
   }
