@@ -16,9 +16,10 @@ define drush_vagrant::user_account (
   }
 
   # Various dotfiles
-  File { ensure => present,
-         owner  => $name,
-         group  => $name,
+  File { ensure  => present,
+         owner   => $name,
+         group   => $name,
+         replace => false,
   }
   if !defined(File[$home_dir]) {
     file { $home_dir:
