@@ -210,7 +210,7 @@ function _drush_vagrant_add_hosts_entries_for_vm($project_path) {
     $sitealias = drush_sitealias_get_record($vm_alias);
     $domain = $sitealias['fqdn'];
     drush_vagrant_exec_and_log(array(
-      'command' => drush_shell_exec_interactive("drush %s hosts --fqdn=%s", $vm_alias, $domain),
+      'command' => drush_shell_exec_interactive("drush %s hosts-add --fqdn=%s", $vm_alias, $domain),
       'success' => dt("Successfully added entries for the project's VMs in /etc/hosts."),
       'failure' => dt('The following errors occurred when running "drush !vm_alias hosts --fqdn=!domain":',
         array('!vm_alias' => $vm_alias, '!domain' => $domain)),
