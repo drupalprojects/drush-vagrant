@@ -15,7 +15,6 @@ Vagrant.configure("2") do |config|
 
       config.vm.define "#{vm::Shortname}#{count}" do |vm_config|
 
-        vm_config.ssh.max_tries = vm::SSH_tries
         vm_config.ssh.forward_agent = vm::SSH_forward_agent
         vm_config.vm.box = vm::Basebox
         vm_config.vm.box_url = vm::Box_url
