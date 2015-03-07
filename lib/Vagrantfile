@@ -43,6 +43,10 @@ Vagrant.configure("2") do |config|
         vm_config.vm.provider :virtualbox do |vb|
           vb.customize ["modifyvm", :id, "--name", "#{vm::Longname} #{formatted_count} (#{hostname})"]
           vb.customize ["modifyvm", :id, "--memory", "#{vm::Memory}"]
+          vm_config.vm.customize ["modifyvm", :id, "--cpus", "#{vm::Cpus}"]
+          if (vm::Cpus > 1)
+            vm_config.vm.customize ["modifyvm", :id, "--ioapic", "on"]
+          end
         end
         if defined?(vm::Dir_shares)
           vm::Dir_shares.each do |name, share|

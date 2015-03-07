@@ -4,6 +4,7 @@ class Vm                                 # default virtual machine settings
   end
 
   Count     = 1                          # number of VMs to create
+  Cpus      = 1                          # number of CPUs to allocate
   Basebox   = "debian-LAMP-i386-2012-03-29"  # default basebox
   Box_url   = "http://ergonlogic.com/files/boxes/debian-LAMP-i386-current.box"
   Memory    = 512                        # default VM memory
